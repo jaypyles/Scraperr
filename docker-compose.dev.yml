@@ -1,0 +1,7 @@
+version: "3"
+services:
+  frontend:
+    command: ["npm", "run", "start"]
+    volumes:
+      - ./public:/app/public
+      - ./src:/app/src
