@@ -38,7 +38,7 @@ COPY --from=jsbuilder /project/app /project/app
 
 EXPOSE 8000
 
-COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
+WORKDIR /project/api
 
-ENTRYPOINT ["/app/start.sh"]
+CMD ["pdm", "run", "python", "-m", "uvicorn", "backend.app:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+
