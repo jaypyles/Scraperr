@@ -3,3 +3,4 @@ services:
   frontend:
     volumes:
       - "$PWD/build:/project/api/build"
+      - "$PWD/api/backend:/project/api/backend"

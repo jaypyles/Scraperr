@@ -24,5 +24,5 @@ EXPOSE 8000
 
 WORKDIR /project/api
 
-CMD ["pdm", "run", "python", "-m", "uvicorn", "backend.app:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+CMD [ "pdm", "run", "python", "-m", "uvicorn", "backend.app:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
 
