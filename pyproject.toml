@@ -1,0 +1,40 @@
+[project]
+name = "WebappTemplate"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Jayden Pyles", email = "jpylesbuisness@gmail.com"},
+]
+dependencies = [
+    "uvicorn>=0.29.0",
+    "fastapi>=0.111.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+[tool.pdm]
+distribution = false
+
+[tool.pyright]
+include = ["./api/backend/"]
+exclude = ["**/node_modules", "**/__pycache__"]
+ignore = []
+defineConstant = { DEBUG = true }
+stubPath = ""
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+pythonVersion = "3.9"
+pythonPlatform = "Linux"
+
+
+[tool.isort]
+length_sort = "1"
+profile = "black"
+sections = "STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+import_heading_stdlib = "STL"
+import_heading_thirdparty = "PDM"
+import_heading_firstparty = "LOCAL"
+import_heading_localfolder = "LOCAL"

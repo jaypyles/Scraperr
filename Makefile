@@ -1,15 +1,6 @@
-.PHONY: reup build build-force pull up 
+.PHONY: build up
 
 build:
-	docker compose build
-
-build-force:
-	docker compose build --no-cache
-
-pull:
-	docker compose pull
-
+	docker-compose build
 up:
-	docker compose up -d
-
-reup: destroy build up pull build-force
+	docker-compose up -d

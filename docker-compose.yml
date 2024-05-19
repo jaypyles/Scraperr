@@ -4,7 +4,7 @@ services:
     build:
       context: ./
     container_name: frontend
-    command: ["serve", "-s", "build"]
+    # command: ["serve", "-s", "build"]
     ports:
       - "3000:3000"
     networks:
