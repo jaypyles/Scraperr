@@ -4,12 +4,5 @@ services:
     build:
       context: ./
     container_name: frontend
-    # command: ["serve", "-s", "build"]
     ports:
-      - "3000:3000"
-    networks:
-      - webservice-network
-networks:
-  webservice-network:
-    external:
-      name: webservice-network
+      - "8000:8000"

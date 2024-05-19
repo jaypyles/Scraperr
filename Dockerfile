@@ -6,7 +6,8 @@ RUN python -m pip --no-cache-dir install pdm
 RUN pdm config python.use_venv false
 
 COPY pyproject.toml pdm.lock /project/app/
-COPY ./api/backend/ /project/app/api
+COPY ./api/backend/ /project/app/backend
+COPY ./build/ /project/app/build
 
 WORKDIR /project/app
 RUN pdm install
@@ -35,7 +36,7 @@ COPY --from=jsbuilder /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=jsbuilder /usr/local/bin /usr/local/bin
 COPY --from=jsbuilder /project/app /project/app
 
-EXPOSE 8000 3000
+EXPOSE 8000
 
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
