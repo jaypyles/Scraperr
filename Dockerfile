@@ -22,7 +22,6 @@ RUN npm install
 COPY public ./public
 COPY src ./src
 COPY tsconfig.json tailwind.config.js ./
-RUN npm install --global serve
 
 # Create final image
 FROM python:3.10-slim
