@@ -25,3 +25,8 @@ app.mount("/static", StaticFiles(directory="./build/static"), name="static")
 @app.get("/")
 def read_root():
     return FileResponse("./build/index.html")
+
+
+@app.get("/api/endpoint")
+async def test_endpoint():
+    return {"hello": "world"}
