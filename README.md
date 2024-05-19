@@ -6,9 +6,11 @@ Template designed to quickly build full stack apps.
 
 - Containerization: Docker/Docker Compose
 
-- Frontend: React
+- Frontend: React.ts
 
 - Backend: FastAPI
+
+- Frameworks/Libraries: PDM, tailwindcss
 
 ## Deployment
 
