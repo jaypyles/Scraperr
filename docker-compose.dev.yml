@@ -1,7 +1,5 @@
 version: "3"
 services:
   frontend:
-    # command: ["npm", "run", "start"]
     volumes:
-      - .:/project/app/
-      - ./api:/project/api
+      - "$PWD/build:/project/api/build"
