@@ -1,4 +1,8 @@
-.PHONY: build up deps
+.PHONY: build up deps up-dev setup
+
+setup:
+	pdm install
+	npm install
 
 deps:
 	npm run build
