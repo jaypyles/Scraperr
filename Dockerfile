@@ -7,7 +7,7 @@ RUN pdm config python.use_venv false
 
 COPY pyproject.toml pdm.lock /project/app/
 COPY ./api/backend/ /project/app/backend
-COPY ./build/ /project/app/build
+COPY ./dist/ /project/app/dist
 
 WORKDIR /project/app
 RUN pdm install

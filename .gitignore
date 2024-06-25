@@ -185,3 +185,4 @@ cython_debug/
 #.idea/
 .pdm-python
 
+.next

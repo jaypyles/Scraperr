@@ -2,5 +2,5 @@ version: "3"
 services:
   frontend:
     volumes:
-      - "$PWD/build:/project/api/build"
+      - "$PWD/dist:/project/api/dist"
       - "$PWD/api/backend:/project/api/backend"
