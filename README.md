@@ -6,20 +6,23 @@ Template designed to quickly build full stack apps.
 
 - Containerization: Docker/Docker Compose
 
-- Frontend: React.ts
+- Frontend: React/Next.js
 
 - Backend: FastAPI
 
-- Frameworks/Libraries: PDM, tailwindcss
+- Frameworks/Libraries: PDM, TailwindCSS
 
 ## Deployment
 
 Uses `make` to quickly dispatch `docker-compose` commands.
 
-- `build`: builds the container using `docker-compose build `
-
-- `up`: ups the container using `docker-compose up`
-
 - `deps`: rebuilds the frontend to deploy statically using the api
 
-Ex: `make deps build up`
+- `build`: builds the container using `docker-compose build `
+
+- `up-dev`: ups the container using `docker-compose -f docker-compose.yml up`
+
+- `up-prd`: ups the container using `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up`
+  which will deploy with local volumes.
+
+Ex: `make deps build up-dev`
