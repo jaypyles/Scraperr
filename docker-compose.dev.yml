@@ -4,3 +4,5 @@ services:
     volumes:
       - "$PWD/dist:/project/api/dist"
       - "$PWD/api/backend:/project/api/backend"
+    ports:
+      - "8000:8000"

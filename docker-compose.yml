@@ -4,5 +4,24 @@ services:
     build:
       context: ./
     container_name: frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=8000"
+      - "traefik.http.routers.frontend.tls=false"
+    networks:
+      - web
+  traefik:
+    image: traefik:latest
+    container_name: traefik
     ports:
-      - "8000:8000"
+      - 80:80
+      - 443:443
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik.toml:/etc/traefik/traefik.toml"
+    networks:
+      - web
+networks:
+  web:
