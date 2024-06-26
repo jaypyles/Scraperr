@@ -1,6 +1,7 @@
 version: "3"
 services:
   frontend:
+    image: jpyles0524/webapp-template:latest
     build:
       context: ./
     container_name: frontend

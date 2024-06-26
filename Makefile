@@ -3,8 +3,8 @@
 COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.dev.yml
 COMPOSE_PROD = docker compose -f docker-compose.yml
 
-HOSTNAME_PROD = ...
-HOSTNAME_DEV = localhost
+HOSTNAME_PROD = "localhost"
+HOSTNAME_DEV = "localhost"
 
 .PHONY: help deps build pull up-prod up-dev down setup deploy
 
