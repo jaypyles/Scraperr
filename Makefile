@@ -43,3 +43,10 @@ up-dev:
 down:
 	$(COMPOSE_DEV) down
 	$(COMPOSE_PROD) down
+
+setup:
+	ansible-playbook -i ./ansible/inventory.yaml ./ansible/setup.yaml
+
+deploy:
+	ansible-playbook -i ./ansible/inventory.yaml ./ansible/deploy_site.yaml
+

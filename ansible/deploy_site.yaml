@@ -4,7 +4,7 @@
   vars_files:
     - ./config.yaml
   tasks:
-    - name: Run make pull up
-      command: make pull up
+    - name: Deploy
+      command: "{{deploy_command}}"
       args:
         chdir: "{{deploy_path}}"
