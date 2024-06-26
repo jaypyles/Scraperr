@@ -21,6 +21,9 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./traefik.toml:/etc/traefik/traefik.toml"
+      # - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml"
+      # - "/etc/ssl/private/ssl-cert.key:/etc/certs/ssl-cert.key"
+      # - "/etc/ssl/certs/ssl-cert.pem:/etc/certs/ssl-cert.pem"
     networks:
       - web
 networks:
