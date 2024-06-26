@@ -1,0 +1,54 @@
+- name: Install Docker and run make pull up
+  hosts: all
+  become: true
+  vars_files:
+    - ./config.yaml
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+          - rsync
+          - make
+        state: present
+    - name: Add Docker’s official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Update apt cache again after adding Docker repo
+      apt:
+        update_cache: yes
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose-plugin
+        state: present
+    - name: Verify Docker is installed
+      command: docker --version
+      register: docker_version
+    - name: Display Docker version
+      debug:
+        msg: "Docker version: {{ docker_version.stdout }}"
+    - name: Clone repo
+      ansible.builtin.git:
+        repo: "{{github_repo}}"
+        dest: "{{deploy_path}}"
