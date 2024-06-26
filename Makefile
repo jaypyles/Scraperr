@@ -19,9 +19,10 @@ help:
 	@echo "  make down    - Stop and remove containers, networks, images, and volumes"
 	@echo "  make setup   - Setup server with dependencies and clone repo"
 	@echo "  make deploy  - Deploy site onto server"
+	@echo ""
 
 logs:
-	docker-compose logs -f
+	docker compose logs -f
 
 deps:
 	pdm install
