@@ -36,10 +36,12 @@ pull:
 	docker compose pull
 
 up-prd:
-	HOSTNAME=$(HOSTNAME_PROD) $(COMPOSE_PROD) up -d --force-recreate
+	export HOSTNAME=$(HOSTNAME_PROD) && \
+	$(COMPOSE_PROD) up -d --force-recreate
 
 up-dev:
-	HOSTNAME=$(HOSTNAME_DEV) $(COMPOSE_DEV) up -d --force-recreate
+	export HOSTNAME=$(HOSTNAME_DEV) && \
+	$(COMPOSE_DEV) up -d --force-recreate
 
 down:
 	$(COMPOSE_DEV) down
@@ -49,5 +51,4 @@ setup:
 	ansible-playbook -i ./ansible/inventory.yaml ./ansible/setup.yaml
 
 deploy:
-	ansible-playbook -i ./ansible/inventory.yaml ./ansible/deploy_site.yaml
-
+	ansible-playbook -i ./ansible/inventory.yaml ./ansible/deploy_site.yaml -v

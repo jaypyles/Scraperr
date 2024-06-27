@@ -1,4 +1,3 @@
-version: "3"
 services:
   frontend:
     image: jpyles0524/webapp-template:latest
@@ -8,9 +7,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
-      - "traefik.http.routers.frontend.tls=false"
+      - "traefik.http.routers.frontend.tls=true"
     networks:
       - web
   traefik:

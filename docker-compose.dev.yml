@@ -1,6 +1,12 @@
 version: "3"
 services:
   frontend:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=8000"
+      - "traefik.http.routers.frontend.tls=false"
     volumes:
       - "$PWD/dist:/project/api/dist"
       - "$PWD/api/backend:/project/api/backend"
