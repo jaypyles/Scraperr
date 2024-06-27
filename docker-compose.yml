@@ -15,15 +15,19 @@ services:
   traefik:
     image: traefik:latest
     container_name: traefik
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.file.filename=/etc/traefik/dynamic_conf.yaml"
     ports:
       - 80:80
       - 443:443
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./traefik.toml:/etc/traefik/traefik.toml"
-      # - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml"
-      # - "/etc/ssl/private/ssl-cert.key:/etc/certs/ssl-cert.key"
-      # - "/etc/ssl/certs/ssl-cert.pem:/etc/certs/ssl-cert.pem"
+      - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml"
+      - "/etc/letsencrypt/live/domain/fullchain.pem:/etc/certs/ssl-cert.pem"
+      - "/etc/letsencrypt/live/domain/privkey.pem:/etc/certs/ssl-cert.key"
     networks:
       - web
 networks:
