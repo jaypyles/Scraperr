@@ -16,5 +16,5 @@
         entryPoint = "web"
 
 [[tls.certificates]]
-  certFile = "/etc/traefik/certs/ssl-cert.pem"
-  keyFile = "/etc/traefik/certs/ssl-cert.key"
+  certFile = "/etc/certs/ssl-cert.pem"
+  keyFile = "/etc/certs/ssl-cert.key"
