@@ -19,12 +19,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="./dist/_next/static"), name="static")
+app.mount("/_next/static", StaticFiles(directory="dist/_next/static"), name="static")
 
 
 @app.get("/")
 def read_root():
-    return FileResponse("./dist/index.html")
+    return FileResponse("dist/index.html")
 
 
 @app.get("/api/endpoint")
