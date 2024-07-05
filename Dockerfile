@@ -6,7 +6,7 @@ RUN python -m pip --no-cache-dir install pdm
 RUN pdm config python.use_venv false
 
 COPY pyproject.toml pdm.lock /project/app/
-COPY ./api/backend/ /project/app/backend
+COPY ./api/ /project/app/api
 
 WORKDIR /project/app
 RUN pdm install
@@ -34,12 +34,12 @@ FROM python:3.10-slim
 ENV PYTHONPATH=/project/pkgs
 COPY --from=pybuilder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY --from=pybuilder /usr/local/bin /usr/local/bin
-COPY --from=pybuilder /project/app /project/api
-COPY --from=jsbuilder /app/dist /project/api/dist
+COPY --from=pybuilder /project/app /project/
+COPY --from=jsbuilder /app/dist /project/dist
 
 EXPOSE 8000
 
-WORKDIR /project/api
+WORKDIR /project/
 
-CMD [ "pdm", "run", "python", "-m", "uvicorn", "backend.app:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+CMD [ "pdm", "run", "python", "-m", "uvicorn", "api.backend.app:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
 

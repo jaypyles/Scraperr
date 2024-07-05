@@ -29,4 +29,4 @@ def read_root():
 
 @app.get("/api/endpoint")
 async def test_endpoint():
-    return {"hello": "world"}
+    return "Hello World!"
