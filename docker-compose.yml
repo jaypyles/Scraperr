@@ -1,9 +1,10 @@
 services:
-  frontend:
-    image: jpyles0524/webapp-template:latest
+  webscrape:
     build:
       context: ./
-    container_name: frontend
+    container_name: webscrape
+    env_file:
+      - ./.env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"

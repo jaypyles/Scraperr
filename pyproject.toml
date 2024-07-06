@@ -1,5 +1,5 @@
 [project]
-name = "WebappTemplate"
+name = "web-scrape"
 version = "0.1.0"
 description = ""
 authors = [
@@ -8,14 +8,31 @@ authors = [
 dependencies = [
     "uvicorn>=0.29.0",
     "fastapi>=0.111.0",
+    "boto3>=1.34.140",
+    "python-dotenv>=1.0.1",
+    "boto3-stubs[essential]>=1.34.140",
+    "asyncio>=3.4.3",
+    "aiohttp>=3.9.5",
+    "bs4>=0.0.2",
+    "lxml[html_clean]>=5.2.2",
+    "lxml-stubs>=0.5.1",
+    "fake-useragent>=1.5.1",
+    "requests-html>=0.10.0",
+    "selenium>=4.22.0",
+    "webdriver-manager>=4.0.1",
+    "pydantic>=2.8.2",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
 
 [tool.pdm]
-distribution = false
+distribution = true
 
+[tool.pdm.dev-dependencies]
+dev = [
+    "ipython>=8.26.0",
+]
 [tool.pyright]
 include = ["./api/backend/"]
 exclude = ["**/node_modules", "**/__pycache__"]
@@ -23,6 +40,7 @@ ignore = []
 defineConstant = { DEBUG = true }
 stubPath = ""
 
+reportUnknownMemberType=false
 reportMissingImports = true
 reportMissingTypeStubs = false
 
