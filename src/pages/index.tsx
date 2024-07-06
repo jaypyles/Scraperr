@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import NavBar from "../components/NavBar";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   TextField,
@@ -13,6 +12,8 @@ import {
   Box,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useRouter } from "next/router";
 
 interface Element {
   name: string;
@@ -31,7 +32,12 @@ type Result = {
 };
 
 const Home = () => {
-  const [url, setUrl] = useState("");
+  const { user } = useAuth0();
+  const router = useRouter();
+
+  const { elements, url } = router.query;
+
+  const [submittedURL, setUrl] = useState("");
   const [rows, setRows] = useState<Element[]>([]);
   const [results, setResults] = useState<null | Result>(null);
   const [newRow, setNewRow] = useState<Element>({
@@ -40,8 +46,17 @@ const Home = () => {
     url: "",
   });
 
+  useEffect(() => {
+    if (elements) {
+      setRows(JSON.parse(elements as string));
+    }
+    if (url) {
+      setUrl(url as string);
+    }
+  }, [elements, url]);
+
   const handleAddRow = () => {
-    newRow.url = url;
+    newRow.url = submittedURL;
     setRows([...rows, newRow]);
     setNewRow({ name: "", xpath: "", url: "" });
   };
@@ -50,7 +65,12 @@ const Home = () => {
     fetch("/api/submit-scrape-job", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ url: url, elements: rows }),
+      body: JSON.stringify({
+        url: url,
+        elements: rows,
+        user: user?.name,
+        time_created: new Date().toISOString(),
+      }),
     })
       .then((response) => response.json())
       .then((data) => setResults(data));
@@ -58,7 +78,6 @@ const Home = () => {
 
   return (
     <>
-      <NavBar />
       <Container maxWidth="md">
         <Typography variant="h1" gutterBottom>
           Web Scraper
@@ -97,9 +116,10 @@ const Home = () => {
             startIcon={<AddIcon />}
             onClick={handleAddRow}
           >
-            Add Row
+            Add Elements
           </Button>
         </Box>
+        <Typography variant="h4">Elements</Typography>
         <Table>
           <TableHead>
             <TableRow>

@@ -1,3 +1,6 @@
+# STL
+import logging
+
 # PDM
 from bs4 import BeautifulSoup
 from lxml import etree
@@ -14,8 +17,24 @@ from selenium.webdriver.chrome.service import Service
 # LOCAL
 from api.backend.models import Element, CapturedElement
 
+LOG = logging.getLogger(__name__)
+
 
 class HtmlElement(_Element): ...
+
+
+def clean_xpath(xpath: str) -> str:
+    parts = xpath.split("/")
+    clean_parts: list[str] = []
+    for part in parts:
+        if part == "":
+            clean_parts.append("/")
+        else:
+            clean_parts.append(part)
+    clean_xpath = "//".join(clean_parts).replace("////", "//")
+
+    clean_xpath = clean_xpath.replace("'", "\\'")
+    return clean_xpath
 
 
 def sxpath(context: _Element, xpath: str) -> list[HtmlElement]:
@@ -44,7 +63,7 @@ async def make_site_request(url: str) -> str:
     finally:
         driver.quit()
 
-    print(page_source)
+    LOG.debug(f"Page source for url: {url}\n{page_source}")
     return page_source
 
 
@@ -55,7 +74,7 @@ async def collect_scraped_elements(page: str, xpaths: list[Element]):
     elements: dict[str, list[CapturedElement]] = dict()
 
     for elem in xpaths:
-        el = sxpath(root, elem.xpath)
+        el = sxpath(root, clean_xpath(elem.xpath))
         text = ["".join(str(e) for e in e.itertext()) for e in el]
         captured_element = CapturedElement(
             xpath=elem.xpath, text=",".join(text), name=elem.name
