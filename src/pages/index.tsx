@@ -10,7 +10,6 @@ import {
   TableHead,
   TableRow,
   Container,
-  IconButton,
   Box,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -121,6 +120,30 @@ const Home = () => {
             ))}
           </TableBody>
         </Table>
+        {results && (
+          <Table style={{ marginTop: "20px" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>XPath</TableCell>
+                <TableCell>Text</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Object.keys(results).map((key, index) => (
+                <React.Fragment key={index}>
+                  {results[key].map((result, resultIndex) => (
+                    <TableRow key={resultIndex}>
+                      <TableCell>{result.name}</TableCell>
+                      <TableCell>{result.xpath}</TableCell>
+                      <TableCell>{result.text}</TableCell>
+                    </TableRow>
+                  ))}
+                </React.Fragment>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </Container>
     </>
   );
