@@ -6,7 +6,7 @@ authors = [
     {name = "Jayden Pyles", email = "jpylesbuisness@gmail.com"},
 ]
 dependencies = [
-    "uvicorn>=0.29.0",
+    "uvicorn>=0.30.1",
     "fastapi>=0.111.0",
     "boto3>=1.34.140",
     "python-dotenv>=1.0.1",
@@ -24,6 +24,12 @@ dependencies = [
     "pandas>=2.2.2",
     "openpyxl>=3.1.5",
     "xlsxwriter>=3.2.0",
+    "python-keycloak>=4.2.0",
+    "fastapi-keycloak>=1.0.11",
+    "pymongo>=4.8.0",
+    "motor[asyncio]>=3.5.0",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -47,6 +53,7 @@ reportUnknownMemberType= false
 reportMissingImports = true
 reportMissingTypeStubs = false
 reportAny = false
+reportCallInDefaultInitializer = false
 
 pythonVersion = "3.9"
 pythonPlatform = "Linux"

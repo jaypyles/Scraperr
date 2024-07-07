@@ -5,27 +5,28 @@ from io import StringIO
 
 # PDM
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from boto3.dynamodb.conditions import Key
 
 # LOCAL
-from api.backend.amazon import query, insert, query_by_id, connect_to_dynamo
+from api.backend.job import query, insert
 from api.backend.models import DownloadJob, SubmitScrapeJob, RetrieveScrapeJobs
 from api.backend.scraping import scrape
+from api.backend.auth.auth_router import auth_router
 
 logging.basicConfig(
     level=logging.INFO,
-    format="[%(levelname)s]     %(asctime)s - %(name)s - %(message)s",
+    format="%(levelname)s:     %(asctime)s - %(name)s - %(message)s",
     handlers=[logging.StreamHandler()],
 )
 
 LOG = logging.getLogger(__name__)
 
 app = FastAPI(title="api")
+app.include_router(auth_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -54,10 +55,9 @@ async def submit_scrape_job(job: SubmitScrapeJob):
         )
 
         json_scraped = jsonable_encoder(scraped)
-        table = connect_to_dynamo()
         job.result = json_scraped
         job.id = uuid.uuid4().hex
-        insert(table, jsonable_encoder(job))
+        await insert(jsonable_encoder(job))
         return JSONResponse(content=json_scraped)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
@@ -67,8 +67,7 @@ async def submit_scrape_job(job: SubmitScrapeJob):
 async def retrieve_scrape_jobs(retrieve: RetrieveScrapeJobs):
     LOG.info(f"Retrieving jobs for account: {retrieve.user}")
     try:
-        table = connect_to_dynamo()
-        results = query(table, "user", Key("user").eq(retrieve.user))
+        results = await query({"user": retrieve.user})
         return JSONResponse(content=results)
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
@@ -79,8 +78,7 @@ async def retrieve_scrape_jobs(retrieve: RetrieveScrapeJobs):
 async def download(download_job: DownloadJob):
     LOG.info(f"Downloading job with id: {download_job.id}")
     try:
-        table = connect_to_dynamo()
-        results = query_by_id(table, Key("id").eq(download_job.id))
+        results = await query({"id": download_job.id})
 
         df = pd.DataFrame(results)
 

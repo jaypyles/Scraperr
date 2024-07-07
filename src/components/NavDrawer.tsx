@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useAuth } from "../useAuth";
-import { LogoutOptions, RedirectLoginOptions } from "@auth0/auth0-react";
+import { useAuth } from "../hooks/useAuth";
 import {
   Box,
   Drawer,
@@ -22,20 +21,10 @@ import { useRouter } from "next/router";
 
 const NavDrawer: React.FC = () => {
   const router = useRouter();
-  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth();
+  const { login, logout, user, isAuthenticated } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
 
-  const handleLogout = () => {
-    const logoutOptions: LogoutOptions = {};
-    logout(logoutOptions);
-  };
-
-  const handleLogin = () => {
-    const loginOptions: RedirectLoginOptions = {
-      authorizationParams: { redirect_uri: "http://localhost" },
-    };
-    loginWithRedirect(loginOptions);
-  };
+  console.log(user);
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -80,7 +69,7 @@ const NavDrawer: React.FC = () => {
   return (
     <>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar className="flex flex-row justify-between items-center">
           <IconButton
             edge="start"
             color="inherit"
@@ -90,16 +79,16 @@ const NavDrawer: React.FC = () => {
             <MenuIcon />
           </IconButton>
           {isAuthenticated ? (
-            <>
+            <div className="flex flex-row items-center">
               <Typography variant="body1" sx={{ marginRight: 2 }}>
-                Welcome, {user?.name}
+                Welcome, {user?.full_name}
               </Typography>
-              <Button color="inherit" onClick={handleLogout}>
+              <Button color="inherit" onClick={logout}>
                 Logout
               </Button>
-            </>
+            </div>
           ) : (
-            <Button color="inherit" onClick={handleLogin}>
+            <Button color="inherit" onClick={() => router.push("/login")}>
               Login
             </Button>
           )}

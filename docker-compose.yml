@@ -20,15 +20,20 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      # - "--providers.file.filename=/etc/traefik/dynamic_conf.yaml"
     ports:
       - 80:80
       - 443:443
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      # - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml"
-      # - "/etc/letsencrypt/live/domain/fullchain.pem:/etc/certs/ssl-cert.pem"
-      # - "/etc/letsencrypt/live/domain/privkey.pem:/etc/certs/ssl-cert.key"
+    networks:
+      - web
+  mongo:
+    container_name: webscrape-mongo
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     networks:
       - web
 networks:
