@@ -7,8 +7,8 @@ import pydantic
 
 class Element(pydantic.BaseModel):
     name: str
-    url: str
     xpath: str
+    url: Optional[str] = None
 
 
 class CapturedElement(pydantic.BaseModel):
@@ -22,7 +22,7 @@ class SubmitScrapeJob(pydantic.BaseModel):
     url: str
     elements: list[Element]
     user: Optional[str] = None
-    time_created: str
+    time_created: Optional[str] = None
     result: Optional[dict[str, Any]] = None
 
 

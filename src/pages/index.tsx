@@ -12,6 +12,8 @@ import {
   Box,
   IconButton,
   Tooltip,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useAuth } from "../contexts/AuthContext";
@@ -60,7 +62,8 @@ const Home = () => {
     url: "",
   });
   const [loading, setLoading] = useState(false);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const resultsRef = useRef<HTMLTableElement | null>(null);
 
   useEffect(() => {
@@ -113,9 +116,24 @@ const Home = () => {
         time_created: new Date().toISOString(),
       }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((error) => {
+            throw new Error(error.error);
+          });
+        }
+        return response.json();
+      })
       .then((data) => setResults(data))
+      .catch((error) => {
+        setSnackbarMessage(error.message || "An error occurred.");
+        setSnackbarOpen(true);
+      })
       .finally(() => setLoading(false));
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -245,6 +263,15 @@ const Home = () => {
           </>
         )}
       </Container>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

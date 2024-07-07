@@ -18,7 +18,7 @@ from api.backend.scraping import scrape
 from api.backend.auth.auth_router import auth_router
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(levelname)s:     %(asctime)s - %(name)s - %(message)s",
     handlers=[logging.StreamHandler()],
 )
@@ -71,7 +71,7 @@ async def retrieve_scrape_jobs(retrieve: RetrieveScrapeJobs):
     LOG.info(f"Retrieving jobs for account: {retrieve.user}")
     try:
         results = await query({"user": retrieve.user})
-        return JSONResponse(content=results)
+        return JSONResponse(content=results[::-1])
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
         return JSONResponse(content={"error": str(e)}, status_code=500)
@@ -83,7 +83,23 @@ async def download(download_job: DownloadJob):
     try:
         results = await query({"id": download_job.id})
 
-        df = pd.DataFrame(results)
+        flattened_results = []
+        for result in results:
+            for key, values in result["result"].items():
+                for value in values:
+                    flattened_results.append(
+                        {
+                            "id": result["id"],
+                            "url": result["url"],
+                            "element_name": key,
+                            "xpath": value["xpath"],
+                            "text": value["text"],
+                            "user": result["user"],
+                            "time_created": result["time_created"],
+                        }
+                    )
+
+        df = pd.DataFrame(flattened_results)
 
         csv_buffer = StringIO()
         df.to_csv(csv_buffer, index=False)
@@ -94,3 +110,4 @@ async def download(download_job: DownloadJob):
 
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
+        return {"error": str(e)}

@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -9,8 +8,12 @@ import {
   Button,
   Box,
   Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import { useRouter } from "next/router";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 interface Job {
   id: string;
@@ -26,6 +29,7 @@ interface JobTableProps {
 
 const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
   const router = useRouter();
+
   const handleDownload = async (id: string) => {
     console.log(id);
     const response = await fetch("/api/download", {
@@ -60,60 +64,98 @@ const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
   };
 
   return (
-    <>
+    <Box
+      width="100%"
+      bgcolor="background.default"
+      display="flex"
+      justifyContent="center"
+    >
       <Box
-        width="fullWidth"
-        bgcolor="background.paper"
-        className="flex justify-center"
+        className="flex flex-col justify-center align-center items-center"
+        width="100%"
+        maxWidth="100%"
+        bgcolor="background.default"
+        p={3}
+        overflow="auto"
       >
-        <Box
-          maxWidth="lg"
-          minHeight="100vh"
-          bgcolor="background.paper"
-          className="p-4"
-        >
-          <Typography variant="h4">Scrape Jobs</Typography>
-          <Table>
+        <Typography variant="h4" gutterBottom>
+          Scrape Jobs
+        </Typography>
+        <Box sx={{ overflow: "auto", width: "75%" }}>
+          <Table sx={{ tableLayout: "fixed", width: "100%" }}>
             <TableHead>
               <TableRow>
-                <TableCell>id</TableCell>
-                <TableCell>url</TableCell>
-                <TableCell>elements</TableCell>
-                <TableCell>result</TableCell>
-                <TableCell>time_created</TableCell>
+                <TableCell>Id</TableCell>
+                <TableCell>Url</TableCell>
+                <TableCell>Elements</TableCell>
+                <TableCell>Result</TableCell>
+                <TableCell>Time Created</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {jobs.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>
-                    <TextField variant="outlined" fullWidth value={row.id} />
+                  <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
+                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
+                      {row.id}
+                    </Box>
                   </TableCell>
-                  <TableCell>
-                    <TextField variant="outlined" fullWidth value={row.url} />
+                  <TableCell sx={{ maxWidth: 200, overflow: "auto" }}>
+                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
+                      {row.url}
+                    </Box>
                   </TableCell>
-                  <TableCell>
-                    <TextField
-                      variant="outlined"
-                      fullWidth
-                      value={JSON.stringify(row.elements)}
-                    />
+                  <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
+                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
+                      {JSON.stringify(row.elements)}
+                    </Box>
                   </TableCell>
-                  <TableCell>
-                    <TextField
-                      variant="outlined"
-                      fullWidth
-                      value={JSON.stringify(row.result)}
-                    />
+                  <TableCell
+                    sx={{ maxWidth: 150, overflow: "auto", padding: 0 }}
+                  >
+                    <Accordion sx={{ margin: 0, padding: 0.5 }}>
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                        sx={{
+                          minHeight: 0,
+                          "&.Mui-expanded": { minHeight: 0 },
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            maxHeight: 150,
+                            overflow: "auto",
+                            width: "100%",
+                          }}
+                        >
+                          <Typography sx={{ fontSize: "0.875rem" }}>
+                            Show Result
+                          </Typography>
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails sx={{ padding: 1 }}>
+                        <Box sx={{ maxHeight: 200, overflow: "auto" }}>
+                          <Typography
+                            sx={{
+                              fontSize: "0.875rem",
+                              whiteSpace: "pre-wrap",
+                            }}
+                          >
+                            {JSON.stringify(row.result, null, 2)}
+                          </Typography>
+                        </Box>
+                      </AccordionDetails>
+                    </Accordion>
                   </TableCell>
-                  <TableCell>
-                    <TextField
-                      variant="outlined"
-                      fullWidth
-                      value={row.time_created}
-                    />
+                  <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
+                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
+                      {new Date(row.time_created).toLocaleString()}
+                    </Box>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
                     <Button
                       onClick={() => {
                         handleDownload(row.id);
@@ -121,8 +163,6 @@ const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
                     >
                       Download
                     </Button>
-                  </TableCell>
-                  <TableCell>
                     <Button
                       onClick={() => handleNavigate(row.elements, row.url)}
                     >
@@ -135,7 +175,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
           </Table>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 
