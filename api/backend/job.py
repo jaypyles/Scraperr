@@ -24,3 +24,11 @@ async def query(filter: dict[str, Any]) -> list[dict[str, Any]]:
         results.append(document)
 
     return results
+
+
+async def delete_jobs(jobs: list[str]):
+    collection = get_job_collection()
+    result = await collection.delete_many({"id": {"$in": jobs}})
+    LOG.info(f"RESULT: {result.deleted_count} documents deleted")
+
+    return True if result.deleted_count > 0 else False
