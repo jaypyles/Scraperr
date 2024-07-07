@@ -12,8 +12,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 # LOCAL
-from api.backend.job import query, insert
-from api.backend.models import DownloadJob, SubmitScrapeJob, RetrieveScrapeJobs
+from api.backend.job import query, insert, delete_jobs
+from api.backend.models import (
+    DownloadJob,
+    SubmitScrapeJob,
+    DeleteScrapeJobs,
+    RetrieveScrapeJobs,
+)
 from api.backend.scraping import scrape
 from api.backend.auth.auth_router import auth_router
 
@@ -116,3 +121,13 @@ async def download(download_job: DownloadJob):
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
         return {"error": str(e)}
+
+
+@app.post("/api/delete-scrape-jobs")
+async def delete(delete_scrape_jobs: DeleteScrapeJobs):
+    result = await delete_jobs(delete_scrape_jobs.ids)
+    return (
+        JSONResponse(content={"message": "Jobs successfully deleted."})
+        if result
+        else JSONResponse({"error": "Jobs not deleted."})
+    )

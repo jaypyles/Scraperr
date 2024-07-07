@@ -1,19 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Button,
+  IconButton,
   Box,
   Typography,
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Checkbox,
+  Tooltip,
+  Button,
 } from "@mui/material";
-import { useRouter } from "next/router";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SelectAllIcon from "@mui/icons-material/SelectAll";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useRouter } from "next/router";
 
 interface Job {
   id: string;
@@ -25,13 +30,15 @@ interface Job {
 
 interface JobTableProps {
   jobs: Job[];
+  fetchJobs: () => void;
 }
 
-const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
+const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
+  const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set());
+  const [allSelected, setAllSelected] = useState(false);
   const router = useRouter();
 
   const handleDownload = async (id: string) => {
-    console.log(id);
     const response = await fetch("/api/download", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,6 +70,41 @@ const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
     });
   };
 
+  const handleSelectJob = (id: string) => {
+    setSelectedJobs((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (newSelected.has(id)) {
+        newSelected.delete(id);
+      } else {
+        newSelected.add(id);
+      }
+      return newSelected;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (allSelected) {
+      setSelectedJobs(new Set());
+    } else {
+      const allJobIds = new Set(jobs.map((job) => job.id));
+      setSelectedJobs(allJobIds);
+    }
+    setAllSelected(!allSelected);
+  };
+
+  const handleDeleteSelected = async () => {
+    const response = await fetch("/api/delete-scrape-jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: Array.from(selectedJobs) }),
+    });
+
+    if (response.ok) {
+      fetchJobs();
+      setSelectedJobs(new Set());
+    }
+  };
+
   return (
     <Box
       width="100%"
@@ -79,13 +121,37 @@ const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
         bgcolor="background.default"
         overflow="auto"
       >
-        <Typography variant="h4" gutterBottom sx={{ mt: 3 }}>
-          Scrape Jobs
-        </Typography>
+        <Box
+          className="flex flex-row w-3/4 items-center p-2"
+          bgcolor="background.paper"
+        >
+          <Typography className="mr-2" variant="body1">
+            Scrape Jobs
+          </Typography>
+          <Tooltip title="Select All">
+            <span>
+              <IconButton color="primary" onClick={handleSelectAll}>
+                <SelectAllIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Tooltip title="Delete Selected">
+            <span>
+              <IconButton
+                color="secondary"
+                onClick={handleDeleteSelected}
+                disabled={selectedJobs.size === 0}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
         <Box sx={{ overflow: "auto", width: "75%" }}>
           <Table sx={{ tableLayout: "fixed", width: "100%" }}>
             <TableHead>
               <TableRow>
+                <TableCell>Select</TableCell>
                 <TableCell>Id</TableCell>
                 <TableCell>Url</TableCell>
                 <TableCell>Elements</TableCell>
@@ -97,6 +163,12 @@ const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
             <TableBody>
               {jobs.map((row, index) => (
                 <TableRow key={index}>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectedJobs.has(row.id)}
+                      onChange={() => handleSelectJob(row.id)}
+                    />
+                  </TableCell>
                   <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
                     <Box sx={{ maxHeight: 100, overflow: "auto" }}>
                       {row.id}

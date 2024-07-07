@@ -108,6 +108,10 @@ const darkTheme = createTheme({
     h5: {
       color: "#ffffff",
     },
+    body1: {
+      ...commonThemeOptions.typography.body1,
+      color: "#ffffff",
+    },
   },
   components: {
     ...commonThemeOptions.components,

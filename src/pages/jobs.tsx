@@ -7,18 +7,22 @@ const Jobs = () => {
   const { user } = useAuth();
   const [jobs, setJobs] = useState([]);
 
+  const fetchJobs = () => {
+    fetch("/api/retrieve-scrape-jobs", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ user: user?.email }),
+    })
+      .then((response) => response.json())
+      .then((data) => setJobs(data))
+      .catch((error) => {
+        console.error("Error fetching jobs:", error);
+      });
+  };
+
   useEffect(() => {
     if (user) {
-      fetch("/api/retrieve-scrape-jobs", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ user: user?.email }),
-      })
-        .then((response) => response.json())
-        .then((data) => setJobs(data))
-        .catch((error) => {
-          console.error("Error fetching jobs:", error);
-        });
+      fetchJobs();
     } else {
       setJobs([]);
     }
@@ -27,7 +31,7 @@ const Jobs = () => {
   return (
     <>
       {user ? (
-        <JobTable jobs={jobs} />
+        <JobTable jobs={jobs} fetchJobs={fetchJobs} />
       ) : (
         <Box
           bgcolor="background.default"
