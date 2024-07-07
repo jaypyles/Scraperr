@@ -10,16 +10,16 @@ From the table, users can download a csv of the job's results, along with an opt
 - Add and manage elements to scrape using XPath
 - Display results of scraped data
 
-!(main_page)[https://github.com/jaypyles/www-scrape/blob/master/docs/main_page.png]
+![main_page](https://github.com/jaypyles/www-scrape/blob/master/docs/main_page.png)
 
 - Download csv containing results
 - Rerun jobs
 
-!(job_page)[https://github.com/jaypyles/www-scrape/blob/master/docs/job_page.png]
+![job_page](https://github.com/jaypyles/www-scrape/blob/master/docs/job_page.png)
 
 - User login/signup to organize jobs
 
-!(login)[https://github.com/jaypyles/www-scrape/blob/master/docs/login.png]
+![login](https://github.com/jaypyles/www-scrape/blob/master/docs/login.png)
 
 ## Installation
 
