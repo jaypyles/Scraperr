@@ -75,7 +75,7 @@ async def collect_scraped_elements(page: str, xpaths: list[Element]):
 
     for elem in xpaths:
         el = sxpath(root, clean_xpath(elem.xpath))
-        text = ["".join(str(e) for e in e.itertext()) for e in el]
+        text = ["\t".join(str(e) for e in e.itertext()) for e in el]
         captured_element = CapturedElement(
             xpath=elem.xpath, text=",".join(text), name=elem.name
         )
