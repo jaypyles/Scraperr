@@ -18,6 +18,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import DownloadIcon from "@mui/icons-material/Download";
 import { useRouter } from "next/router";
 
 interface Job {
@@ -38,11 +39,11 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   const [allSelected, setAllSelected] = useState(false);
   const router = useRouter();
 
-  const handleDownload = async (id: string) => {
+  const handleDownload = async (ids: string[]) => {
     const response = await fetch("/api/download", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: id }),
+      body: JSON.stringify({ ids: ids }),
     });
 
     if (response.ok) {
@@ -51,7 +52,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      a.download = `job_${id}.csv`;
+      a.download = `job_${ids.splice(0, 1)}.csv`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -146,6 +147,17 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
               </IconButton>
             </span>
           </Tooltip>
+          <Tooltip title="Download Selected">
+            <span>
+              <IconButton
+                color="primary"
+                onClick={() => handleDownload(Array.from(selectedJobs))}
+                disabled={selectedJobs.size === 0}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
         </Box>
         <Box sx={{ overflow: "auto", width: "75%" }}>
           <Table sx={{ tableLayout: "fixed", width: "100%" }}>
@@ -231,7 +243,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
                   <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
                     <Button
                       onClick={() => {
-                        handleDownload(row.id);
+                        handleDownload([row.id]);
                       }}
                     >
                       Download
