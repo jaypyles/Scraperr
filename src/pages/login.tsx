@@ -24,7 +24,7 @@ const AuthForm: React.FC = () => {
         alert("Login successful");
         router.push("/");
       } else {
-        await axios.post("http://localhost:8000/api/auth/signup", {
+        await axios.post("/api/auth/signup", {
           email: email,
           password: password,
           full_name: fullName,

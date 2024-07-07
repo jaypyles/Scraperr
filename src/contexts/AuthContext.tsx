@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     const token = localStorage.getItem("token");
     if (token) {
       axios
-        .get("http://localhost:8000/api/auth/users/me", {
+        .get("/api/auth/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -39,17 +39,11 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     const params = new URLSearchParams();
     params.append("username", email);
     params.append("password", password);
-    const response = await axios.post(
-      "http://localhost:8000/api/auth/token",
-      params,
-    );
+    const response = await axios.post("/api/auth/token", params);
     localStorage.setItem("token", response.data.access_token);
-    const userResponse = await axios.get(
-      "http://localhost:8000/api/auth/users/me",
-      {
-        headers: { Authorization: `Bearer ${response.data.access_token}` },
-      },
-    );
+    const userResponse = await axios.get("/api/auth/users/me", {
+      headers: { Authorization: `Bearer ${response.data.access_token}` },
+    });
     setUser(userResponse.data);
     setIsAuthenticated(true);
   };

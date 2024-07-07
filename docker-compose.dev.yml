@@ -3,7 +3,7 @@ services:
   scraperr:
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME_DEV}`)"
       - "traefik.http.routers.frontend.entrypoints=web"
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
       - "traefik.http.routers.frontend.tls=false"

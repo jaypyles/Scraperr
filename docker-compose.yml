@@ -2,15 +2,15 @@ services:
   scraperr:
     build:
       context: ./
-    container_name: webscrape
+    container_name: scraperr
     env_file:
       - ./.env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.entrypoints=web" # websecure if using https
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
-      - "traefik.http.routers.frontend.tls=true"
+      # - "traefik.http.routers.frontend.tls=true"
     networks:
       - web
   traefik:
@@ -20,11 +20,15 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      # - "--providers.file.filename=/etc/traefik/dynamic_conf.yaml"
     ports:
       - 80:80
       - 443:443
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      # - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml"
+      # - "/etc/letsencrypt/live/domain/fullchain.pem:/etc/certs/ssl-cert.pem"
+      # - "/etc/letsencrypt/live/domain/privkey.pem:/etc/certs/ssl-cert.key"
     networks:
       - web
   mongo:

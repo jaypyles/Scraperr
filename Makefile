@@ -1,12 +1,9 @@
 .DEFAULT_GOAL := help
 
-COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.dev.yml
-COMPOSE_PROD = docker compose -f docker-compose.yml
+COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.dev.yml --env-file .env
+COMPOSE_PROD = docker compose -f docker-compose.yml --env-file .env
 
-HOSTNAME_PROD = "localhost"
-HOSTNAME_DEV = "localhost"
-
-.PHONY: help deps build pull up-prod up-dev down setup deploy
+.PHONY: help deps build pull up up-dev down setup deploy
 
 help:
 	@echo "Usage:"
@@ -14,7 +11,7 @@ help:
 	@echo "  make deps    - Build frontend assets"
 	@echo "  make build   - Build Docker images"
 	@echo "  make pull    - Pull Docker images"
-	@echo "  make up-prd  - Start production environment"
+	@echo "  make up      - Start production environment"
 	@echo "  make up-dev  - Start development environment"
 	@echo "  make down    - Stop and remove containers, networks, images, and volumes"
 	@echo "  make setup   - Setup server with dependencies and clone repo"
@@ -35,12 +32,10 @@ build:
 pull:
 	docker compose pull
 
-up-prd:
-	export HOSTNAME=$(HOSTNAME_PROD) && \
+up:
 	$(COMPOSE_PROD) up -d --force-recreate
 
 up-dev:
-	export HOSTNAME=$(HOSTNAME_DEV) && \
 	$(COMPOSE_DEV) up -d --force-recreate
 
 down:
