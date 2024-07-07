@@ -31,7 +31,7 @@ class RetrieveScrapeJobs(pydantic.BaseModel):
 
 
 class DownloadJob(pydantic.BaseModel):
-    id: str
+    ids: list[str]
 
 
 class DeleteScrapeJobs(pydantic.BaseModel):

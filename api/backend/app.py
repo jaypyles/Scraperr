@@ -89,9 +89,9 @@ async def retrieve_scrape_jobs(retrieve: RetrieveScrapeJobs):
 
 @app.post("/api/download")
 async def download(download_job: DownloadJob):
-    LOG.info(f"Downloading job with id: {download_job.id}")
+    LOG.info(f"Downloading job with ids: {download_job.ids}")
     try:
-        results = await query({"id": download_job.id})
+        results = await query({"id": {"$in": download_job.ids}})
 
         flattened_results = []
         for result in results:
