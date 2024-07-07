@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/router";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -120,7 +120,7 @@ const Home = () => {
 
   return (
     <Box
-      bgcolor="background.paper"
+      bgcolor="background.default"
       display="flex"
       flexDirection="column"
       justifyContent="center"

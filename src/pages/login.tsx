@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Button, TextField, Typography, Container, Box } from "@mui/material";
+import { Button, TextField, Typography, Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { useRouter } from "next/router";
+import { useAuth } from "../contexts/AuthContext";
 
 type Mode = "login" | "signup";
 
@@ -9,20 +12,17 @@ const AuthForm: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
+  const theme = useTheme();
+  const router = useRouter();
+  const { login } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
       if (mode === "login") {
-        const params = new URLSearchParams();
-        params.append("username", email);
-        params.append("password", password);
-        const response = await axios.post(
-          "http://localhost:8000/api/auth/token",
-          params,
-        );
-        localStorage.setItem("token", response.data.access_token);
+        await login(email, password);
         alert("Login successful");
+        router.push("/");
       } else {
         await axios.post("http://localhost:8000/api/auth/signup", {
           email: email,
@@ -30,6 +30,7 @@ const AuthForm: React.FC = () => {
           full_name: fullName,
         });
         alert("Signup successful");
+        router.push("/login");
       }
     } catch (error) {
       console.error(error);
@@ -42,13 +43,23 @@ const AuthForm: React.FC = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Box
+      bgcolor="background.default"
+      component="main"
+      minHeight="100vh"
+      sx={{ display: "flex", justifyContent: "center" }}
+    >
       <Box
+        bgcolor="background.paper"
+        maxWidth="md"
         sx={{
-          marginTop: 8,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          padding: 4,
+          marginTop: 4,
+          marginBottom: 4,
+          height: "50vh",
         }}
       >
         <Typography component="h1" variant="h5">
@@ -100,22 +111,20 @@ const AuthForm: React.FC = () => {
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{
+              mt: 3,
+              mb: 2,
+              color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
+            }}
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}
           </Button>
-          <Button
-            onClick={toggleMode}
-            fullWidth
-            variant="outlined"
-            color="secondary"
-          >
-            Switch to {mode === "login" ? "Signup" : "Login"}
+          <Button onClick={toggleMode} fullWidth variant="text" color="primary">
+            {mode === "login" ? "No Account? Sign up" : "Login"}
           </Button>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 };
 

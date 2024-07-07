@@ -21,7 +21,7 @@ class SubmitScrapeJob(pydantic.BaseModel):
     id: Optional[str] = None
     url: str
     elements: list[Element]
-    user: str
+    user: Optional[str] = None
     time_created: str
     result: Optional[dict[str, Any]] = None
 

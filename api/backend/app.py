@@ -57,7 +57,10 @@ async def submit_scrape_job(job: SubmitScrapeJob):
         json_scraped = jsonable_encoder(scraped)
         job.result = json_scraped
         job.id = uuid.uuid4().hex
-        await insert(jsonable_encoder(job))
+
+        if job.user:
+            await insert(jsonable_encoder(job))
+
         return JSONResponse(content=json_scraped)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)

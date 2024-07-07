@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../contexts/AuthContext";
 import {
   Box,
   Drawer,
@@ -14,6 +14,7 @@ import {
   Typography,
   Button,
   Switch,
+  Tooltip,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import HttpIcon from "@mui/icons-material/Http";
@@ -29,8 +30,6 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
   const router = useRouter();
   const { login, logout, user, isAuthenticated } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
-
-  console.log(user);
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -85,7 +84,9 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
             >
               <MenuIcon />
             </IconButton>
-            <Switch checked={isDarkMode} onChange={toggleTheme} />
+            <Tooltip title="Dark Theme Toggle" placement="bottom">
+              <Switch checked={isDarkMode} onChange={toggleTheme} />
+            </Tooltip>
           </div>
           {isAuthenticated ? (
             <div className="flex flex-row items-center">
