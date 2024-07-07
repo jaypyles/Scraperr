@@ -16,6 +16,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/router";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface Element {
   name: string;
@@ -58,6 +59,7 @@ const Home = () => {
     xpath: "",
     url: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const resultsRef = useRef<HTMLTableElement | null>(null);
 
@@ -99,6 +101,7 @@ const Home = () => {
 
     setIsValidUrl(true);
     setUrlError(null);
+    setLoading(true);
 
     fetch("/api/submit-scrape-job", {
       method: "POST",
@@ -111,11 +114,13 @@ const Home = () => {
       }),
     })
       .then((response) => response.json())
-      .then((data) => setResults(data));
+      .then((data) => setResults(data))
+      .finally(() => setLoading(false));
   };
 
   return (
     <Box
+      bgcolor="background.paper"
       display="flex"
       flexDirection="column"
       justifyContent="center"
@@ -141,14 +146,13 @@ const Home = () => {
             helperText={!isValidURL ? urlError : ""}
           />
           <Button
-            className="!text-black"
             variant="contained"
             color="primary"
             size="small"
             onClick={handleSubmit}
-            disabled={!(rows.length > 0)}
+            disabled={!(rows.length > 0) || loading}
           >
-            Submit
+            {loading ? <CircularProgress size={24} /> : "Submit"}
           </Button>
         </div>
         <Box display="flex" gap={2} marginBottom={2} className="items-center">

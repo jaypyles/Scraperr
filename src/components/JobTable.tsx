@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   TextField,
   Table,
@@ -7,6 +7,8 @@ import {
   TableHead,
   TableRow,
   Button,
+  Box,
+  Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
 
@@ -59,64 +61,80 @@ const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
 
   return (
     <>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>id</TableCell>
-            <TableCell>url</TableCell>
-            <TableCell>elements</TableCell>
-            <TableCell>result</TableCell>
-            <TableCell>time_created</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {jobs.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell>
-                <TextField variant="outlined" fullWidth value={row.id} />
-              </TableCell>
-              <TableCell>
-                <TextField variant="outlined" fullWidth value={row.url} />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  value={JSON.stringify(row.elements)}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  value={JSON.stringify(row.result)}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  value={row.time_created}
-                />
-              </TableCell>
-              <TableCell>
-                <Button
-                  onClick={() => {
-                    handleDownload(row.id);
-                  }}
-                >
-                  Download
-                </Button>
-              </TableCell>
-              <TableCell>
-                <Button onClick={() => handleNavigate(row.elements, row.url)}>
-                  Rerun
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <Box
+        width="fullWidth"
+        bgcolor="background.paper"
+        className="flex justify-center"
+      >
+        <Box
+          maxWidth="lg"
+          minHeight="100vh"
+          bgcolor="background.paper"
+          className="p-4"
+        >
+          <Typography variant="h4">Scrape Jobs</Typography>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>id</TableCell>
+                <TableCell>url</TableCell>
+                <TableCell>elements</TableCell>
+                <TableCell>result</TableCell>
+                <TableCell>time_created</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {jobs.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <TextField variant="outlined" fullWidth value={row.id} />
+                  </TableCell>
+                  <TableCell>
+                    <TextField variant="outlined" fullWidth value={row.url} />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      variant="outlined"
+                      fullWidth
+                      value={JSON.stringify(row.elements)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      variant="outlined"
+                      fullWidth
+                      value={JSON.stringify(row.result)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      variant="outlined"
+                      fullWidth
+                      value={row.time_created}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => {
+                        handleDownload(row.id);
+                      }}
+                    >
+                      Download
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => handleNavigate(row.elements, row.url)}
+                    >
+                      Rerun
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
+      </Box>
     </>
   );
 };

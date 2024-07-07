@@ -13,13 +13,19 @@ import {
   IconButton,
   Typography,
   Button,
+  Switch,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import HttpIcon from "@mui/icons-material/Http";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/router";
 
-const NavDrawer: React.FC = () => {
+interface NavDrawerProps {
+  toggleTheme: () => void;
+  isDarkMode: boolean;
+}
+
+const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
   const router = useRouter();
   const { login, logout, user, isAuthenticated } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
@@ -70,20 +76,23 @@ const NavDrawer: React.FC = () => {
     <>
       <AppBar position="static">
         <Toolbar className="flex flex-row justify-between items-center">
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
+          <div className="flex flex-row">
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Switch checked={isDarkMode} onChange={toggleTheme} />
+          </div>
           {isAuthenticated ? (
             <div className="flex flex-row items-center">
               <Typography variant="body1" sx={{ marginRight: 2 }}>
                 Welcome, {user?.full_name}
               </Typography>
-              <Button color="inherit" onClick={logout}>
+              <Button color="inherit" onClick={logout} className="!color-white">
                 Logout
               </Button>
             </div>
