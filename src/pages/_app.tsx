@@ -4,7 +4,6 @@ import "../styles/globals.css";
 import React, { useState, useEffect } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { SessionProvider } from "next-auth/react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import NavDrawer from "../components/NavDrawer";
 import { darkTheme, lightTheme } from "../styles/themes";
@@ -34,7 +33,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <title>Webapp Template</title>
+        <title>Scraperr</title>
       </Head>
       <AuthProvider>
         <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>

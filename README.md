@@ -1,68 +1,68 @@
-# Webapp Template
+# Scraperr
 
-Template designed to quickly build full stack apps.
+Scraperr is a self-hosted web application that allows users to scrape data from web pages by specifying elements via XPath. Users can submit URLs and the corresponding elements to be scraped, and the results will be displayed in a table.
 
-Utilizes Github Actions and Ansible to build Docker images to quickly deploy onto an AWS EC2 Debian instance.
+From the table, users can download a csv of the job's results, along with an option to rerun the job.
 
-## Technologies
+## Features
 
-- Containerization: Docker/Docker Compose
+- Submit URLs for web scraping
+- Add and manage elements to scrape using XPath
+- Display results of scraped data
+- Download csv containing results
+- Rerun jobs
 
-- Frontend: React/Next.js
+## Installation
 
-- Backend: FastAPI
+1. Clone the repository:
 
-- Frameworks/Libraries: PDM, TailwindCSS
+   ```sh
+   git clone https://github.com/jaypyles/scraperr.git
+   cd scraperr
+   ```
 
-## Prerequisites
+1. Deploy
+   ```sh
+   make up
+   ```
 
-- Install Ansible
+The app provides its own `traefik` configuration to use independently, but can easily be reverse-proxied by any other app, or your own reverse-proxy.
 
-- Create a Dockerhub account/repo and fill out the Github repo environmental variables:
+## Usage
 
-  - DOCKERHUB_TOKEN
-  - DOCKERHUB_USERNAME
-  - DOCKERHUB_REPO
+1. Open the application in your browser at `http://localhost`.
+2. Enter the URL you want to scrape in the URL field.
+3. Add elements to scrape by specifying a name and the corresponding XPath.
+4. Click the "Submit" button to start the scraping process.
+5. The results will be displayed in the "Results" section.
 
-- Complete the `config.yaml` and the `inventory.yaml` in the `ansible` directory
+## API Endpoints
 
-  - `github_repo`: Github repo clone address
-  - `deploy_path`: Path where to clone the repo to on the server
-  - `deploy_command`: `Make` command to run to deploy on the server
+Use this service as an API for your own jobs.
 
-- Add your domain in HOSTNAME_PROD in the `Makefile`
+- `/api/submit-scrape-job`: Endpoint to submit the scraping job. Accepts a POST request with the following payload:
+  ```json
+  {
+    "url": "http://example.com",
+    "elements": [
+      {
+        "name": "ElementName",
+        "xpath": "/div[@class='example']"
+      }
+    ],
+    "user": "user@example.com",
+    "time_created": "2024-07-07T12:34:56.789Z"
+  }
+  ```
 
-## Deployment
+## License
 
-### Local Deployment
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-Uses `make` to quickly dispatch `docker-compose` commands.
+### Contributions
 
-- `deps`: rebuilds the frontend to deploy statically using the api
+Development made easy by developing from [webapp template](https://github.com/jaypyles/webapp-template]. View documentation for extra information.
 
-- `build`: builds the container using `docker-compose build `
+Start development server:
 
-- `up-prd`: ups the container using `docker-compose -f docker-compose.yml up`
-
-- `up-dev`: ups the container using `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up`
-  which will deploy with local volumes.
-
-Ex: `make deps build up-dev`
-
-### Server Deployment
-
-Easy deployment using `make setup deploy` after completing the required config files.
-
-- `setup`: Install dependencies and clone repo onto server
-
-- `deploy`: Deploy on server
-
-To use a SSL certificate, uncomment the volumes under the `traefik` service. Add your own certificates for use in Traefik.
-
-```yaml
-volumes:
-  - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml"
-  - "/etc/letsencrypt/live/domain/fullchain.pem:/etc/certs/ssl-cert.pem"
-  - "/etc/letsencrypt/live/domain/privkey.pem:/etc/certs/ssl-cert.key"
-```
+`make deps build up-dev`

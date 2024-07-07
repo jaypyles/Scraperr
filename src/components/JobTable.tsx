@@ -69,16 +69,17 @@ const JobTable: React.FC<JobTableProps> = ({ jobs }) => {
       bgcolor="background.default"
       display="flex"
       justifyContent="center"
+      minHeight="100vh"
+      p={3}
     >
       <Box
-        className="flex flex-col justify-center align-center items-center"
+        className="flex flex-col justify-start align-center items-center"
         width="100%"
         maxWidth="100%"
         bgcolor="background.default"
-        p={3}
         overflow="auto"
       >
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom sx={{ mt: 3 }}>
           Scrape Jobs
         </Typography>
         <Box sx={{ overflow: "auto", width: "75%" }}>

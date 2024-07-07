@@ -1,6 +1,6 @@
 version: "3"
 services:
-  webscrape:
+  scraperr:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"

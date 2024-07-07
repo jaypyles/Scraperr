@@ -148,7 +148,7 @@ const Home = () => {
     >
       <Container maxWidth="md">
         <Typography variant="h1" gutterBottom textAlign="center">
-          Web Scraper
+          Scraperr
         </Typography>
         <div
           style={{ marginBottom: "20px" }}

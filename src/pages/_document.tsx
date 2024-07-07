@@ -10,7 +10,7 @@ export default function Document() {
           httpEquiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
         />
-        <meta name="description" content="Webapp Template" />
+        <meta name="description" content="Scraperr" />
       </Head>
       <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>

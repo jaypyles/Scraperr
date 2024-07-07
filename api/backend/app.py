@@ -44,6 +44,11 @@ def read_root():
     return FileResponse("./dist/index.html")
 
 
+@app.get("/favicon.ico")
+def read_favicon():
+    return FileResponse("dist/favicon.ico")
+
+
 @app.post("/api/submit-scrape-job")
 async def submit_scrape_job(job: SubmitScrapeJob):
     LOG.info(f"Recieved job: {job}")
