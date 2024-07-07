@@ -9,9 +9,17 @@ From the table, users can download a csv of the job's results, along with an opt
 - Submit URLs for web scraping
 - Add and manage elements to scrape using XPath
 - Display results of scraped data
+
+![main_page](https://github.com/jaypyles/www-scrape/blob/master/docs/main_page.png)
+
 - Download csv containing results
 - Rerun jobs
+
+![job_page](https://github.com/jaypyles/www-scrape/blob/master/docs/job_page.png)
+
 - User login/signup to organize jobs
+
+![login](https://github.com/jaypyles/www-scrape/blob/master/docs/login.png)
 
 ## Installation
 
@@ -90,7 +98,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ### Contributions
 
-Development made easy by developing from (webapp template)[https://github.com/jaypyles/webapp-template]. View documentation for extra information.
+Development made easy by developing from [webapp template](https://github.com/jaypyles/webapp-template). View documentation for extra information.
 
 Start development server:
 
