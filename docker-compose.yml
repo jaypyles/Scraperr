@@ -1,5 +1,6 @@
 services:
   scraperr:
+    image: jpyles0524/scraperr:latest
     build:
       context: ./
     container_name: scraperr
