@@ -14,6 +14,12 @@ import {
   Checkbox,
   Tooltip,
   Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
@@ -37,6 +43,9 @@ interface JobTableProps {
 const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set());
   const [allSelected, setAllSelected] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchMode, setSearchMode] = useState<string>("url");
+
   const router = useRouter();
 
   const handleDownload = async (ids: string[]) => {
@@ -106,6 +115,15 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
     }
   };
 
+  const filteredJobs = jobs.filter((job) => {
+    if (searchMode === "url") {
+      return job.url.toLowerCase().includes(searchQuery.toLowerCase());
+    } else if (searchMode === "id") {
+      return job.id.toLowerCase().includes(searchQuery.toLowerCase());
+    }
+    return true;
+  });
+
   return (
     <Box
       width="100%"
@@ -122,41 +140,67 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
         overflow="auto"
       >
         <Box
-          className="flex flex-row w-3/4 items-center p-2"
+          className="flex flex-row w-3/4 justify-between p-2"
           bgcolor="background.paper"
         >
-          <Typography className="mr-2" variant="body1">
-            Scrape Jobs
-          </Typography>
-          <Tooltip title="Select All">
-            <span>
-              <IconButton color="primary" onClick={handleSelectAll}>
-                <SelectAllIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-          <Tooltip title="Delete Selected">
-            <span>
-              <IconButton
-                color="secondary"
-                onClick={handleDeleteSelected}
-                disabled={selectedJobs.size === 0}
+          <div className="flex flex-row w-1/2 items-center p-2">
+            <Typography className="mr-2" variant="body1">
+              Scrape Jobs
+            </Typography>
+            <Tooltip title="Select All">
+              <span>
+                <IconButton color="primary" onClick={handleSelectAll}>
+                  <SelectAllIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Tooltip title="Delete Selected">
+              <span>
+                <IconButton
+                  color="secondary"
+                  onClick={handleDeleteSelected}
+                  disabled={selectedJobs.size === 0}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Tooltip title="Download Selected">
+              <span>
+                <IconButton
+                  color="primary"
+                  onClick={() => handleDownload(Array.from(selectedJobs))}
+                  disabled={selectedJobs.size === 0}
+                >
+                  <DownloadIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </div>
+          <div className="flex flex-row space-x-2 w-1/2">
+            <TextField
+              label="Search"
+              variant="outlined"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-3/4"
+            />
+            <FormControl className="w-1/2">
+              <InputLabel id="search-mode-label">Search Mode</InputLabel>
+              <Select
+                labelId="search-mode-label"
+                id="search-mode"
+                value={searchMode}
+                label="Mode"
+                onChange={(e: SelectChangeEvent) =>
+                  setSearchMode(e.target.value as string)
+                }
               >
-                <DeleteIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-          <Tooltip title="Download Selected">
-            <span>
-              <IconButton
-                color="primary"
-                onClick={() => handleDownload(Array.from(selectedJobs))}
-                disabled={selectedJobs.size === 0}
-              >
-                <DownloadIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
+                <MenuItem value="url">URL</MenuItem>
+                <MenuItem value="id">ID</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
         </Box>
         <Box sx={{ overflow: "auto", width: "75%" }}>
           <Table sx={{ tableLayout: "fixed", width: "100%" }}>
@@ -172,7 +216,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {jobs.map((row, index) => (
+              {filteredJobs.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell padding="checkbox">
                     <Checkbox
