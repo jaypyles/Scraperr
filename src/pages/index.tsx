@@ -238,28 +238,30 @@ const Home = () => {
         {results && (
           <>
             <Typography variant="h4">Results</Typography>
-            <Table ref={resultsRef} style={{ marginTop: "20px" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>XPath</TableCell>
-                  <TableCell>Text</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {Object.keys(results).map((key, index) => (
-                  <React.Fragment key={index}>
-                    {results[key].map((result, resultIndex) => (
-                      <TableRow key={resultIndex}>
-                        <TableCell>{result.name}</TableCell>
-                        <TableCell>{result.xpath}</TableCell>
-                        <TableCell>{result.text}</TableCell>
-                      </TableRow>
-                    ))}
-                  </React.Fragment>
-                ))}
-              </TableBody>
-            </Table>
+            <Box style={{ maxHeight: "400px", overflow: "auto" }}>
+              <Table ref={resultsRef} style={{ marginTop: "20px" }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>XPath</TableCell>
+                    <TableCell>Text</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {Object.keys(results).map((key, index) => (
+                    <React.Fragment key={index}>
+                      {results[key].map((result, resultIndex) => (
+                        <TableRow key={resultIndex}>
+                          <TableCell>{result.name}</TableCell>
+                          <TableCell>{result.xpath}</TableCell>
+                          <TableCell>{result.text}</TableCell>
+                        </TableRow>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
           </>
         )}
       </Container>

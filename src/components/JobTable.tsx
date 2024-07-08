@@ -113,7 +113,6 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
       display="flex"
       justifyContent="center"
       minHeight="100vh"
-      p={3}
     >
       <Box
         className="flex flex-col justify-start align-center items-center"
