@@ -1,113 +1,138 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAuth } from "../contexts/AuthContext";
 import {
   Box,
-  Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemButton,
   ListItemText,
-  AppBar,
-  Toolbar,
-  IconButton,
   Typography,
   Button,
   Switch,
   Tooltip,
+  Drawer,
+  Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import HttpIcon from "@mui/icons-material/Http";
-import MenuIcon from "@mui/icons-material/Menu";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useRouter } from "next/router";
+import { useTheme } from "@mui/material/styles";
 
 interface NavDrawerProps {
   toggleTheme: () => void;
   isDarkMode: boolean;
 }
 
+const drawerWidth = 240;
+
 const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
   const router = useRouter();
-  const { login, logout, user, isAuthenticated } = useAuth();
-  const [open, setOpen] = useState<boolean>(false);
-
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-      setOpen(open);
-    };
-
-  const DrawerList = (
-    <Box
-      sx={{ width: 250 }}
-      role="presentation"
-      onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
-    >
-      <List>
-        <ListItem>
-          <ListItemButton onClick={() => router.push("/")}>
-            <ListItemIcon>
-              <HomeIcon />
-            </ListItemIcon>
-            <ListItemText>Home</ListItemText>
-          </ListItemButton>
-        </ListItem>
-        <ListItem>
-          <ListItemButton onClick={() => router.push("/jobs")}>
-            <ListItemIcon>
-              <HttpIcon />
-            </ListItemIcon>
-            <ListItemText>Previous Jobs</ListItemText>
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Box>
-  );
+  const theme = useTheme();
+  const { logout, user, isAuthenticated } = useAuth();
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar className="flex flex-row justify-between items-center">
-          <div className="flex flex-row">
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Tooltip title="Dark Theme Toggle" placement="bottom">
-              <Switch checked={isDarkMode} onChange={toggleTheme} />
-            </Tooltip>
-          </div>
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        [`& .MuiDrawer-paper`]: {
+          width: drawerWidth,
+          boxSizing: "border-box",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          height: "100%",
+        }}
+      >
+        <div>
+          <List>
+            <ListItem>
+              <ListItemButton onClick={() => router.push("/")}>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <ListItemButton onClick={() => router.push("/jobs")}>
+                <ListItemIcon>
+                  <HttpIcon />
+                </ListItemIcon>
+                <ListItemText primary="Previous Jobs" />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+          </List>
+        </div>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           {isAuthenticated ? (
-            <div className="flex flex-row items-center">
-              <Typography variant="body1" sx={{ marginRight: 2 }}>
+            <>
+              <Typography variant="body1" sx={{ margin: 1 }}>
                 Welcome, {user?.full_name}
               </Typography>
-              <Button color="inherit" onClick={logout} className="!color-white">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={logout}
+                sx={{
+                  width: "100%",
+                  color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
+                }}
+              >
                 Logout
               </Button>
-            </div>
+            </>
           ) : (
-            <Button color="inherit" onClick={() => router.push("/login")}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => router.push("/login")}
+              sx={{
+                width: "100%",
+                color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
+              }}
+            >
               Login
             </Button>
           )}
-        </Toolbar>
-      </AppBar>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
-    </>
+          <Divider sx={{ marginTop: 2, marginBottom: 2 }}></Divider>
+          <Accordion sx={{ padding: 0, width: "90%" }}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography>Settings</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Tooltip title="Dark Theme Toggle" placement="bottom">
+                <Switch checked={isDarkMode} onChange={toggleTheme} />
+              </Tooltip>
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      </Box>
+    </Drawer>
   );
 };
 

@@ -4,10 +4,12 @@ import "../styles/globals.css";
 import React, { useState, useEffect } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import NavDrawer from "../components/NavDrawer";
 import { darkTheme, lightTheme } from "../styles/themes";
 import { AuthProvider } from "../contexts/AuthContext";
+
+const drawerWidth = 240;
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -38,8 +40,19 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       <AuthProvider>
         <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
           <CssBaseline />
-          <NavDrawer isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-          <Component {...pageProps} />
+          <Box sx={{ display: "flex" }}>
+            <NavDrawer isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                bgcolor: "background.default",
+                p: 3,
+              }}
+            >
+              <Component {...pageProps} />
+            </Box>
+          </Box>
         </ThemeProvider>
       </AuthProvider>
     </>
