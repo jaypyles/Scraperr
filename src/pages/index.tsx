@@ -5,6 +5,7 @@ import {
   Button,
   Table,
   TableBody,
+  TableContainer,
   TableCell,
   TableHead,
   TableRow,
@@ -210,41 +211,60 @@ const Home = () => {
           </Tooltip>
         </Box>
         <Typography variant="h4">Elements</Typography>
-        <Table className="mb-4">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>XPath</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
+        <TableContainer
+          component={Box}
+          sx={{ maxHeight: "50%", overflow: "auto" }}
+        >
+          <Table stickyHeader className="mb-4">
+            <TableHead>
+              <TableRow>
                 <TableCell>
-                  <TextField variant="outlined" fullWidth value={row.name} />
+                  <Typography sx={{ fontWeight: "bold" }}>Name</Typography>
                 </TableCell>
                 <TableCell>
-                  <TextField variant="outlined" fullWidth value={row.xpath} />
-                </TableCell>
-                <TableCell>
-                  <Button onClick={() => handleDeleteRow(row.name)}>
-                    Delete
-                  </Button>
+                  <Typography sx={{ fontWeight: "bold" }}>XPath</Typography>
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Typography>{row.name}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>{row.xpath}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleDeleteRow(row.name)}>
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
         {results && (
           <>
             <Typography variant="h4">Results</Typography>
-            <Box style={{ maxHeight: "400px", overflow: "auto" }}>
-              <Table ref={resultsRef} style={{ marginTop: "20px" }}>
+            <TableContainer
+              component={Box}
+              ref={resultsRef}
+              sx={{ maxHeight: "50%", overflow: "auto", marginTop: "20px" }}
+            >
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>XPath</TableCell>
-                    <TableCell>Text</TableCell>
+                    <TableCell>
+                      <Typography sx={{ fontWeight: "bold" }}>Name</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ fontWeight: "bold" }}>XPath</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ fontWeight: "bold" }}>Text</Typography>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -261,7 +281,7 @@ const Home = () => {
                   ))}
                 </TableBody>
               </Table>
-            </Box>
+            </TableContainer>
           </>
         )}
       </Container>
