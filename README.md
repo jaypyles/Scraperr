@@ -37,9 +37,11 @@ MONGODB_URI=mongodb://root:example@webscrape-mongo:27017
 SECRET_KEY=your_secret_key
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=600
-HOSTNAME="yourdomain"
+HOSTNAME="localhost"
 HOSTNAME_DEV="localhost"
 ```
+
+Change `HOSTNAME` from localhost to your domain, if deploying this through traefik publicly.
 
 3. Deploy
 
