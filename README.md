@@ -94,6 +94,17 @@ Use this service as an API for your own projects.
   }
   ```
 
+## Troubleshooting
+
+Q: When running Scraperr, I'm met with "404 Page not found".  
+A: This is probably an issue with MongoDB related to running Scraperr in a VM. You should see something liks this in `make logs`:
+
+```
+WARNING: MongoDB 5.0+ requires a CPU with AVX support, and your current system does not appear to have that!
+```
+
+To resolve this issue, simply set CPU host type to `host`. This can be done in Proxmox in the VM settings > Processor. [Related issue](https://github.com/jaypyles/Scraperr/issues/9).
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
