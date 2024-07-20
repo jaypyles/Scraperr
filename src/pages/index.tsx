@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   TextField,
   Button,
   Table,
@@ -15,11 +19,18 @@ import {
   Tooltip,
   Snackbar,
   Alert,
+  Checkbox,
+  FormControlLabel,
+  Accordion,
+  AccordionActions,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/router";
 import CircularProgress from "@mui/material/CircularProgress";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 interface Element {
   name: string;
@@ -31,6 +42,11 @@ interface ScrapeResult {
   xpath: string;
   text: string;
   name: string;
+}
+
+interface JobOptions {
+  multi_page_scrape: boolean;
+  custom_headers: null | Object;
 }
 
 type Result = {
@@ -65,6 +81,11 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [jobOptions, setJobOptions] = useState<JobOptions>({
+    multi_page_scrape: false,
+    custom_headers: null,
+  });
+
   const resultsRef = useRef<HTMLTableElement | null>(null);
 
   useEffect(() => {
@@ -151,10 +172,7 @@ const Home = () => {
         <Typography variant="h1" gutterBottom textAlign="center">
           Scraperr
         </Typography>
-        <div
-          style={{ marginBottom: "20px" }}
-          className="flex flex-row space-x-4 items-center"
-        >
+        <div className="flex flex-row space-x-4 items-center mb-2">
           <TextField
             label="URL"
             variant="outlined"
@@ -174,6 +192,52 @@ const Home = () => {
             {loading ? <CircularProgress size={24} /> : "Submit"}
           </Button>
         </div>
+        <Box
+          bgcolor="background.paper"
+          className="p-2 mb-2 flex flex-row space-x-2"
+        >
+          <FormControlLabel
+            label="Multi-Page Scrape"
+            control={
+              <Checkbox
+                checked={jobOptions.multi_page_scrape}
+                onChange={() =>
+                  setJobOptions((prevJobOptions) => ({
+                    ...prevJobOptions,
+                    multi_page_scrape: !prevJobOptions.multi_page_scrape,
+                  }))
+                }
+              />
+            }
+          ></FormControlLabel>
+          <Accordion style={{ padding: 1 }}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              Custom Headers (JSON)
+            </AccordionSummary>
+            <AccordionDetails>
+              <TextField
+                InputLabelProps={{ shrink: false }}
+                fullWidth
+                multiline
+                minRows={4}
+                variant="outlined"
+                value={jobOptions.custom_headers}
+                onChange={(e) =>
+                  setJobOptions((prevJobOptions) => ({
+                    ...prevJobOptions,
+                    custom_headers: e.target.value,
+                  }))
+                }
+                style={{ maxHeight: "20vh", overflow: "auto" }}
+                className="mt-2"
+              />
+            </AccordionDetails>
+          </Accordion>
+        </Box>
         <Box display="flex" gap={2} marginBottom={2} className="items-center">
           <TextField
             label="Name"
