@@ -2,7 +2,7 @@
 
 Scraperr is a self-hosted web application that allows users to scrape data from web pages by specifying elements via XPath. Users can submit URLs and the corresponding elements to be scraped, and the results will be displayed in a table.
 
-From the table, users can download a csv of the job's results, along with an option to rerun the job.
+From the table, users can download an excel sheet of the job's results, along with an option to rerun the job.
 
 ## Features
 
