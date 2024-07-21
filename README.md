@@ -6,20 +6,27 @@ From the table, users can download a csv of the job's results, along with an opt
 
 ## Features
 
-- Submit URLs for web scraping
+- Submit/Queue URLs for web scraping
 - Add and manage elements to scrape using XPath
+- Scrape all pages within same domain
+- Add custom json headers to send in requests to URLs
 - Display results of scraped data
 
 ![main_page](https://github.com/jaypyles/www-scrape/blob/master/docs/main_page.png)
 
 - Download csv containing results
 - Rerun jobs
+- View status of queued jobs
 
 ![job_page](https://github.com/jaypyles/www-scrape/blob/master/docs/job_page.png)
 
 - User login/signup to organize jobs
 
 ![login](https://github.com/jaypyles/www-scrape/blob/master/docs/login.png)
+
+- View app logs inside of web ui
+
+![logs](https://github.com/jaypyles/www-scrape/blob/master/docs/logs_page.png)
 
 ## Installation
 
@@ -56,8 +63,8 @@ The app provides its own `traefik` configuration to use independently, but can e
 1. Open the application in your browser at `http://localhost`.
 2. Enter the URL you want to scrape in the URL field.
 3. Add elements to scrape by specifying a name and the corresponding XPath.
-4. Click the "Submit" button to start the scraping process.
-5. The results will be displayed in the "Results" section.
+4. Click the "Submit" button to queue URL to be scraped.
+5. View queue in the "Previous Jobs" section.
 
 ## API Endpoints
 
