@@ -13,7 +13,7 @@ const Home = () => {
   const [results, setResults] = useState<Result>({});
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<string>("alert");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<string>("error");
 
   const resultsRef = useRef<HTMLTableElement | null>(null);
 
@@ -38,17 +38,29 @@ const Home = () => {
 
   const ErrorSnackbar = () => {
     return (
-      <Alert onClose={handleCloseSnackbar} severity="error">
-        {snackbarMessage}
-      </Alert>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     );
   };
 
   const NotifySnackbar = () => {
     return (
-      <Alert onClose={handleCloseSnackbar} severity="info">
-        {snackbarMessage}
-      </Alert>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="info">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     );
   };
 
@@ -82,16 +94,8 @@ const Home = () => {
           setRows={setRows}
           submittedURL={submittedURL}
         />
-        {/* <ResultsTable stateProps={{ results }} resultsRef={resultsRef} /> */}
       </Container>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <p>Woo</p>
-        {/* {snackbarSeverity === "info" ? <NotifySnackbar /> : <ErrorSnackbar />} */}
-      </Snackbar>
+      {snackbarSeverity === "info" ? <NotifySnackbar /> : <ErrorSnackbar />}
     </Box>
   );
 };
