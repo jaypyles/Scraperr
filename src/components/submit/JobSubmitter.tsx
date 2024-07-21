@@ -169,7 +169,7 @@ export const JobSubmitter = ({ stateProps }: Props) => {
           {loading ? <CircularProgress size={24} /> : "Submit"}
         </Button>
       </div>
-      <Box bgcolor="background.paper" className="flex flex-col mb-2">
+      <Box bgcolor="background.paper" className="flex flex-col mb-2 rounded-md">
         <div id="options" className="p-2 flex flex-row space-x-2">
           <FormControlLabel
             label="Multi-Page Scrape"

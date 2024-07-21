@@ -12,6 +12,7 @@ import {
   Box,
   IconButton,
   Tooltip,
+  useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Element } from "../../types";
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
+  const theme = useTheme();
   const [newRow, setNewRow] = useState<Element>({
     name: "",
     xpath: "",
@@ -72,10 +74,18 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
               aria-label="add"
               size="small"
               onClick={handleAddRow}
-              sx={{ height: "40px", width: "40px" }}
+              sx={{
+                height: "40px",
+                width: "40px",
+              }}
               disabled={!(newRow.xpath.length > 0 && newRow.name.length > 0)}
             >
-              <AddIcon fontSize="inherit" sx={{ color: "black" }} />
+              <AddIcon
+                fontSize="inherit"
+                sx={{
+                  color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
+                }}
+              />
             </IconButton>
           </span>
         </Tooltip>

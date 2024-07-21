@@ -73,7 +73,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      a.download = `job_${ids.splice(0, 1)}.csv`;
+      a.download = `job_${ids.splice(0, 1)}.xlsx`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -134,6 +134,8 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
       return job.url.toLowerCase().includes(searchQuery.toLowerCase());
     } else if (searchMode === "id") {
       return job.id.toLowerCase().includes(searchQuery.toLowerCase());
+    } else if (searchMode === "status") {
+      return job.status.toLowerCase().includes(searchQuery.toLowerCase());
     }
     return true;
   });
@@ -154,7 +156,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
         overflow="auto"
       >
         <Box
-          className="flex flex-row w-3/4 justify-between p-2"
+          className="flex flex-row justify-between p-2 w-full"
           bgcolor="background.paper"
         >
           <div className="flex flex-row w-1/2 items-center p-2">
@@ -212,11 +214,12 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
               >
                 <MenuItem value="url">URL</MenuItem>
                 <MenuItem value="id">ID</MenuItem>
+                <MenuItem value="status">Status</MenuItem>
               </Select>
             </FormControl>
           </div>
         </Box>
-        <Box sx={{ overflow: "auto", width: "75%" }}>
+        <Box sx={{ overflow: "auto" }}>
           <Table sx={{ tableLayout: "fixed", width: "100%" }}>
             <TableHead>
               <TableRow>

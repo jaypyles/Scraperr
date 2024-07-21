@@ -20,6 +20,7 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import HttpIcon from "@mui/icons-material/Http";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TerminalIcon from "@mui/icons-material/Terminal";
 import { useRouter } from "next/router";
 import { useTheme } from "@mui/material/styles";
 
@@ -73,6 +74,15 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
                   <HttpIcon />
                 </ListItemIcon>
                 <ListItemText primary="Previous Jobs" />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <ListItemButton onClick={() => router.push("/logs")}>
+                <ListItemIcon>
+                  <TerminalIcon />
+                </ListItemIcon>
+                <ListItemText primary="View App Logs" />
               </ListItemButton>
             </ListItem>
             <Divider />

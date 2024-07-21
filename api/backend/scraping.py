@@ -1,8 +1,7 @@
-# STL
 import logging
 from typing import Any, Optional
+import time
 
-# PDM
 from bs4 import BeautifulSoup
 from lxml import etree
 from seleniumwire import webdriver
@@ -16,7 +15,6 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from urllib.parse import urlparse, urljoin
 
-# LOCAL
 from api.backend.models import Element, CapturedElement
 
 LOG = logging.getLogger(__name__)
@@ -42,7 +40,6 @@ def clean_xpath(xpath: str) -> str:
         else:
             clean_parts.append(part)
     clean_xpath = "//".join(clean_parts).replace("////", "//")
-
     clean_xpath = clean_xpath.replace("'", "\\'")
     return clean_xpath
 
@@ -56,9 +53,7 @@ def interceptor(headers: dict[str, Any]):
         for key, val in headers.items():
             if request.headers.get(key):
                 del request.headers[key]
-
             request.headers[key] = val
-
         if "sec-ch-ua" in request.headers:
             original_value = request.headers["sec-ch-ua"]
             del request.headers["sec-ch-ua"]
@@ -93,20 +88,28 @@ async def make_site_request(
     if url in visited_urls:
         return
 
+    LOG.info(f"Visited URLs: {visited_urls}")
+
     driver = create_driver()
+    driver.implicitly_wait(10)
 
     if headers:
         driver.request_interceptor = interceptor(headers)
 
     try:
+        LOG.info(f"Visiting URL: {url}")
         driver.get(url)
+        final_url = driver.current_url
+        LOG.info(f"Final URL: {final_url}")
         visited_urls.add(url)
+        visited_urls.add(final_url)
         _ = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
+        time.sleep(5)
         page_source = driver.page_source
         LOG.debug(f"Page source for url: {url}\n{page_source}")
-        pages.add((page_source, url))
+        pages.add((page_source, final_url))
     finally:
         driver.quit()
 
@@ -117,10 +120,11 @@ async def make_site_request(
 
     for a_tag in soup.find_all("a"):
         link = a_tag.get("href")
+        LOG.info(f"Found Link: {link}")
 
         if link:
             if not urlparse(link).netloc:
-                base_url = "{0.scheme}://{0.netloc}".format(urlparse(original_url))
+                base_url = "{0.scheme}://{0.netloc}".format(urlparse(final_url))
                 link = urljoin(base_url, link)
 
             if link not in visited_urls and is_same_domain(link, original_url):
