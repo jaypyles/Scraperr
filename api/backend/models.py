@@ -1,5 +1,6 @@
 # STL
 from typing import Any, Optional
+from datetime import datetime
 
 # PDM
 import pydantic
@@ -27,7 +28,7 @@ class SubmitScrapeJob(pydantic.BaseModel):
     url: str
     elements: list[Element]
     user: Optional[str] = None
-    time_created: Optional[str] = None
+    time_created: Optional[datetime] = None
     result: Optional[dict[str, Any]] = None
     job_options: JobOptions
     status: str = "Queued"
@@ -43,3 +44,7 @@ class DownloadJob(pydantic.BaseModel):
 
 class DeleteScrapeJobs(pydantic.BaseModel):
     ids: list[str]
+
+
+class GetStatistics(pydantic.BaseModel):
+    user: str

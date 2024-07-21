@@ -28,6 +28,10 @@ From the table, users can download an excel sheet of the job's results, along wi
 
 ![logs](https://github.com/jaypyles/www-scrape/blob/master/docs/log_page.png)
 
+- View a small statistics view of jobs ran
+
+![statistics](https://github.com/jaypyles/www-scrape/blob/master/docs/stats_page.png)
+
 ## Installation
 
 1. Clone the repository:

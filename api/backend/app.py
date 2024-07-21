@@ -3,6 +3,9 @@ import uuid
 import logging
 from io import BytesIO
 from openpyxl import Workbook
+from typing import Any
+from datetime import datetime
+from bson import ObjectId
 
 # PDM
 from fastapi import BackgroundTasks, FastAPI, HTTPException
@@ -15,9 +18,16 @@ import docker
 client = docker.from_env()
 
 # LOCAL
-from api.backend.job import query, insert, delete_jobs
+from api.backend.job import (
+    average_elements_per_link,
+    get_jobs_per_day,
+    query,
+    insert,
+    delete_jobs,
+)
 from api.backend.models import (
     DownloadJob,
+    GetStatistics,
     SubmitScrapeJob,
     DeleteScrapeJobs,
     RetrieveScrapeJobs,
@@ -64,7 +74,8 @@ async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTa
         job.id = uuid.uuid4().hex
 
         if job.user:
-            await insert(jsonable_encoder(job))
+            job_dict = job.model_dump()
+            await insert(job_dict)
 
         return JSONResponse(content=f"Job queued for scraping: {job.id}")
     except Exception as e:
@@ -76,7 +87,7 @@ async def retrieve_scrape_jobs(retrieve: RetrieveScrapeJobs):
     LOG.info(f"Retrieving jobs for account: {retrieve.user}")
     try:
         results = await query({"user": retrieve.user})
-        return JSONResponse(content=results[::-1])
+        return JSONResponse(content=jsonable_encoder(results[::-1]))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
         return JSONResponse(content={"error": str(e)}, status_code=500)
@@ -184,3 +195,14 @@ async def get_own_logs():
         return StreamingResponse(log_generator(), media_type="text/event-stream")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/statistics/get-average-element-per-link")
+async def get_average_element_per_link(get_statistics: GetStatistics):
+    return await average_elements_per_link(get_statistics.user)
+
+
+@app.post("/api/statistics/get-average-jobs-per-day")
+async def average_jobs_per_day(get_statistics: GetStatistics):
+    data = await get_jobs_per_day(get_statistics.user)
+    return data
