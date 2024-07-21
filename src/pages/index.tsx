@@ -1,70 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Typography,
-  TextField,
-  Button,
-  Table,
-  TableBody,
-  TableContainer,
-  TableCell,
-  TableHead,
-  TableRow,
-  Container,
-  Box,
-  IconButton,
-  Tooltip,
-  Snackbar,
-  Alert,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { useAuth } from "../contexts/AuthContext";
+import { Typography, Container, Box, Snackbar, Alert } from "@mui/material";
 import { useRouter } from "next/router";
-import CircularProgress from "@mui/material/CircularProgress";
-
-interface Element {
-  name: string;
-  xpath: string;
-  url: string;
-}
-
-interface ScrapeResult {
-  xpath: string;
-  text: string;
-  name: string;
-}
-
-type Result = {
-  [key: string]: ScrapeResult[];
-};
-
-function validateURL(url: string): boolean {
-  try {
-    new URL(url);
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
+import { Element, Result } from "../types";
+import { ElementTable, JobSubmitter, ResultsTable } from "../components/submit";
 
 const Home = () => {
-  const { user } = useAuth();
   const router = useRouter();
-
   const { elements, url } = router.query;
 
-  const [submittedURL, setSubmittedURL] = useState("");
-  const [isValidURL, setIsValidUrl] = useState<boolean>(true);
-  const [urlError, setUrlError] = useState<string | null>(null);
+  const [submittedURL, setSubmittedURL] = useState<string>("");
   const [rows, setRows] = useState<Element[]>([]);
-  const [results, setResults] = useState<null | Result>(null);
-  const [newRow, setNewRow] = useState<Element>({
-    name: "",
-    xpath: "",
-    url: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [results, setResults] = useState<Result>({});
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<string>("error");
+
   const resultsRef = useRef<HTMLTableElement | null>(null);
 
   useEffect(() => {
@@ -82,59 +32,36 @@ const Home = () => {
     }
   }, [results]);
 
-  const handleAddRow = () => {
-    const updatedRow = { ...newRow, url: submittedURL };
-    setRows([...rows, updatedRow]);
-    setNewRow({ name: "", xpath: "", url: "" });
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
-  const handleDeleteRow = (elementName: string) => {
-    setRows(
-      rows.filter((r) => {
-        return elementName !== r.name;
-      }),
+  const ErrorSnackbar = () => {
+    return (
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     );
   };
 
-  const handleSubmit = () => {
-    if (!validateURL(submittedURL)) {
-      setIsValidUrl(false);
-      setUrlError("Please enter a valid URL.");
-      return;
-    }
-
-    setIsValidUrl(true);
-    setUrlError(null);
-    setLoading(true);
-
-    fetch("/api/submit-scrape-job", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        url: submittedURL,
-        elements: rows,
-        user: user?.email,
-        time_created: new Date().toISOString(),
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((error) => {
-            throw new Error(error.error);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => setResults(data))
-      .catch((error) => {
-        setSnackbarMessage(error.message || "An error occurred.");
-        setSnackbarOpen(true);
-      })
-      .finally(() => setLoading(false));
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
+  const NotifySnackbar = () => {
+    return (
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="info">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    );
   };
 
   return (
@@ -151,149 +78,24 @@ const Home = () => {
         <Typography variant="h1" gutterBottom textAlign="center">
           Scraperr
         </Typography>
-        <div
-          style={{ marginBottom: "20px" }}
-          className="flex flex-row space-x-4 items-center"
-        >
-          <TextField
-            label="URL"
-            variant="outlined"
-            fullWidth
-            value={submittedURL}
-            onChange={(e) => setSubmittedURL(e.target.value)}
-            error={!isValidURL}
-            helperText={!isValidURL ? urlError : ""}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={handleSubmit}
-            disabled={!(rows.length > 0) || loading}
-          >
-            {loading ? <CircularProgress size={24} /> : "Submit"}
-          </Button>
-        </div>
-        <Box display="flex" gap={2} marginBottom={2} className="items-center">
-          <TextField
-            label="Name"
-            variant="outlined"
-            fullWidth
-            value={newRow.name}
-            onChange={(e) => setNewRow({ ...newRow, name: e.target.value })}
-          />
-          <TextField
-            label="XPath"
-            variant="outlined"
-            fullWidth
-            value={newRow.xpath}
-            onChange={(e) => setNewRow({ ...newRow, xpath: e.target.value })}
-          />
-          <Tooltip
-            title={
-              newRow.xpath.length > 0 && newRow.name.length > 0
-                ? "Add Element"
-                : "Fill out all fields to add an element"
-            }
-            placement="top"
-          >
-            <span>
-              <IconButton
-                aria-label="add"
-                size="small"
-                onClick={handleAddRow}
-                sx={{ height: "40px", width: "40px" }}
-                disabled={!(newRow.xpath.length > 0 && newRow.name.length > 0)}
-              >
-                <AddIcon fontSize="inherit" sx={{ color: "black" }} />
-              </IconButton>
-            </span>
-          </Tooltip>
-        </Box>
-        <Typography variant="h4">Elements</Typography>
-        <TableContainer
-          component={Box}
-          sx={{ maxHeight: "50%", overflow: "auto" }}
-        >
-          <Table stickyHeader className="mb-4">
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <Typography sx={{ fontWeight: "bold" }}>Name</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography sx={{ fontWeight: "bold" }}>XPath</Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <Typography>{row.name}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography>{row.xpath}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleDeleteRow(row.name)}>
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {results && (
-          <>
-            <Typography variant="h4">Results</Typography>
-            <TableContainer
-              component={Box}
-              ref={resultsRef}
-              sx={{ maxHeight: "50%", overflow: "auto", marginTop: "20px" }}
-            >
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <Typography sx={{ fontWeight: "bold" }}>Name</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ fontWeight: "bold" }}>XPath</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ fontWeight: "bold" }}>Text</Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {Object.keys(results).map((key, index) => (
-                    <React.Fragment key={index}>
-                      {results[key].map((result, resultIndex) => (
-                        <TableRow key={resultIndex}>
-                          <TableCell>{result.name}</TableCell>
-                          <TableCell>{result.xpath}</TableCell>
-                          <TableCell>{result.text}</TableCell>
-                        </TableRow>
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
-        )}
+        <JobSubmitter
+          stateProps={{
+            submittedURL,
+            setSubmittedURL,
+            rows,
+            setResults,
+            setSnackbarMessage,
+            setSnackbarOpen,
+            setSnackbarSeverity,
+          }}
+        />
+        <ElementTable
+          rows={rows}
+          setRows={setRows}
+          submittedURL={submittedURL}
+        />
       </Container>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="error">
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      {snackbarSeverity === "info" ? <NotifySnackbar /> : <ErrorSnackbar />}
     </Box>
   );
 };

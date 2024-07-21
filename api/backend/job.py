@@ -1,6 +1,7 @@
 # STL
 import logging
 from typing import Any
+from pymongo import DESCENDING
 
 # LOCAL
 from api.backend.database import get_job_collection
@@ -14,6 +15,13 @@ async def insert(item: dict[str, Any]) -> None:
     LOG.info(f"Inserted item: {i}")
 
 
+async def get_queued_job():
+    collection = get_job_collection()
+    return await collection.find_one(
+        {"status": "Queued"}, sort=[("created_at", DESCENDING)]
+    )
+
+
 async def query(filter: dict[str, Any]) -> list[dict[str, Any]]:
     collection = get_job_collection()
     cursor = collection.find(filter)
@@ -24,6 +32,15 @@ async def query(filter: dict[str, Any]) -> list[dict[str, Any]]:
         results.append(document)
 
     return results
+
+
+async def update_job(id: str, field: str, value: Any):
+    collection = get_job_collection()
+    result = await collection.update_one(
+        {"id": id},
+        {"$set": {field: value}},
+    )
+    return result.modified_count
 
 
 async def delete_jobs(jobs: list[str]):

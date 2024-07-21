@@ -28,6 +28,11 @@ const Jobs = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    const intervalId = setInterval(fetchJobs, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <>
       {user ? (

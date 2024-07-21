@@ -30,6 +30,10 @@ dependencies = [
     "motor[asyncio]>=3.5.0",
     "python-jose[cryptography]>=3.3.0",
     "passlib[bcrypt]>=1.7.4",
+    "selenium-wire>=5.1.0",
+    "blinker<1.8.0",
+    "setuptools>=71.0.4",
+    "docker>=7.1.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

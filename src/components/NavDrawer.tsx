@@ -20,6 +20,7 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import HttpIcon from "@mui/icons-material/Http";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TerminalIcon from "@mui/icons-material/Terminal";
 import { useRouter } from "next/router";
 import { useTheme } from "@mui/material/styles";
 
@@ -76,6 +77,15 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
               </ListItemButton>
             </ListItem>
             <Divider />
+            <ListItem>
+              <ListItemButton onClick={() => router.push("/logs")}>
+                <ListItemIcon>
+                  <TerminalIcon />
+                </ListItemIcon>
+                <ListItemText primary="View App Logs" />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
           </List>
         </div>
         <Box
@@ -125,9 +135,12 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
               <Typography>Settings</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Tooltip title="Dark Theme Toggle" placement="bottom">
+              <div className="flex flex-row mr-1">
+                <Typography className="mr-2">
+                  <p className="text-sm">Dark Theme Toggle</p>
+                </Typography>
                 <Switch checked={isDarkMode} onChange={toggleTheme} />
-              </Tooltip>
+              </div>
             </AccordionDetails>
           </Accordion>
         </Box>

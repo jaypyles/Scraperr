@@ -17,6 +17,11 @@ class CapturedElement(pydantic.BaseModel):
     name: str
 
 
+class JobOptions(pydantic.BaseModel):
+    multi_page_scrape: bool
+    custom_headers: Optional[dict[str, Any]]
+
+
 class SubmitScrapeJob(pydantic.BaseModel):
     id: Optional[str] = None
     url: str
@@ -24,6 +29,8 @@ class SubmitScrapeJob(pydantic.BaseModel):
     user: Optional[str] = None
     time_created: Optional[str] = None
     result: Optional[dict[str, Any]] = None
+    job_options: JobOptions
+    status: str = "Queued"
 
 
 class RetrieveScrapeJobs(pydantic.BaseModel):

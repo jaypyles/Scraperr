@@ -1,11 +1,14 @@
 services:
   scraperr:
     image: jpyles0524/scraperr:latest
+    init: True
     build:
       context: ./
     container_name: scraperr
     env_file:
       - ./.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"

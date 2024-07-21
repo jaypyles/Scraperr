@@ -33,12 +33,24 @@ interface Job {
   elements: Object[];
   result: Object;
   time_created: Date;
+  status: string;
+  job_options: Object;
 }
 
 interface JobTableProps {
   jobs: Job[];
   fetchJobs: () => void;
 }
+
+interface ColorMap {
+  [key: string]: string;
+}
+
+const COLOR_MAP: ColorMap = {
+  Queued: "rgba(255,201,5,0.5)",
+  Scraping: "rgba(3,104,255,0.5)",
+  Completed: "rgba(5,255,51,0.5)",
+};
 
 const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set());
@@ -61,7 +73,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      a.download = `job_${ids.splice(0, 1)}.csv`;
+      a.download = `job_${ids.splice(0, 1)}.xlsx`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -70,12 +82,14 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
     }
   };
 
-  const handleNavigate = (elements: Object[], url: string) => {
+  const handleNavigate = (elements: Object[], url: string, options: any) => {
+    console.log(options);
     router.push({
       pathname: "/",
       query: {
         elements: JSON.stringify(elements),
         url: url,
+        job_options: JSON.stringify(options),
       },
     });
   };
@@ -120,6 +134,8 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
       return job.url.toLowerCase().includes(searchQuery.toLowerCase());
     } else if (searchMode === "id") {
       return job.id.toLowerCase().includes(searchQuery.toLowerCase());
+    } else if (searchMode === "status") {
+      return job.status.toLowerCase().includes(searchQuery.toLowerCase());
     }
     return true;
   });
@@ -140,7 +156,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
         overflow="auto"
       >
         <Box
-          className="flex flex-row w-3/4 justify-between p-2"
+          className="flex flex-row justify-between p-2 w-full"
           bgcolor="background.paper"
         >
           <div className="flex flex-row w-1/2 items-center p-2">
@@ -198,11 +214,12 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
               >
                 <MenuItem value="url">URL</MenuItem>
                 <MenuItem value="id">ID</MenuItem>
+                <MenuItem value="status">Status</MenuItem>
               </Select>
             </FormControl>
           </div>
         </Box>
-        <Box sx={{ overflow: "auto", width: "75%" }}>
+        <Box sx={{ overflow: "auto" }}>
           <Table sx={{ tableLayout: "fixed", width: "100%" }}>
             <TableHead>
               <TableRow>
@@ -212,6 +229,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
                 <TableCell>Elements</TableCell>
                 <TableCell>Result</TableCell>
                 <TableCell>Time Created</TableCell>
+                <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -283,6 +301,16 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
                       {new Date(row.time_created).toLocaleString()}
                     </Box>
                   </TableCell>
+                  <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
+                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
+                      <Box
+                        className="rounded-md p-2 text-center"
+                        sx={{ bgcolor: COLOR_MAP[row.status], opactity: "50%" }}
+                      >
+                        {row.status}
+                      </Box>
+                    </Box>
+                  </TableCell>
                   <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
                     <Button
                       onClick={() => {
@@ -292,7 +320,9 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
                       Download
                     </Button>
                     <Button
-                      onClick={() => handleNavigate(row.elements, row.url)}
+                      onClick={() =>
+                        handleNavigate(row.elements, row.url, row.job_options)
+                      }
                     >
                       Rerun
                     </Button>

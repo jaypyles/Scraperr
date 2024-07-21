@@ -20,7 +20,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       setIsDarkMode(savedTheme === "dark");
     } else {
       const prefersDarkMode = window.matchMedia(
-        "(prefers-color-scheme: dark)",
+        "(prefers-color-scheme: dark)"
       ).matches;
       setIsDarkMode(prefersDarkMode);
     }
@@ -46,8 +46,9 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
               component="main"
               sx={{
                 flexGrow: 1,
-                bgcolor: "background.default",
                 p: 3,
+                bgcolor: "background.default",
+                minHeight: "100vh",
               }}
             >
               <Component {...pageProps} />
