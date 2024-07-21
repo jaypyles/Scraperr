@@ -26,7 +26,7 @@ from api.backend.auth.auth_router import auth_router
 import traceback
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="%(levelname)s:     %(asctime)s - %(name)s - %(message)s",
     handlers=[logging.StreamHandler()],
 )
