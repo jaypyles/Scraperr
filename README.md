@@ -26,7 +26,7 @@ From the table, users can download an excel sheet of the job's results, along wi
 
 - View app logs inside of web ui
 
-![logs](https://github.com/jaypyles/www-scrape/blob/master/docs/logs_page.png)
+![logs](https://github.com/jaypyles/www-scrape/blob/master/docs/log_page.png)
 
 ## Installation
 
