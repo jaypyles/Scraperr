@@ -111,7 +111,6 @@ export const JobSubmitter = ({ stateProps }: Props) => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setSnackbarMessage(data);
         setSnackbarSeverity("info");
         setSnackbarOpen(true);

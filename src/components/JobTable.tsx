@@ -83,7 +83,6 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   };
 
   const handleNavigate = (elements: Object[], url: string, options: any) => {
-    console.log(options);
     router.push({
       pathname: "/",
       query: {
