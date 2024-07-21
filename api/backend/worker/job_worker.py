@@ -41,7 +41,7 @@ async def main():
     LOG.info("Starting job worker...")
     while True:
         await process_job()
-        await asyncio.sleep(5)  # Sleep for 5 seconds before checking for new jobs
+        await asyncio.sleep(5)
 
 
 if __name__ == "__main__":

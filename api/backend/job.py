@@ -49,3 +49,62 @@ async def delete_jobs(jobs: list[str]):
     LOG.info(f"RESULT: {result.deleted_count} documents deleted")
 
     return True if result.deleted_count > 0 else False
+
+
+async def average_elements_per_link(user: str):
+    collection = get_job_collection()
+    pipeline = [
+        {"$match": {"status": "Completed", "user": user}},
+        {
+            "$project": {
+                "date": {
+                    "$dateToString": {"format": "%Y-%m-%d", "date": "$time_created"}
+                },
+                "num_elements": {"$size": "$elements"},
+            }
+        },
+        {
+            "$group": {
+                "_id": "$date",
+                "average_elements": {"$avg": "$num_elements"},
+                "count": {"$sum": 1},
+            }
+        },
+        {"$sort": {"_id": 1}},
+    ]
+    cursor = collection.aggregate(pipeline)
+    results: list[dict[str, Any]] = []
+
+    async for document in cursor:
+        results.append(
+            {
+                "date": document["_id"],
+                "average_elements": document["average_elements"],
+                "count": document["count"],
+            }
+        )
+
+    return results
+
+
+async def get_jobs_per_day(user: str):
+    collection = get_job_collection()
+    pipeline = [
+        {"$match": {"status": "Completed", "user": user}},
+        {
+            "$project": {
+                "date": {
+                    "$dateToString": {"format": "%Y-%m-%d", "date": "$time_created"}
+                }
+            }
+        },
+        {"$group": {"_id": "$date", "job_count": {"$sum": 1}}},
+        {"$sort": {"_id": 1}},
+    ]
+    cursor = collection.aggregate(pipeline)
+
+    results: list[dict[str, Any]] = []
+    async for document in cursor:
+        results.append({"date": document["_id"], "job_count": document["job_count"]})
+
+    return results
