@@ -6,14 +6,14 @@ import { ElementTable, JobSubmitter, ResultsTable } from "../components/submit";
 
 const Home = () => {
   const router = useRouter();
-
   const { elements, url } = router.query;
 
-  const [submittedURL, setSubmittedURL] = useState("");
+  const [submittedURL, setSubmittedURL] = useState<string>("");
   const [rows, setRows] = useState<Element[]>([]);
   const [results, setResults] = useState<Result>({});
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<string>("alert");
 
   const resultsRef = useRef<HTMLTableElement | null>(null);
 
@@ -34,6 +34,22 @@ const Home = () => {
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
+  };
+
+  const ErrorSnackbar = () => {
+    return (
+      <Alert onClose={handleCloseSnackbar} severity="error">
+        {snackbarMessage}
+      </Alert>
+    );
+  };
+
+  const NotifySnackbar = () => {
+    return (
+      <Alert onClose={handleCloseSnackbar} severity="info">
+        {snackbarMessage}
+      </Alert>
+    );
   };
 
   return (
@@ -58,6 +74,7 @@ const Home = () => {
             setResults,
             setSnackbarMessage,
             setSnackbarOpen,
+            setSnackbarSeverity,
           }}
         />
         <ElementTable
@@ -65,16 +82,15 @@ const Home = () => {
           setRows={setRows}
           submittedURL={submittedURL}
         />
-        <ResultsTable stateProps={{ results }} resultsRef={resultsRef} />
+        {/* <ResultsTable stateProps={{ results }} resultsRef={resultsRef} /> */}
       </Container>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity="error">
-          {snackbarMessage}
-        </Alert>
+        <p>Woo</p>
+        {/* {snackbarSeverity === "info" ? <NotifySnackbar /> : <ErrorSnackbar />} */}
       </Snackbar>
     </Box>
   );

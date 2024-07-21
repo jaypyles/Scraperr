@@ -1,18 +1,19 @@
 # STL
+from functools import partial
 import uuid
 import logging
 from io import StringIO
 
 # PDM
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import BackgroundTasks, FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 # LOCAL
-from api.backend.job import query, insert, delete_jobs
+from api.backend.job import query, insert, delete_jobs, update_job
 from api.backend.models import (
     DownloadJob,
     SubmitScrapeJob,
@@ -21,6 +22,7 @@ from api.backend.models import (
 )
 from api.backend.scraping import scrape
 from api.backend.auth.auth_router import auth_router
+from seleniumwire.thirdparty.mitmproxy.master import traceback
 
 logging.basicConfig(
     level=logging.INFO,
@@ -55,23 +57,15 @@ def read_favicon():
 
 
 @app.post("/api/submit-scrape-job")
-async def submit_scrape_job(job: SubmitScrapeJob):
+async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTasks):
     LOG.info(f"Recieved job: {job}")
     try:
-        scraped = await scrape(job.url, job.elements)
-
-        LOG.info(
-            f"Scraped result for url: {job.url}, with elements: {job.elements}\n{scraped}"
-        )
-
-        json_scraped = jsonable_encoder(scraped)
-        job.result = json_scraped
         job.id = uuid.uuid4().hex
 
         if job.user:
             await insert(jsonable_encoder(job))
 
-        return JSONResponse(content=json_scraped)
+        return JSONResponse(content=f"Job queued for scraping: {job.id}")
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
@@ -95,19 +89,21 @@ async def download(download_job: DownloadJob):
 
         flattened_results = []
         for result in results:
-            for key, values in result["result"].items():
-                for value in values:
-                    flattened_results.append(
-                        {
-                            "id": result["id"],
-                            "url": result["url"],
-                            "element_name": key,
-                            "xpath": value["xpath"],
-                            "text": value["text"],
-                            "user": result["user"],
-                            "time_created": result["time_created"],
-                        }
-                    )
+            for res in result["result"]:
+                for url, elements in res.items():
+                    for element_name, values in elements.items():
+                        for value in values:
+                            flattened_results.append(
+                                {
+                                    "id": result.get("id", None),
+                                    "url": url,
+                                    "element_name": element_name,
+                                    "xpath": value.get("xpath", ""),
+                                    "text": value.get("text", ""),
+                                    "user": result.get("user", ""),
+                                    "time_created": result.get("time_created", ""),
+                                }
+                            )
 
         df = pd.DataFrame(flattened_results)
 
@@ -120,6 +116,7 @@ async def download(download_job: DownloadJob):
 
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
+        traceback.print_exc()
         return {"error": str(e)}
 
 

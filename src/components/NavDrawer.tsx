@@ -125,9 +125,12 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
               <Typography>Settings</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Tooltip title="Dark Theme Toggle" placement="bottom">
+              <div className="flex flex-row mr-1">
+                <Typography className="mr-2">
+                  <p className="text-sm">Dark Theme Toggle</p>
+                </Typography>
                 <Switch checked={isDarkMode} onChange={toggleTheme} />
-              </Tooltip>
+              </div>
             </AccordionDetails>
           </Accordion>
         </Box>
