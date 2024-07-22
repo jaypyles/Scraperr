@@ -1,12 +1,13 @@
-![logo_picture](https://github.com/jaypyles/www-scrape/blob/ui-changes/docs/logo_picture.png)
+![logo_picture](https://github.com/jaypyles/www-scrape/blob/master/docs/logo_picture.png)
 
 <div align="center">
   <img src="https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
   <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next JS" />
   <img src="https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
-  <br/>
 </div>
+
+# Summary
 
 Scraperr is a self-hosted web application that allows users to scrape data from web pages by specifying elements via XPath. Users can submit URLs and the corresponding elements to be scraped, and the results will be displayed in a table.
 
@@ -93,7 +94,7 @@ The app provides its own `traefik` configuration to use independently, but can e
 
 Use this service as an API for your own projects. Due to this using FastAPI, a docs page is available at `/docs` for the API.
 
-![docs](https://github.com/jaypyles/www-scrape/blob/ui-changes/docs/docs_page.png)
+![docs](https://github.com/jaypyles/www-scrape/blob/master/docs/docs_page.png)
 
 ## Troubleshooting
 
