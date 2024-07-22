@@ -1,5 +1,3 @@
-# Scraperr
-
 ![logo_picture](https://github.com/jaypyles/www-scrape/blob/ui-changes/docs/logo_picture.png)
 
 Scraperr is a self-hosted web application that allows users to scrape data from web pages by specifying elements via XPath. Users can submit URLs and the corresponding elements to be scraped, and the results will be displayed in a table.
