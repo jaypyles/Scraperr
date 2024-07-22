@@ -5,6 +5,7 @@
   <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next JS" />
   <img src="https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
+  <br/>
 </div>
 
 Scraperr is a self-hosted web application that allows users to scrape data from web pages by specifying elements via XPath. Users can submit URLs and the corresponding elements to be scraped, and the results will be displayed in a table.
@@ -21,9 +22,9 @@ From the table, users can download an excel sheet of the job's results, along wi
 - Add custom json headers to send in requests to URLs
 - Display results of scraped data
 
-### Managing Previous Jobs
-
 ![main_page](https://github.com/jaypyles/www-scrape/blob/master/docs/main_page.png)
+
+### Managing Previous Jobs
 
 - Download csv containing results
 - Rerun jobs
@@ -90,38 +91,9 @@ The app provides its own `traefik` configuration to use independently, but can e
 
 ## API Endpoints
 
-Use this service as an API for your own projects.
+Use this service as an API for your own projects. Due to this using FastAPI, a docs page is available at `/docs` for the API.
 
-- `/api/submit-scrape-job`: Endpoint to submit the scraping job. Accepts a POST request with the following payload:
-
-  ```json
-  {
-    "url": "http://example.com",
-    "elements": [
-      {
-        "name": "ElementName",
-        "xpath": "/div[@class='example']"
-      }
-    ],
-    "user": "user@example.com",
-    "time_created": "2024-07-07T12:34:56.789Z"
-  }
-  ```
-
-- `/api/retrieve-scrape-jobs`: Endpoint to retrieve jobs made by specific accounts.
-
-  ```json
-  {
-    "user": "user@example.com"
-  }
-  ```
-
-- `/api/download`: Endpoint to download job in csv format.
-  ```json
-  {
-    "id": "85312b8b8b204aacab9631f2d76f1af0"
-  }
-  ```
+![docs](https://github.com/jaypyles/www-scrape/blob/ui-changes/docs/docs_page.png)
 
 ## Troubleshooting
 
