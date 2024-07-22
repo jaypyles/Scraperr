@@ -24,6 +24,7 @@ from api.backend.job import (
     query,
     insert,
     delete_jobs,
+    update_job,
 )
 from api.backend.models import (
     DownloadJob,
@@ -31,6 +32,7 @@ from api.backend.models import (
     SubmitScrapeJob,
     DeleteScrapeJobs,
     RetrieveScrapeJobs,
+    UpdateJobs,
 )
 from api.backend.auth.auth_router import auth_router
 import traceback
@@ -65,6 +67,12 @@ def read_root():
 @app.get("/favicon.ico")
 def read_favicon():
     return FileResponse("dist/favicon.ico")
+
+
+@app.post("/api/update")
+async def update(update_jobs: UpdateJobs):
+    """Used to update jobs"""
+    await update_job(update_jobs.ids, update_jobs.field, update_jobs.value)
 
 
 @app.post("/api/submit-scrape-job")

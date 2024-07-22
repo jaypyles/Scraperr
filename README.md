@@ -17,6 +17,7 @@ From the table, users can download an excel sheet of the job's results, along wi
 - Download csv containing results
 - Rerun jobs
 - View status of queued jobs
+- Favorite and view favorited jobs
 
 ![job_page](https://github.com/jaypyles/www-scrape/blob/master/docs/job_page.png)
 

@@ -7,8 +7,8 @@ const Jobs = () => {
   const { user } = useAuth();
   const [jobs, setJobs] = useState([]);
 
-  const fetchJobs = () => {
-    fetch("/api/retrieve-scrape-jobs", {
+  const fetchJobs = async () => {
+    await fetch("/api/retrieve-scrape-jobs", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ user: user?.email }),

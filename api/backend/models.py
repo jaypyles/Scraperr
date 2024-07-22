@@ -48,3 +48,9 @@ class DeleteScrapeJobs(pydantic.BaseModel):
 
 class GetStatistics(pydantic.BaseModel):
     user: str
+
+
+class UpdateJobs(pydantic.BaseModel):
+    ids: list[str]
+    field: str
+    value: Any
