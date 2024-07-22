@@ -34,13 +34,13 @@ async def query(filter: dict[str, Any]) -> list[dict[str, Any]]:
     return results
 
 
-async def update_job(id: str, field: str, value: Any):
+async def update_job(ids: list[str], field: str, value: Any):
     collection = get_job_collection()
-    result = await collection.update_one(
-        {"id": id},
-        {"$set": {field: value}},
-    )
-    return result.modified_count
+    for id in ids:
+        _ = await collection.update_one(
+            {"id": id},
+            {"$set": {field: value}},
+        )
 
 
 async def delete_jobs(jobs: list[str]):

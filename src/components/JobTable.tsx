@@ -1,19 +1,9 @@
 import React, { useState } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   IconButton,
   Box,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Checkbox,
   Tooltip,
-  Button,
   TextField,
   FormControl,
   InputLabel,
@@ -23,19 +13,11 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DownloadIcon from "@mui/icons-material/Download";
+import StarIcon from "@mui/icons-material/Star";
 import { useRouter } from "next/router";
-
-interface Job {
-  id: string;
-  url: string;
-  elements: Object[];
-  result: Object;
-  time_created: Date;
-  status: string;
-  job_options: Object;
-}
+import { Favorites, JobQueue } from "./jobs";
+import { Job } from "../types";
 
 interface JobTableProps {
   jobs: Job[];
@@ -57,6 +39,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   const [allSelected, setAllSelected] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchMode, setSearchMode] = useState<string>("url");
+  const [favoriteView, setFavoriteView] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -139,6 +122,22 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
     return true;
   });
 
+  const favoriteJob = async (ids: string[], field: string, value: any) => {
+    const postBody = {
+      ids: ids,
+      field: field,
+      value: value,
+    };
+
+    await fetch("/api/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postBody),
+    });
+
+    await fetchJobs();
+  };
+
   return (
     <Box
       width="100%"
@@ -191,6 +190,16 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
                 </IconButton>
               </span>
             </Tooltip>
+            <Tooltip title="Favorites">
+              <span>
+                <IconButton
+                  color={favoriteView ? "warning" : "default"}
+                  onClick={() => setFavoriteView(!favoriteView)}
+                >
+                  <StarIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
           <div className="flex flex-row space-x-2 w-1/2">
             <TextField
@@ -219,117 +228,23 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
           </div>
         </Box>
         <Box sx={{ overflow: "auto" }}>
-          <Table sx={{ tableLayout: "fixed", width: "100%" }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Select</TableCell>
-                <TableCell>Id</TableCell>
-                <TableCell>Url</TableCell>
-                <TableCell>Elements</TableCell>
-                <TableCell>Result</TableCell>
-                <TableCell>Time Created</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredJobs.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedJobs.has(row.id)}
-                      onChange={() => handleSelectJob(row.id)}
-                    />
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
-                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
-                      {row.id}
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 200, overflow: "auto" }}>
-                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
-                      {row.url}
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
-                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
-                      {JSON.stringify(row.elements)}
-                    </Box>
-                  </TableCell>
-                  <TableCell
-                    sx={{ maxWidth: 150, overflow: "auto", padding: 0 }}
-                  >
-                    <Accordion sx={{ margin: 0, padding: 0.5 }}>
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                        sx={{
-                          minHeight: 0,
-                          "&.Mui-expanded": { minHeight: 0 },
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            maxHeight: 150,
-                            overflow: "auto",
-                            width: "100%",
-                          }}
-                        >
-                          <Typography sx={{ fontSize: "0.875rem" }}>
-                            Show Result
-                          </Typography>
-                        </Box>
-                      </AccordionSummary>
-                      <AccordionDetails sx={{ padding: 1 }}>
-                        <Box sx={{ maxHeight: 200, overflow: "auto" }}>
-                          <Typography
-                            sx={{
-                              fontSize: "0.875rem",
-                              whiteSpace: "pre-wrap",
-                            }}
-                          >
-                            {JSON.stringify(row.result, null, 2)}
-                          </Typography>
-                        </Box>
-                      </AccordionDetails>
-                    </Accordion>
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
-                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
-                      {new Date(row.time_created).toLocaleString()}
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
-                    <Box sx={{ maxHeight: 100, overflow: "auto" }}>
-                      <Box
-                        className="rounded-md p-2 text-center"
-                        sx={{ bgcolor: COLOR_MAP[row.status], opactity: "50%" }}
-                      >
-                        {row.status}
-                      </Box>
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
-                    <Button
-                      onClick={() => {
-                        handleDownload([row.id]);
-                      }}
-                    >
-                      Download
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        handleNavigate(row.elements, row.url, row.job_options)
-                      }
-                    >
-                      Rerun
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {!favoriteView ? (
+            <JobQueue
+              stateProps={{ selectedJobs, filteredJobs }}
+              colors={COLOR_MAP}
+              onDownload={handleDownload}
+              onNavigate={handleNavigate}
+              onSelectJob={handleSelectJob}
+              onFavorite={favoriteJob}
+            ></JobQueue>
+          ) : (
+            <Favorites
+              stateProps={{ selectedJobs, filteredJobs }}
+              onNavigate={handleNavigate}
+              onSelectJob={handleSelectJob}
+              onFavorite={favoriteJob}
+            ></Favorites>
+          )}
         </Box>
       </Box>
     </Box>
