@@ -6,10 +6,6 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta charSet="utf-8" />
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="upgrade-insecure-requests"
-        />
         <meta name="description" content="Scraperr" />
       </Head>
       <body>
