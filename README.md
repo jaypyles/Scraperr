@@ -13,11 +13,15 @@ From the table, users can download an excel sheet of the job's results, along wi
 
 ## Features
 
+### Submitting URLs for Scraping
+
 - Submit/Queue URLs for web scraping
 - Add and manage elements to scrape using XPath
 - Scrape all pages within same domain
 - Add custom json headers to send in requests to URLs
 - Display results of scraped data
+
+### Managing Previous Jobs
 
 ![main_page](https://github.com/jaypyles/www-scrape/blob/master/docs/main_page.png)
 
@@ -28,13 +32,19 @@ From the table, users can download an excel sheet of the job's results, along wi
 
 ![job_page](https://github.com/jaypyles/www-scrape/blob/master/docs/job_page.png)
 
+### User Management
+
 - User login/signup to organize jobs
 
 ![login](https://github.com/jaypyles/www-scrape/blob/master/docs/login.png)
 
+### Log Viewing
+
 - View app logs inside of web ui
 
 ![logs](https://github.com/jaypyles/www-scrape/blob/master/docs/log_page.png)
+
+### Statistics View
 
 - View a small statistics view of jobs ran
 

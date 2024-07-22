@@ -136,31 +136,37 @@ export const JobQueue = ({
                 {new Date(row.time_created).toLocaleString()}
               </Box>
             </TableCell>
-            <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
+            <TableCell sx={{ maxWidth: 50, overflow: "auto" }}>
               <Box sx={{ maxHeight: 100, overflow: "auto" }}>
                 <Box
                   className="rounded-md p-2 text-center"
-                  sx={{ bgcolor: colors[row.status], opactity: "50%" }}
+                  sx={{ bgcolor: colors[row.status] }}
                 >
                   {row.status}
                 </Box>
               </Box>
             </TableCell>
-            <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
-              <Button
-                onClick={() => {
-                  onDownload([row.id]);
-                }}
-              >
-                Download
-              </Button>
-              <Button
-                onClick={() =>
-                  onNavigate(row.elements, row.url, row.job_options)
-                }
-              >
-                Rerun
-              </Button>
+            <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Button
+                  onClick={() => {
+                    onDownload([row.id]);
+                  }}
+                  size="small"
+                  sx={{ minWidth: 0, padding: "4px 8px" }}
+                >
+                  Download
+                </Button>
+                <Button
+                  onClick={() =>
+                    onNavigate(row.elements, row.url, row.job_options)
+                  }
+                  size="small"
+                  sx={{ minWidth: 0, padding: "4px 8px" }}
+                >
+                  Rerun
+                </Button>
+              </Box>
             </TableCell>
           </TableRow>
         ))}

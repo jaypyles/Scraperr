@@ -24,6 +24,7 @@ import TerminalIcon from "@mui/icons-material/Terminal";
 import BarChart from "@mui/icons-material/BarChart";
 import { useRouter } from "next/router";
 import { useTheme } from "@mui/material/styles";
+import Image from "next/image";
 
 interface NavDrawerProps {
   toggleTheme: () => void;
@@ -112,11 +113,9 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
               </Typography>
               <Button
                 variant="contained"
-                color="primary"
                 onClick={logout}
                 sx={{
                   width: "100%",
-                  color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
                 }}
               >
                 Logout
@@ -125,24 +124,22 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
           ) : (
             <Button
               variant="contained"
-              color="primary"
               onClick={() => router.push("/login")}
               sx={{
                 width: "100%",
-                color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
               }}
             >
               Login
             </Button>
           )}
           <Divider sx={{ marginTop: 2, marginBottom: 2 }}></Divider>
-          <Accordion sx={{ padding: 0, width: "90%" }}>
+          <Accordion sx={{ padding: 0, width: "90%", marginBottom: 1 }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>Settings</Typography>
+              <Typography>Quick Settings</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <div className="flex flex-row mr-1">

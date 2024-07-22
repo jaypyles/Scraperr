@@ -57,6 +57,7 @@ app.add_middleware(
 )
 
 app.mount("/_next/static", StaticFiles(directory="./dist/_next/static"), name="static")
+app.mount("/images", StaticFiles(directory="./dist/images"), name="images")
 
 
 @app.get("/")
