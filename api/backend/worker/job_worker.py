@@ -30,7 +30,7 @@ async def process_job():
             _ = await update_job(
                 [job["id"]], field="result", value=jsonable_encoder(scraped)
             )
-            _ = await update_job(job["id"], field="status", value="Completed")
+            _ = await update_job([job["id"]], field="status", value="Completed")
         except Exception as e:
             _ = await update_job([job["id"]], field="status", value="Failed")
             _ = await update_job([job["id"]], field="result", value=e)
