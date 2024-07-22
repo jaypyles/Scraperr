@@ -17,7 +17,7 @@ async def process_job():
     if job:
         LOG.info(f"Beginning processing job: {job}.")
         try:
-            _ = await update_job(job["id"], field="status", value="Scraping")
+            _ = await update_job([job["id"]], field="status", value="Scraping")
             scraped = await scrape(
                 job["url"],
                 [Element(**j) for j in job["elements"]],
@@ -28,12 +28,12 @@ async def process_job():
                 f"Scraped result for url: {job['url']}, with elements: {job['elements']}\n{scraped}"
             )
             _ = await update_job(
-                job["id"], field="result", value=jsonable_encoder(scraped)
+                [job["id"]], field="result", value=jsonable_encoder(scraped)
             )
             _ = await update_job(job["id"], field="status", value="Completed")
         except Exception as e:
-            _ = await update_job(job["id"], field="status", value="Failed")
-            _ = await update_job(job["id"], field="result", value=e)
+            _ = await update_job([job["id"]], field="status", value="Failed")
+            _ = await update_job([job["id"]], field="result", value=e)
             LOG.error(f"Exception as occured: {e}\n{traceback.print_exc()}")
 
 
