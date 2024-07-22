@@ -33,7 +33,7 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
 
   const handleAddRow = () => {
     const updatedRow = { ...newRow, url: submittedURL };
-    setRows([...rows, updatedRow]);
+    setRows([updatedRow, ...rows]);
     setNewRow({ name: "", xpath: "", url: "" });
   };
 
@@ -44,87 +44,126 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
       })
     );
   };
+
   return (
-    <>
-      <Box display="flex" gap={2} marginBottom={2} className="items-center">
-        <TextField
-          label="Name"
-          variant="outlined"
-          fullWidth
-          value={newRow.name}
-          onChange={(e) => setNewRow({ ...newRow, name: e.target.value })}
-        />
-        <TextField
-          label="XPath"
-          variant="outlined"
-          fullWidth
-          value={newRow.xpath}
-          onChange={(e) => setNewRow({ ...newRow, xpath: e.target.value })}
-        />
-        <Tooltip
-          title={
-            newRow.xpath.length > 0 && newRow.name.length > 0
-              ? "Add Element"
-              : "Fill out all fields to add an element"
-          }
-          placement="top"
+    <Box className="animate-fadeIn p-2" bgcolor="background.paper">
+      <Box className="text-center mb-4">
+        <Typography variant="h4" sx={{ marginBottom: 1 }}>
+          Elements to Scrape
+        </Typography>
+        <TableContainer
+          component={Box}
+          sx={{ maxHeight: "50%", overflow: "auto" }}
         >
-          <span>
-            <IconButton
-              aria-label="add"
-              size="small"
-              onClick={handleAddRow}
+          <div className="rounded-lg shadow-md border border-gray-300 overflow-hidden">
+            <Table
+              stickyHeader
+              className="mb-4"
               sx={{
-                height: "40px",
-                width: "40px",
+                tableLayout: "fixed",
+                width: "100%",
+                "& .MuiTableCell-root": {
+                  borderBottom: "1px solid #e0e0e0",
+                },
               }}
-              disabled={!(newRow.xpath.length > 0 && newRow.name.length > 0)}
             >
-              <AddIcon
-                fontSize="inherit"
-                sx={{
-                  color: theme.palette.mode === "light" ? "#000000" : "#ffffff",
-                }}
-              />
-            </IconButton>
-          </span>
-        </Tooltip>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography sx={{ fontWeight: "bold" }}>Name</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography sx={{ fontWeight: "bold" }}>XPath</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography sx={{ fontWeight: "bold" }}>Actions</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <TextField
+                      label="Name"
+                      variant="outlined"
+                      fullWidth
+                      value={newRow.name}
+                      onChange={(e) =>
+                        setNewRow({ ...newRow, name: e.target.value })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="XPath"
+                      variant="outlined"
+                      fullWidth
+                      value={newRow.xpath}
+                      onChange={(e) =>
+                        setNewRow({ ...newRow, xpath: e.target.value })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip
+                      title={
+                        newRow.xpath.length > 0 && newRow.name.length > 0
+                          ? "Add Element"
+                          : "Fill out all fields to add an element"
+                      }
+                      placement="top"
+                    >
+                      <span>
+                        <IconButton
+                          aria-label="add"
+                          size="small"
+                          onClick={handleAddRow}
+                          sx={{
+                            height: "40px",
+                            width: "40px",
+                          }}
+                          disabled={
+                            !(newRow.xpath.length > 0 && newRow.name.length > 0)
+                          }
+                        >
+                          <AddIcon
+                            fontSize="inherit"
+                            sx={{
+                              color:
+                                theme.palette.mode === "light"
+                                  ? "#000000"
+                                  : "#ffffff",
+                            }}
+                          />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+                {rows.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Typography>{row.name}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography>{row.xpath}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => handleDeleteRow(row.name)}
+                        className="!bg-red-500 bg-opacity-50 !text-white font-semibold rounded-md 
+                        transition-transform transform hover:scale-105 hover:bg-red-500"
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </TableContainer>
       </Box>
-      <Typography variant="h4">Elements</Typography>
-      <TableContainer
-        component={Box}
-        sx={{ maxHeight: "50%", overflow: "auto" }}
-      >
-        <Table stickyHeader className="mb-4">
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography sx={{ fontWeight: "bold" }}>Name</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography sx={{ fontWeight: "bold" }}>XPath</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <Typography>{row.name}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography>{row.xpath}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Button onClick={() => handleDeleteRow(row.name)}>
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+    </Box>
   );
 };

@@ -15,7 +15,8 @@ interface StateProps {
   submittedURL: string;
   setSubmittedURL: Dispatch<React.SetStateAction<string>>;
   rows: Element[];
-  setResults: Dispatch<React.SetStateAction<Result>>;
+  isValidURL: boolean;
+  setIsValidUrl: Dispatch<React.SetStateAction<boolean>>;
   setSnackbarMessage: Dispatch<React.SetStateAction<string>>;
   setSnackbarOpen: Dispatch<React.SetStateAction<boolean>>;
   setSnackbarSeverity: Dispatch<React.SetStateAction<string>>;
@@ -40,13 +41,13 @@ export const JobSubmitter = ({ stateProps }: Props) => {
     submittedURL,
     setSubmittedURL,
     rows,
-    setResults,
+    isValidURL,
+    setIsValidUrl,
     setSnackbarMessage,
     setSnackbarOpen,
     setSnackbarSeverity,
   } = stateProps;
 
-  const [isValidURL, setIsValidUrl] = useState<boolean>(true);
   const [urlError, setUrlError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [jobOptions, setJobOptions] = useState<JobOptions>({
@@ -157,15 +158,17 @@ export const JobSubmitter = ({ stateProps }: Props) => {
           onChange={(e) => setSubmittedURL(e.target.value)}
           error={!isValidURL}
           helperText={!isValidURL ? urlError : ""}
+          className="rounded-md"
         />
         <Button
           variant="contained"
-          color="primary"
           size="small"
           onClick={handleSubmit}
           disabled={!(rows.length > 0) || loading}
+          className={`bg-gradient-to-r from-[#034efc] to-gray-500 text-white font-semibold rounded-md 
+                    transition-transform transform hover:scale-105 disabled:opacity-50`}
         >
-          {loading ? <CircularProgress size={24} /> : "Submit"}
+          {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
         </Button>
       </div>
       <Box bgcolor="background.paper" className="flex flex-col mb-2 rounded-md">

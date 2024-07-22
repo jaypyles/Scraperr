@@ -70,7 +70,24 @@ const lightTheme = createTheme({
       secondary: "#333333",
     },
   },
+
   ...commonThemeOptions,
+  components: {
+    ...commonThemeOptions.components,
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          color: "white",
+          "&.MuiButton-root": {
+            backgroundColor: "#034efc",
+          },
+          "&:hover": {
+            backgroundColor: "#027be0",
+          },
+        },
+      },
+    },
+  },
 });
 
 const darkTheme = createTheme({
@@ -132,6 +149,12 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           color: "white",
+          "&.MuiButton-root": {
+            backgroundColor: "#034efc",
+          },
+          "&:hover": {
+            backgroundColor: "#027be0",
+          },
         },
       },
     },

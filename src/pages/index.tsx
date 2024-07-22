@@ -14,6 +14,7 @@ const Home = () => {
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<string>("error");
+  const [isValidURL, setIsValidUrl] = useState<boolean>(true);
 
   const resultsRef = useRef<HTMLTableElement | null>(null);
 
@@ -74,26 +75,26 @@ const Home = () => {
       minHeight="100vh"
       py={4}
     >
-      <Container maxWidth="md">
-        <Typography variant="h1" gutterBottom textAlign="center">
-          Scraperr
-        </Typography>
+      <Container maxWidth="lg">
         <JobSubmitter
           stateProps={{
             submittedURL,
             setSubmittedURL,
             rows,
-            setResults,
+            isValidURL,
+            setIsValidUrl,
             setSnackbarMessage,
             setSnackbarOpen,
             setSnackbarSeverity,
           }}
         />
-        <ElementTable
-          rows={rows}
-          setRows={setRows}
-          submittedURL={submittedURL}
-        />
+        {submittedURL.length ? (
+          <ElementTable
+            rows={rows}
+            setRows={setRows}
+            submittedURL={submittedURL}
+          />
+        ) : null}
       </Container>
       {snackbarSeverity === "info" ? <NotifySnackbar /> : <ErrorSnackbar />}
     </Box>

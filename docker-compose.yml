@@ -5,6 +5,8 @@ services:
     build:
       context: ./
     container_name: scraperr
+    ports:
+      - 9000:8000
     env_file:
       - ./.env
     volumes:

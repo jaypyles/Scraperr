@@ -32,6 +32,7 @@ const COLOR_MAP: ColorMap = {
   Queued: "rgba(255,201,5,0.25)",
   Scraping: "rgba(3,104,255,0.25)",
   Completed: "rgba(5,255,51,0.25)",
+  Failed: "rgba(214,0,25,0.25)",
 };
 
 const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
