@@ -3,9 +3,6 @@ import uuid
 import logging
 from io import BytesIO
 from openpyxl import Workbook
-from typing import Any
-from datetime import datetime
-from bson import ObjectId
 
 # PDM
 from fastapi import BackgroundTasks, FastAPI, HTTPException
@@ -56,18 +53,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/_next/static", StaticFiles(directory="./dist/_next/static"), name="static")
-app.mount("/images", StaticFiles(directory="./dist/images"), name="images")
+# app.mount("/_next/static", StaticFiles(directory="./dist/_next/static"), name="static")
+# app.mount("/images", StaticFiles(directory="./dist/images"), name="images")
 
 
-@app.get("/")
-def read_root():
-    return FileResponse("./dist/index.html")
+# @app.get("/")
+# def read_root():
+#     return FileResponse("./dist/index.html")
 
 
-@app.get("/favicon.ico")
-def read_favicon():
-    return FileResponse("dist/favicon.ico")
+# @app.get("/favicon.ico")
+# def read_favicon():
+#     return FileResponse("dist/favicon.ico")
 
 
 @app.post("/api/update")

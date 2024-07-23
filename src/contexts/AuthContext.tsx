@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { Constants } from "../lib";
 
 interface AuthContextProps {
   user: any;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  setUser: (user: any) => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -22,7 +24,7 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     const token = localStorage.getItem("token");
     if (token) {
       axios
-        .get("/api/auth/users/me", {
+        .get(`${Constants.DOMAIN}/api/auth/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -39,11 +41,17 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     const params = new URLSearchParams();
     params.append("username", email);
     params.append("password", password);
-    const response = await axios.post("/api/auth/token", params);
+    const response = await axios.post(
+      `${Constants.DOMAIN}/api/auth/token`,
+      params
+    );
     localStorage.setItem("token", response.data.access_token);
-    const userResponse = await axios.get("/api/auth/users/me", {
-      headers: { Authorization: `Bearer ${response.data.access_token}` },
-    });
+    const userResponse = await axios.get(
+      `${Constants.DOMAIN}/api/auth/users/me`,
+      {
+        headers: { Authorization: `Bearer ${response.data.access_token}` },
+      }
+    );
     setUser(userResponse.data);
     setIsAuthenticated(true);
   };
@@ -55,7 +63,9 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, login, logout, setUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

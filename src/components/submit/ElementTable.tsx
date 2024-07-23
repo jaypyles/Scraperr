@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, Dispatch, SetStateAction } from "react";
 import {
   Typography,

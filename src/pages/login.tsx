@@ -1,9 +1,12 @@
+"use client";
+
 import React, { useState } from "react";
 import axios from "axios";
 import { Button, TextField, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import { useAuth } from "../contexts/AuthContext";
+import { Constants } from "../lib";
 
 type Mode = "login" | "signup";
 
@@ -24,7 +27,7 @@ const AuthForm: React.FC = () => {
         alert("Login successful");
         router.push("/");
       } else {
-        await axios.post("/api/auth/signup", {
+        await axios.post(`${Constants.DOMAIN}/api/auth/signup`, {
           email: email,
           password: password,
           full_name: fullName,

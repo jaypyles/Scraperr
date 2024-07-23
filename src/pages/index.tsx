@@ -1,8 +1,10 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
-import { Typography, Container, Box, Snackbar, Alert } from "@mui/material";
+import { Container, Box, Snackbar, Alert } from "@mui/material";
 import { useRouter } from "next/router";
 import { Element, Result } from "../types";
-import { ElementTable, JobSubmitter, ResultsTable } from "../components/submit";
+import { ElementTable, JobSubmitter } from "../components/submit";
 
 const Home = () => {
   const router = useRouter();

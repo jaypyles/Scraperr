@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -10,7 +12,6 @@ import {
   Typography,
   Button,
   Switch,
-  Tooltip,
   Drawer,
   Divider,
   Accordion,
@@ -23,8 +24,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import BarChart from "@mui/icons-material/BarChart";
 import { useRouter } from "next/router";
-import { useTheme } from "@mui/material/styles";
-import Image from "next/image";
 
 interface NavDrawerProps {
   toggleTheme: () => void;
@@ -35,7 +34,7 @@ const drawerWidth = 240;
 
 const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
   const router = useRouter();
-  const theme = useTheme();
+
   const { logout, user, isAuthenticated } = useAuth();
 
   return (
@@ -143,7 +142,7 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
             </AccordionSummary>
             <AccordionDetails>
               <div className="flex flex-row mr-1">
-                <Typography className="mr-2">
+                <Typography className="mr-2" component="span">
                   <p className="text-sm">Dark Theme Toggle</p>
                 </Typography>
                 <Switch checked={isDarkMode} onChange={toggleTheme} />

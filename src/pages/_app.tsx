@@ -9,8 +9,6 @@ import NavDrawer from "../components/NavDrawer";
 import { darkTheme, lightTheme } from "../styles/themes";
 import { AuthProvider } from "../contexts/AuthContext";
 
-const drawerWidth = 240;
-
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 

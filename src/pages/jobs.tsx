@@ -2,13 +2,29 @@ import React, { useEffect, useState } from "react";
 import JobTable from "../components/JobTable";
 import { useAuth } from "../contexts/AuthContext";
 import { Box } from "@mui/system";
+import { Constants } from "../lib";
+import { Job } from "../types";
+import { GetServerSideProps } from "next";
+import axios from "axios";
+import { cookies } from "next/headers";
 
-const Jobs = () => {
-  const { user } = useAuth();
-  const [jobs, setJobs] = useState([]);
+interface JobsProps {
+  initialJobs: Job[];
+  initialUser: any;
+}
+
+const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
+  const { user, setUser } = useAuth();
+  const [jobs, setJobs] = useState<Job[]>(initialJobs || []);
+
+  useEffect(() => {
+    if (!user && initialUser) {
+      setUser(initialUser);
+    }
+  }, [user, initialUser, setUser]);
 
   const fetchJobs = async () => {
-    await fetch("/api/retrieve-scrape-jobs", {
+    await fetch(`${Constants.DOMAIN}/api/retrieve-scrape-jobs`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ user: user?.email }),
@@ -60,6 +76,51 @@ const Jobs = () => {
       )}
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { req, res } = context;
+
+  const cookies = cookies.parse(req.headers.cookie || "");
+  const token = cookies.token;
+  let user = null;
+  let initialJobs: Job[] = [];
+
+  if (token) {
+    try {
+      const userResponse = await axios.get(
+        `${Constants.DOMAIN}/api/auth/users/me`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      user = userResponse.data;
+
+      const jobsResponse = await axios.post(
+        `${Constants.DOMAIN}/api/retrieve-scrape-jobs`,
+        { user: user.email },
+        { headers: { "content-type": "application/json" } }
+      );
+
+      initialJobs = jobsResponse.data;
+    } catch (error) {
+      console.error("Error fetching user or jobs:", error);
+      res.setHeader(
+        "Set-Cookie",
+        cookies.serialize("token", "", {
+          maxAge: -1,
+          path: "/",
+        })
+      );
+    }
+  }
+
+  return {
+    props: {
+      initialJobs,
+      initialUser: user,
+    },
+  };
 };
 
 export default Jobs;

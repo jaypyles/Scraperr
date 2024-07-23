@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chart, registerables } from "chart.js";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useAuth } from "../contexts/AuthContext";
+import { Constants } from "../lib";
 
 Chart.register(...registerables);
 
@@ -17,7 +18,7 @@ const Statistics: React.FC = () => {
     const fetchElementsData = async () => {
       try {
         const response = await fetch(
-          "/api/statistics/get-average-element-per-link",
+          `${Constants.DOMAIN}/api/statistics/get-average-element-per-link`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -91,7 +92,7 @@ const Statistics: React.FC = () => {
     const fetchJobsData = async () => {
       try {
         const response = await fetch(
-          "/api/statistics/get-average-jobs-per-day",
+          `${Constants.DOMAIN}/api/statistics/get-average-jobs-per-day`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

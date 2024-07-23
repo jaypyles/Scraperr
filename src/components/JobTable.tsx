@@ -18,6 +18,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { useRouter } from "next/router";
 import { Favorites, JobQueue } from "./jobs";
 import { Job } from "../types";
+import { Constants } from "../lib";
 
 interface JobTableProps {
   jobs: Job[];
@@ -45,7 +46,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   const router = useRouter();
 
   const handleDownload = async (ids: string[]) => {
-    const response = await fetch("/api/download", {
+    const response = await fetch(`${Constants.DOMAIN}/api/download`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: ids }),
@@ -100,7 +101,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   };
 
   const handleDeleteSelected = async () => {
-    const response = await fetch("/api/delete-scrape-jobs", {
+    const response = await fetch(`${Constants.DOMAIN}/api/delete-scrape-jobs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: Array.from(selectedJobs) }),
@@ -130,7 +131,7 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
       value: value,
     };
 
-    await fetch("/api/update", {
+    await fetch(`${Constants.DOMAIN}/api/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(postBody),

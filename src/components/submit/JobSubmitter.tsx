@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState, Dispatch } from "react";
 import {
   TextField,
@@ -7,9 +9,10 @@ import {
   FormControlLabel,
   CircularProgress,
 } from "@mui/material";
-import { Element, Result } from "../../types";
+import { Element } from "../../types";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "next/router";
+import { Constants } from "../../lib";
 
 interface StateProps {
   submittedURL: string;
@@ -89,7 +92,7 @@ export const JobSubmitter = ({ stateProps }: Props) => {
       return;
     }
 
-    fetch("/api/submit-scrape-job", {
+    fetch(`${Constants.DOMAIN}/api/submit-scrape-job`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -112,12 +115,12 @@ export const JobSubmitter = ({ stateProps }: Props) => {
         return response.json();
       })
       .then((data) => {
-        setSnackbarMessage(data);
+        setSnackbarMessage(data || "Job submitted successfully.");
         setSnackbarSeverity("info");
         setSnackbarOpen(true);
       })
       .catch((error) => {
-        setSnackbarMessage(error.message || "An error occurred.");
+        setSnackbarMessage(error || "An error occurred.");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       })
