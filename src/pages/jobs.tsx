@@ -6,7 +6,7 @@ import { Constants } from "../lib";
 import { Job } from "../types";
 import { GetServerSideProps } from "next";
 import axios from "axios";
-import { cookies } from "next/headers";
+import { parseCookies, destroyCookie } from "nookies";
 
 interface JobsProps {
   initialJobs: Job[];
@@ -80,8 +80,7 @@ const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { req, res } = context;
-
-  const cookies = cookies.parse(req.headers.cookie || "");
+  const cookies = parseCookies({ req });
   const token = cookies.token;
   let user = null;
   let initialJobs: Job[] = [];
@@ -105,13 +104,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       initialJobs = jobsResponse.data;
     } catch (error) {
       console.error("Error fetching user or jobs:", error);
-      res.setHeader(
-        "Set-Cookie",
-        cookies.serialize("token", "", {
-          maxAge: -1,
-          path: "/",
-        })
-      );
+      destroyCookie({ res }, "token", {
+        path: "/",
+      });
     }
   }
 
