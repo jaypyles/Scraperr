@@ -5,12 +5,14 @@ from io import BytesIO
 from openpyxl import Workbook
 
 # PDM
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import docker
+from api.backend.schemas import User
+
+from api.backend.auth.auth_utils import get_current_user
 
 client = docker.from_env()
 
@@ -53,22 +55,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# app.mount("/_next/static", StaticFiles(directory="./dist/_next/static"), name="static")
-# app.mount("/images", StaticFiles(directory="./dist/images"), name="images")
 
-
-# @app.get("/")
-# def read_root():
-#     return FileResponse("./dist/index.html")
-
-
-# @app.get("/favicon.ico")
-# def read_favicon():
-#     return FileResponse("dist/favicon.ico")
-
-
-@app.post("/api/update")
-async def update(update_jobs: UpdateJobs):
+@app.post("/api/update", response_model=User)
+async def update(update_jobs: UpdateJobs, user: User = Depends(get_current_user)):
     """Used to update jobs"""
     await update_job(update_jobs.ids, update_jobs.field, update_jobs.value)
 

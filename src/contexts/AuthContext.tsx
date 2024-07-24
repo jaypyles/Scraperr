@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { Constants } from "../lib";
+import Cookies from "js-cookie";
 
 interface AuthContextProps {
   user: any;
@@ -45,6 +46,7 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
       `${Constants.DOMAIN}/api/auth/token`,
       params
     );
+    Cookies.set("token", response.data.access_token);
     localStorage.setItem("token", response.data.access_token);
     const userResponse = await axios.get(
       `${Constants.DOMAIN}/api/auth/users/me`,
@@ -57,6 +59,7 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   };
 
   const logout = () => {
+    Cookies.remove("token");
     localStorage.removeItem("token");
     setUser(null);
     setIsAuthenticated(false);

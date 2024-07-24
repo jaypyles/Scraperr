@@ -52,7 +52,7 @@ const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
   return (
     <>
       {user ? (
-        <JobTable jobs={jobs} fetchJobs={fetchJobs} />
+        <JobTable jobs={jobs} setJobs={setJobs} />
       ) : (
         <Box
           bgcolor="background.default"
