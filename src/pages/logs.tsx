@@ -1,13 +1,14 @@
 import { Container, IconButton } from "@mui/material";
 import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
+import { Constants } from "../lib";
 
 const Logs = () => {
   const [logs, setLogs] = useState("");
   const logsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource("/api/logs");
+    const eventSource = new EventSource(`${Constants.DOMAIN}/api/logs`);
 
     eventSource.onmessage = (event) => {
       setLogs((prevLogs) => prevLogs + event.data + "\n");

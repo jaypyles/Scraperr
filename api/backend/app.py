@@ -186,7 +186,7 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
 
 @app.get("/api/logs")
 async def get_own_logs():
-    container_id = "scraperr"
+    container_id = "scraperr_api"
     try:
         container = client.containers.get(container_id)
         log_stream = container.logs(stream=True, follow=True)

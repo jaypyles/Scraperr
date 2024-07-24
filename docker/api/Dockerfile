@@ -51,4 +51,3 @@ EXPOSE 8000
 WORKDIR /project/
 
 CMD [ "supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf" ]
-

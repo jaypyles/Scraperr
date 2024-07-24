@@ -1,24 +1,39 @@
 services:
   scraperr:
     image: jpyles0524/scraperr:latest
-    init: True
     build:
-      context: ./
+      context: .
+      dockerfile: docker/frontend/Dockerfile
     container_name: scraperr
-    ports:
-      - 9000:8000
+    env_file:
+      - ./.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scraperr.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.routers.scraperr.entrypoints=web" # websecure if using https
+      - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
+    networks:
+      - web
+
+  scraperr_api:
+    init: True
+    image: jpyles0524/scraperr_api:latest
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    container_name: scraperr_api
     env_file:
       - ./.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"
-      - "traefik.http.routers.frontend.entrypoints=web" # websecure if using https
-      - "traefik.http.services.frontend.loadbalancer.server.port=8000"
-      # - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.routers.scraperr_api.rule=Host(`scraperr_api.${HOSTNAME}`)"
+      - "traefik.http.routers.scraperr_api.entrypoints=web" # websecure if using https
+      - "traefik.http.services.scraperr_api.loadbalancer.server.port=8000"
     networks:
       - web
+
   traefik:
     image: traefik:latest
     container_name: traefik
@@ -26,15 +41,11 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      # - "--providers.file.filename=/etc/traefik/dynamic_conf.yaml"
     ports:
       - 80:80
       - 443:443
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      # - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml"
-      # - "/etc/letsencrypt/live/domain/fullchain.pem:/etc/certs/ssl-cert.pem"
-      # - "/etc/letsencrypt/live/domain/privkey.pem:/etc/certs/ssl-cert.key"
+      - /var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - web
   mongo:
@@ -46,5 +57,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     networks:
       - web
+
 networks:
   web:

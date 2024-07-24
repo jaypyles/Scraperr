@@ -3,12 +3,13 @@ services:
   scraperr:
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME_DEV}`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
-      - "traefik.http.services.frontend.loadbalancer.server.port=8000"
-      - "traefik.http.routers.frontend.tls=false"
+      - "traefik.http.routers.scraperr.rule=Host(`${HOSTNAME_DEV}`)"
+      - "traefik.http.routers.scraperr.entrypoints=web"
+      - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
+      - "traefik.http.routers.scraperr.tls=false"
     volumes:
       - "$PWD/dist:/project/dist"
+      - "$PWD/src:/project/src"
       - "$PWD/api/backend:/project/api/backend"
     ports:
-      - "8000:8000"
+      - "3000:3000"

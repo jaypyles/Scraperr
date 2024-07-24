@@ -1,10 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: "export",
   distDir: "./dist",
   images: { unoptimized: true },
   env: {
-    DOMAIN: "http://localhost:8000",
+    DOMAIN: `${process.env.NEXT_PUBLIC_API_PATH}`,
   },
 };
 
