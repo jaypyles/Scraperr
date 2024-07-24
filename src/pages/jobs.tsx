@@ -1,21 +1,65 @@
 import React, { useEffect, useState } from "react";
-import JobTable from "../components/JobTable";
+import { JobTable } from "../components/jobs";
 import { useAuth } from "../contexts/AuthContext";
 import { Box } from "@mui/system";
 import { Constants } from "../lib";
 import { Job } from "../types";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps } from "next/types";
 import axios from "axios";
-import { parseCookies, destroyCookie } from "nookies";
+import { parseCookies } from "nookies";
+import Cookies from "js-cookie";
 
 interface JobsProps {
   initialJobs: Job[];
   initialUser: any;
 }
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { req } = context;
+  const cookies = parseCookies({ req });
+  const token = cookies.token;
+  let user = null;
+  let initialJobs: Job[] = [];
+
+  if (token) {
+    try {
+      const userResponse = await axios.get(
+        `http://scraperr_api:8000/api/auth/users/me`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      user = userResponse.data;
+
+      const jobsResponse = await axios.post(
+        `http://scraperr_api:8000/api/retrieve-scrape-jobs`,
+        { user: user.email },
+        {
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      initialJobs = jobsResponse.data;
+    } catch (error) {
+      console.error("Error fetching user or jobs:", error);
+    }
+  }
+
+  return {
+    props: {
+      initialJobs,
+      initialUser: user,
+    },
+  };
+};
+
 const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
   const { user, setUser } = useAuth();
   const [jobs, setJobs] = useState<Job[]>(initialJobs || []);
+  const token = Cookies.get("token");
 
   useEffect(() => {
     if (!user && initialUser) {
@@ -26,8 +70,10 @@ const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
   const fetchJobs = async () => {
     await fetch(`${Constants.DOMAIN}/api/retrieve-scrape-jobs`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ user: user?.email }),
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => response.json())
       .then((data) => setJobs(data))
@@ -76,46 +122,6 @@ const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
       )}
     </>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { req, res } = context;
-  const cookies = parseCookies({ req });
-  const token = cookies.token;
-  let user = null;
-  let initialJobs: Job[] = [];
-
-  if (token) {
-    try {
-      const userResponse = await axios.get(
-        `${Constants.DOMAIN}/api/auth/users/me`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      user = userResponse.data;
-
-      const jobsResponse = await axios.post(
-        `${Constants.DOMAIN}/api/retrieve-scrape-jobs`,
-        { user: user.email },
-        { headers: { "content-type": "application/json" } }
-      );
-
-      initialJobs = jobsResponse.data;
-    } catch (error) {
-      console.error("Error fetching user or jobs:", error);
-      destroyCookie({ res }, "token", {
-        path: "/",
-      });
-    }
-  }
-
-  return {
-    props: {
-      initialJobs,
-      initialUser: user,
-    },
-  };
 };
 
 export default Jobs;

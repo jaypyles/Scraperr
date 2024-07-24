@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
-import NavDrawer from "../components/NavDrawer";
+import { NavDrawer } from "../components/common";
 import { darkTheme, lightTheme } from "../styles/themes";
 import { AuthProvider } from "../contexts/AuthContext";
 

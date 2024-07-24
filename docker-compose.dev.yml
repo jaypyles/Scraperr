@@ -1,6 +1,7 @@
 version: "3"
 services:
   scraperr:
+    command: ["npm", "run", "dev"]
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.scraperr.rule=Host(`${HOSTNAME_DEV}`)"
@@ -11,5 +12,3 @@ services:
       - "$PWD/dist:/project/dist"
       - "$PWD/src:/project/src"
       - "$PWD/api/backend:/project/api/backend"
-    ports:
-      - "3000:3000"

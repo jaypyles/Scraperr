@@ -16,9 +16,9 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { useRouter } from "next/router";
-import { Favorites, JobQueue } from "./jobs";
-import { Job } from "../types";
-import { Constants } from "../lib";
+import { Favorites, JobQueue } from ".";
+import { Job } from "../../types";
+import { Constants } from "../../lib";
 import Cookies from "js-cookie";
 
 interface JobTableProps {
@@ -37,7 +37,7 @@ const COLOR_MAP: ColorMap = {
   Failed: "rgba(214,0,25,0.25)",
 };
 
-const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
+export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
   const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set());
   const [allSelected, setAllSelected] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -129,13 +129,17 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
   });
 
   const favoriteJob = async (ids: string[], field: string, value: any) => {
+    setJobs((prevJobs) =>
+      prevJobs.map((job) =>
+        ids.includes(job.id) ? { ...job, [field]: value } : job
+      )
+    );
+
     const postBody = {
       ids: ids,
       field: field,
       value: value,
     };
-
-    console.log(`Token: ${token}`);
 
     await fetch(`${Constants.DOMAIN}/api/update`, {
       method: "POST",
@@ -259,5 +263,3 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
     </Box>
   );
 };
-
-export default JobTable;

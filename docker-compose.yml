@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: docker/frontend/Dockerfile
     container_name: scraperr
+    command: ["npm", "run", "start"]
     env_file:
       - ./.env
     labels:

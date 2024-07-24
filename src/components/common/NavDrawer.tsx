@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   Box,
   List,
@@ -32,7 +32,10 @@ interface NavDrawerProps {
 
 const drawerWidth = 240;
 
-const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
+export const NavDrawer: React.FC<NavDrawerProps> = ({
+  toggleTheme,
+  isDarkMode,
+}) => {
   const router = useRouter();
 
   const { logout, user, isAuthenticated } = useAuth();
@@ -154,5 +157,3 @@ const NavDrawer: React.FC<NavDrawerProps> = ({ toggleTheme, isDarkMode }) => {
     </Drawer>
   );
 };
-
-export default NavDrawer;

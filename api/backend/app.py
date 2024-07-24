@@ -56,7 +56,7 @@ app.add_middleware(
 )
 
 
-@app.post("/api/update", response_model=User)
+@app.post("/api/update")
 async def update(update_jobs: UpdateJobs, user: User = Depends(get_current_user)):
     """Used to update jobs"""
     await update_job(update_jobs.ids, update_jobs.field, update_jobs.value)
@@ -78,10 +78,10 @@ async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTa
 
 
 @app.post("/api/retrieve-scrape-jobs")
-async def retrieve_scrape_jobs(retrieve: RetrieveScrapeJobs):
-    LOG.info(f"Retrieving jobs for account: {retrieve.user}")
+async def retrieve_scrape_jobs(user: User = Depends(get_current_user)):
+    LOG.info(f"Retrieving jobs for account: {user.email}")
     try:
-        results = await query({"user": retrieve.user})
+        results = await query({"user": user.email})
         return JSONResponse(content=jsonable_encoder(results[::-1]))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
@@ -173,9 +173,24 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
     )
 
 
+
+
+@app.get("/api/initial_logs")
+async def get_initial_logs():
+    container_id = "scraperr_api"
+
+    try:
+        container = client.containers.get(container_id)
+        log_stream = container.logs(stream=False).decode("utf-8")
+        logs = log_stream.split('\n') 
+        return JSONResponse(content={"logs": logs})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {e}")
+
 @app.get("/api/logs")
 async def get_own_logs():
     container_id = "scraperr_api"
+
     try:
         container = client.containers.get(container_id)
         log_stream = container.logs(stream=True, follow=True)
