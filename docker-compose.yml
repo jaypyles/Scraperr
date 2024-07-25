@@ -8,6 +8,9 @@ services:
     command: ["npm", "run", "start"]
     env_file:
       - ./.env
+    environment:
+      - HOSTNAME=localhost
+      - NEXT_PUBLIC_API_PATH=http://scraperr_api.$HOSTNAME
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.scraperr.rule=Host(`${HOSTNAME}`)"
@@ -22,6 +25,12 @@ services:
     build:
       context: .
       dockerfile: docker/api/Dockerfile
+    environment:
+      - HOSTNAME=localhost
+      - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
+      - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
+      - ALGORITHM=HS256 # authentication encoding algorithm
+      - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
     container_name: scraperr_api
     env_file:
       - ./.env
