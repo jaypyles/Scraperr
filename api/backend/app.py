@@ -30,7 +30,6 @@ from api.backend.models import (
     GetStatistics,
     SubmitScrapeJob,
     DeleteScrapeJobs,
-    RetrieveScrapeJobs,
     UpdateJobs,
 )
 from api.backend.auth.auth_router import auth_router
@@ -173,8 +172,6 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
     )
 
 
-
-
 @app.get("/api/initial_logs")
 async def get_initial_logs():
     container_id = "scraperr_api"
@@ -182,10 +179,10 @@ async def get_initial_logs():
     try:
         container = client.containers.get(container_id)
         log_stream = container.logs(stream=False).decode("utf-8")
-        logs = log_stream.split('\n') 
-        return JSONResponse(content={"logs": logs})
+        return JSONResponse(content={"logs": log_stream})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected error: {e}")
+
 
 @app.get("/api/logs")
 async def get_own_logs():
@@ -207,12 +204,12 @@ async def get_own_logs():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/statistics/get-average-element-per-link")
-async def get_average_element_per_link(get_statistics: GetStatistics):
-    return await average_elements_per_link(get_statistics.user)
+@app.get("/api/statistics/get-average-element-per-link")
+async def get_average_element_per_link(user: User = Depends(get_current_user)):
+    return await average_elements_per_link(user.email)
 
 
-@app.post("/api/statistics/get-average-jobs-per-day")
-async def average_jobs_per_day(get_statistics: GetStatistics):
-    data = await get_jobs_per_day(get_statistics.user)
+@app.get("/api/statistics/get-average-jobs-per-day")
+async def average_jobs_per_day(user: User = Depends(get_current_user)):
+    data = await get_jobs_per_day(user.email)
     return data

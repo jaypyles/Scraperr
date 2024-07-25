@@ -3,10 +3,15 @@ import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { Constants } from "../lib";
 
+interface logs {
+  logs: string;
+}
+
 export async function getStaticProps() {
   try {
     const response = await fetch(`http://scraperr_api:8000/api/initial_logs`);
-    const initialLogs = await response.json();
+    const logJson: logs = await response.json();
+    const initialLogs = logJson.logs;
 
     return {
       props: {
@@ -33,6 +38,8 @@ const Logs = ({ initialLogs }: LogProps) => {
 
   useEffect(() => {
     const eventSource = new EventSource(`${Constants.DOMAIN}/api/logs`);
+
+    setLogs("");
 
     eventSource.onmessage = (event) => {
       setLogs((prevLogs) => prevLogs + event.data + "\n");
