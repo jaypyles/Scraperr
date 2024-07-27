@@ -2,43 +2,46 @@ import { createTheme } from "@mui/material";
 
 const commonThemeOptions = {
   typography: {
-    fontFamily: "Roboto, sans-serif",
+    fontFamily: '"Schibsted Grotesk", sans-serif',
     h1: {
       fontWeight: 500,
     },
     h2: {
       fontWeight: 500,
     },
+    h3: {
+      fontWeight: 500,
+    },
     h4: {
       fontWeight: 500,
     },
     body1: {
-      fontFamily: "Roboto, sans-serif",
+      fontFamily: '"Schibsted Grotesk", sans-serif',
     },
     body2: {
-      fontFamily: "Roboto, sans-serif",
+      fontFamily: '"Schibsted Grotesk", sans-serif',
     },
     button: {
-      fontFamily: "Roboto, sans-serif",
+      fontFamily: '"Schibsted Grotesk", sans-serif',
     },
     caption: {
-      fontFamily: "Roboto, sans-serif",
+      fontFamily: '"Schibsted Grotesk", sans-serif',
     },
     overline: {
-      fontFamily: "Roboto, sans-serif",
+      fontFamily: '"Schibsted Grotesk", sans-serif',
     },
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          fontFamily: "Roboto, sans-serif",
+          fontFamily: '"Schibsted Grotesk", sans-serif',
         },
         html: {
-          fontFamily: "Roboto, sans-serif",
+          fontFamily: '"Schibsted Grotesk", sans-serif',
         },
         "*": {
-          fontFamily: "Roboto, sans-serif",
+          fontFamily: '"Schibsted Grotesk", sans-serif',
         },
       },
     },
@@ -118,6 +121,10 @@ const darkTheme = createTheme({
       ...commonThemeOptions.typography.h2,
       color: "#ffffff",
     },
+    h3: {
+      ...commonThemeOptions.typography.h3,
+      color: "#ffffff",
+    },
     h4: {
       ...commonThemeOptions.typography.h4,
       color: "#ffffff",
@@ -135,13 +142,13 @@ const darkTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          fontFamily: "Roboto, sans-serif",
+          fontFamily: '"Schibsted Grotesk", sans-serif',
         },
         html: {
-          fontFamily: "Roboto, sans-serif",
+          fontFamily: '"Schibsted Grotesk", sans-serif',
         },
         "*": {
-          fontFamily: "Roboto, sans-serif",
+          fontFamily: '"Schibsted Grotesk", sans-serif',
         },
       },
     },

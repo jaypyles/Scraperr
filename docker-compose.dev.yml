@@ -3,7 +3,7 @@ services:
   scraperr:
     environment:
       - HOSTNAME_DEV=localhost
-      - NEXT_PUBLIC_API_PATH=http://scraperr_api.$HOSTNAME_DEV
+      # - NEXT_PUBLIC_API_PATH=http://scraperr_api.$HOSTNAME_DEV
     command: ["npm", "run", "dev"]
     labels:
       - "traefik.enable=true"

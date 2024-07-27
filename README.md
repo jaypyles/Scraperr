@@ -61,18 +61,33 @@ From the table, users can download an excel sheet of the job's results, along wi
 
    ```
 
-2. Create `.env` file.
+2. Set environmental variables in `docker-compose.yml`.
 
 ```
-MONGODB_URI=mongodb://root:example@webscrape-mongo:27017
-SECRET_KEY=your_secret_key
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=600
-HOSTNAME="localhost"
-HOSTNAME_DEV="localhost"
+scraperr:
+    environment:
+      - HOSTNAME=localhost # your public domain, or localhost if running locally
+      - NEXT_PUBLIC_API_PATH=http://scraperr_api.$HOSTNAME # address to api
+
+scraperr_api
+ environment:
+      - HOSTNAME=localhost # needs to be the same as scraperr
+      - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
+      - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
+      - ALGORITHM=HS256 # authentication encoding algorithm
+      - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
+
+mongo:
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
 ```
 
-Change `HOSTNAME` from localhost to your domain, if deploying this through traefik publicly.
+Don't want to use `traefik`? 
+
+Setup your `docker-compose.yml` like this:
+
+
 
 3. Deploy
 

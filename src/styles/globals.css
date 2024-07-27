@@ -5,3 +5,8 @@
 #__next {
   min-height: 100vh;
 }
+
+html,
+body {
+  font-family: "Schibsted Grotesk", sans-serif;
+}

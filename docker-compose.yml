@@ -6,11 +6,11 @@ services:
       dockerfile: docker/frontend/Dockerfile
     container_name: scraperr
     command: ["npm", "run", "start"]
-    env_file:
-      - ./.env
+    ports:
+      - 3000:3000
     environment:
       - HOSTNAME=localhost
-      - NEXT_PUBLIC_API_PATH=http://scraperr_api.$HOSTNAME
+      - NEXT_PUBLIC_API_PATH=http://localhost:8000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.scraperr.rule=Host(`${HOSTNAME}`)"
@@ -25,6 +25,8 @@ services:
     build:
       context: .
       dockerfile: docker/api/Dockerfile
+    ports:
+      - 8000:8000
     environment:
       - HOSTNAME=localhost
       - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
@@ -32,8 +34,6 @@ services:
       - ALGORITHM=HS256 # authentication encoding algorithm
       - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
     container_name: scraperr_api
-    env_file:
-      - ./.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
@@ -44,20 +44,20 @@ services:
     networks:
       - web
 
-  traefik:
-    image: traefik:latest
-    container_name: traefik
-    command:
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro"
-    networks:
-      - web
+  # traefik:
+  #   image: traefik:latest
+  #   container_name: traefik
+  #   command:
+  #     - "--providers.docker=true"
+  #     - "--entrypoints.web.address=:80"
+  #     - "--entrypoints.websecure.address=:443"
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro"
+  #   networks:
+  #     - web
   mongo:
     container_name: webscrape-mongo
     image: mongo

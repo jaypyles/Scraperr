@@ -8,6 +8,7 @@ import {
   Checkbox,
   FormControlLabel,
   CircularProgress,
+  Typography,
 } from "@mui/material";
 import { Element } from "../../types";
 import { useAuth } from "../../contexts/AuthContext";
@@ -152,6 +153,9 @@ export const JobSubmitter = ({ stateProps }: Props) => {
 
   return (
     <>
+      <Typography variant="h3" className="mb-4 text-center">
+        Scraping Made Easy
+      </Typography>
       <div className="flex flex-row space-x-4 items-center mb-2">
         <TextField
           label="URL"
