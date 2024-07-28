@@ -54,3 +54,7 @@ class UpdateJobs(pydantic.BaseModel):
     ids: list[str]
     field: str
     value: Any
+
+
+class AI(pydantic.BaseModel):
+    message: str

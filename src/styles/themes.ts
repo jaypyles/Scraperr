@@ -1,4 +1,13 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+
+declare module "@mui/material/styles/createPalette" {
+  interface Palette {
+    blurple: Palette["primary"];
+  }
+  interface PaletteOptions {
+    blurple?: PaletteOptions["primary"];
+  }
+}
 
 const commonThemeOptions = {
   typography: {
@@ -64,6 +73,10 @@ const lightTheme = createTheme({
     secondary: {
       main: "#dc004e",
     },
+    blurple: {
+      main: "#7289da",
+      contrastText: "#fff",
+    },
     background: {
       default: "#f4f6f8",
       paper: "#ffffff",
@@ -101,6 +114,10 @@ const darkTheme = createTheme({
     },
     secondary: {
       main: "#f48fb1",
+    },
+    blurple: {
+      main: "#7289da",
+      contrastText: "#fff",
     },
     background: {
       default: "#121212",

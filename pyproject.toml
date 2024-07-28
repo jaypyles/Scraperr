@@ -34,6 +34,7 @@ dependencies = [
     "blinker<1.8.0",
     "setuptools>=71.0.4",
     "docker>=7.1.0",
+    "ollama>=0.3.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

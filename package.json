@@ -9,6 +9,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.13",
+    "@minchat/react-chat-ui": "^0.16.2",
     "@mui/icons-material": "^5.15.3",
     "@mui/material": "^5.16.0",
     "@testing-library/jest-dom": "^5.16.5",
