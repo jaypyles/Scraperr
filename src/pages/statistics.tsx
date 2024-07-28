@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (token) {
     try {
       const averageElementResponse = await fetch(
-        `http://scraperr_api:8000/api/statistics/get-average-element-per-link`,
+        `http://scraperr_api:8000/statistics/get-average-element-per-link`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       averageElement = await averageElementResponse.json();
 
       const averageJobResponse = await fetch(
-        `http://scraperr_api:8000/api/statistics/get-average-jobs-per-day`,
+        `http://scraperr_api:8000/statistics/get-average-jobs-per-day`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

@@ -6,29 +6,20 @@ services:
       dockerfile: docker/frontend/Dockerfile
     container_name: scraperr
     command: ["npm", "run", "start"]
-    ports:
-      - 3000:3000
-    environment:
-      - HOSTNAME=localhost
-      - NEXT_PUBLIC_API_PATH=http://localhost:8000
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.scraperr.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.routers.scraperr.rule=Host(`localhost`)" # change this to your domain, if not running on localhost
       - "traefik.http.routers.scraperr.entrypoints=web" # websecure if using https
       - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
     networks:
       - web
-
   scraperr_api:
     init: True
     image: jpyles0524/scraperr_api:latest
     build:
       context: .
       dockerfile: docker/api/Dockerfile
-    ports:
-      - 8000:8000
     environment:
-      - HOSTNAME=localhost
       - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
       - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
       - ALGORITHM=HS256 # authentication encoding algorithm
@@ -38,26 +29,27 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.scraperr_api.rule=Host(`scraperr_api.${HOSTNAME}`)"
+      - "traefik.http.routers.scraperr_api.rule=Host(`localhost`) && PathPrefix(`/api`)" # change this to your domain, if not running on localhost
       - "traefik.http.routers.scraperr_api.entrypoints=web" # websecure if using https
+      - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.scraperr_api.middlewares=api-stripprefix"
       - "traefik.http.services.scraperr_api.loadbalancer.server.port=8000"
     networks:
       - web
-
-  # traefik:
-  #   image: traefik:latest
-  #   container_name: traefik
-  #   command:
-  #     - "--providers.docker=true"
-  #     - "--entrypoints.web.address=:80"
-  #     - "--entrypoints.websecure.address=:443"
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro"
-  #   networks:
-  #     - web
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - web
   mongo:
     container_name: webscrape-mongo
     image: mongo
@@ -67,6 +59,5 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     networks:
       - web
-
 networks:
   web:

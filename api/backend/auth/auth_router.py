@@ -19,7 +19,7 @@ from api.backend.auth.auth_utils import (
 auth_router = APIRouter()
 
 
-@auth_router.post("/api/auth/token", response_model=Token)
+@auth_router.post("/auth/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
@@ -41,7 +41,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@auth_router.post("/api/auth/signup", response_model=User)
+@auth_router.post("/auth/signup", response_model=User)
 async def create_user(user: UserCreate):
     users_collection = get_user_collection()
     hashed_password = get_password_hash(user.password)
@@ -52,6 +52,6 @@ async def create_user(user: UserCreate):
     return user_dict
 
 
-@auth_router.get("/api/auth/users/me", response_model=User)
+@auth_router.get("/auth/users/me", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user

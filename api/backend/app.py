@@ -27,7 +27,6 @@ from api.backend.job import (
 )
 from api.backend.models import (
     DownloadJob,
-    GetStatistics,
     SubmitScrapeJob,
     DeleteScrapeJobs,
     UpdateJobs,
@@ -55,13 +54,13 @@ app.add_middleware(
 )
 
 
-@app.post("/api/update")
+@app.post("/update")
 async def update(update_jobs: UpdateJobs, user: User = Depends(get_current_user)):
     """Used to update jobs"""
     await update_job(update_jobs.ids, update_jobs.field, update_jobs.value)
 
 
-@app.post("/api/submit-scrape-job")
+@app.post("/submit-scrape-job")
 async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTasks):
     LOG.info(f"Recieved job: {job}")
     try:
@@ -76,7 +75,7 @@ async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTa
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
-@app.post("/api/retrieve-scrape-jobs")
+@app.post("/retrieve-scrape-jobs")
 async def retrieve_scrape_jobs(user: User = Depends(get_current_user)):
     LOG.info(f"Retrieving jobs for account: {user.email}")
     try:
@@ -94,7 +93,7 @@ def clean_text(text: str):
     return text
 
 
-@app.post("/api/download")
+@app.post("/download")
 async def download(download_job: DownloadJob):
     LOG.info(f"Downloading job with ids: {download_job.ids}")
     try:
@@ -162,7 +161,7 @@ async def download(download_job: DownloadJob):
         return {"error": str(e)}
 
 
-@app.post("/api/delete-scrape-jobs")
+@app.post("/delete-scrape-jobs")
 async def delete(delete_scrape_jobs: DeleteScrapeJobs):
     result = await delete_jobs(delete_scrape_jobs.ids)
     return (
@@ -172,7 +171,7 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
     )
 
 
-@app.get("/api/initial_logs")
+@app.get("/initial_logs")
 async def get_initial_logs():
     container_id = "scraperr_api"
 
@@ -184,7 +183,7 @@ async def get_initial_logs():
         raise HTTPException(status_code=500, detail=f"Unexpected error: {e}")
 
 
-@app.get("/api/logs")
+@app.get("/logs")
 async def get_own_logs():
     container_id = "scraperr_api"
 
@@ -204,12 +203,12 @@ async def get_own_logs():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/api/statistics/get-average-element-per-link")
+@app.get("/statistics/get-average-element-per-link")
 async def get_average_element_per_link(user: User = Depends(get_current_user)):
     return await average_elements_per_link(user.email)
 
 
-@app.get("/api/statistics/get-average-jobs-per-day")
+@app.get("/statistics/get-average-jobs-per-day")
 async def average_jobs_per_day(user: User = Depends(get_current_user)):
     data = await get_jobs_per_day(user.email)
     return data

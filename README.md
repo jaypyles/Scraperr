@@ -61,21 +61,29 @@ From the table, users can download an excel sheet of the job's results, along wi
 
    ```
 
-2. Set environmental variables in `docker-compose.yml`.
+2. Set environmental variables and labels in `docker-compose.yml`.
 
-```
+```yaml
 scraperr:
-    environment:
-      - HOSTNAME=localhost # your public domain, or localhost if running locally
-      - NEXT_PUBLIC_API_PATH=http://scraperr_api.$HOSTNAME # address to api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scraperr.rule=Host(`localhost`)" # change this to your domain, if not running on localhost
+      - "traefik.http.routers.scraperr.entrypoints=web" # websecure if using https
+      - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
 
-scraperr_api
+scraperr_api:
  environment:
-      - HOSTNAME=localhost # needs to be the same as scraperr
       - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
       - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
       - ALGORITHM=HS256 # authentication encoding algorithm
       - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
+  labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.scraperr_api.rule=Host(`localhost`) && PathPrefix(`/api`)" # change this to your domain, if not running on localhost
+        - "traefik.http.routers.scraperr_api.entrypoints=web" # websecure if using https
+        - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
+        - "traefik.http.routers.scraperr_api.middlewares=api-stripprefix"
+        - "traefik.http.services.scraperr_api.loadbalancer.server.port=8000"
 
 mongo:
     environment:
@@ -83,11 +91,8 @@ mongo:
       MONGO_INITDB_ROOT_PASSWORD: example
 ```
 
-Don't want to use `traefik`? 
-
-Setup your `docker-compose.yml` like this:
-
-
+Don't want to use `traefik`? This configuration can be used in other reverse proxies, as long as the API is proxied to `/api` of the frontend container. This is currently
+not able to be used without a reverse proxy, due to limitations of runtime client-side environmental variables in `next.js`.
 
 3. Deploy
 

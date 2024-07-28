@@ -22,7 +22,6 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    // const token = localStorage.getItem("token");
     const token = Cookies.get("token");
     if (token) {
       axios
@@ -54,8 +53,6 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
       secure: false,
       sameSite: "Lax",
     });
-    // localStorage.setItem("token", response.data.access_token);
-    console.log(response.data.access_token);
     const userResponse = await axios.get(
       `${Constants.DOMAIN}/api/auth/users/me`,
       {
@@ -68,7 +65,6 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
   const logout = () => {
     Cookies.remove("token");
-    // localStorage.removeItem("token");
     setUser(null);
     setIsAuthenticated(false);
   };
