@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   IconButton,
   Box,
@@ -16,12 +16,14 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import { useRouter } from "next/router";
-import { Favorites, JobQueue } from "./jobs";
-import { Job } from "../types";
+import { Favorites, JobQueue } from ".";
+import { Job } from "../../types";
+import { Constants } from "../../lib";
+import Cookies from "js-cookie";
 
 interface JobTableProps {
   jobs: Job[];
-  fetchJobs: () => void;
+  setJobs: React.Dispatch<SetStateAction<Job[]>>;
 }
 
 interface ColorMap {
@@ -35,17 +37,18 @@ const COLOR_MAP: ColorMap = {
   Failed: "rgba(214,0,25,0.25)",
 };
 
-const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
+export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
   const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set());
   const [allSelected, setAllSelected] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchMode, setSearchMode] = useState<string>("url");
   const [favoriteView, setFavoriteView] = useState<boolean>(false);
 
+  const token = Cookies.get("token");
   const router = useRouter();
 
   const handleDownload = async (ids: string[]) => {
-    const response = await fetch("/api/download", {
+    const response = await fetch(`${Constants.DOMAIN}/api/download`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: ids }),
@@ -100,14 +103,16 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   };
 
   const handleDeleteSelected = async () => {
-    const response = await fetch("/api/delete-scrape-jobs", {
+    const response = await fetch(`${Constants.DOMAIN}/api/delete-scrape-jobs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: Array.from(selectedJobs) }),
     });
 
     if (response.ok) {
-      fetchJobs();
+      setJobs((jobs) =>
+        jobs.filter((job) => !Array.from(selectedJobs).includes(job.id))
+      );
       setSelectedJobs(new Set());
     }
   };
@@ -124,19 +129,26 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
   });
 
   const favoriteJob = async (ids: string[], field: string, value: any) => {
+    setJobs((prevJobs) =>
+      prevJobs.map((job) =>
+        ids.includes(job.id) ? { ...job, [field]: value } : job
+      )
+    );
+
     const postBody = {
       ids: ids,
       field: field,
       value: value,
     };
 
-    await fetch("/api/update", {
+    await fetch(`${Constants.DOMAIN}/api/update`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(postBody),
     });
-
-    await fetchJobs();
   };
 
   return (
@@ -251,5 +263,3 @@ const JobTable: React.FC<JobTableProps> = ({ jobs, fetchJobs }) => {
     </Box>
   );
 };
-
-export default JobTable;

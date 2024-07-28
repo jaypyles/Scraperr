@@ -3,17 +3,16 @@ import uuid
 import logging
 from io import BytesIO
 from openpyxl import Workbook
-from typing import Any
-from datetime import datetime
-from bson import ObjectId
 
 # PDM
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import docker
+from api.backend.schemas import User
+
+from api.backend.auth.auth_utils import get_current_user
 
 client = docker.from_env()
 
@@ -28,10 +27,8 @@ from api.backend.job import (
 )
 from api.backend.models import (
     DownloadJob,
-    GetStatistics,
     SubmitScrapeJob,
     DeleteScrapeJobs,
-    RetrieveScrapeJobs,
     UpdateJobs,
 )
 from api.backend.auth.auth_router import auth_router
@@ -56,27 +53,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/_next/static", StaticFiles(directory="./dist/_next/static"), name="static")
-app.mount("/images", StaticFiles(directory="./dist/images"), name="images")
 
-
-@app.get("/")
-def read_root():
-    return FileResponse("./dist/index.html")
-
-
-@app.get("/favicon.ico")
-def read_favicon():
-    return FileResponse("dist/favicon.ico")
-
-
-@app.post("/api/update")
-async def update(update_jobs: UpdateJobs):
+@app.post("/update")
+async def update(update_jobs: UpdateJobs, user: User = Depends(get_current_user)):
     """Used to update jobs"""
     await update_job(update_jobs.ids, update_jobs.field, update_jobs.value)
 
 
-@app.post("/api/submit-scrape-job")
+@app.post("/submit-scrape-job")
 async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTasks):
     LOG.info(f"Recieved job: {job}")
     try:
@@ -91,11 +75,11 @@ async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTa
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
-@app.post("/api/retrieve-scrape-jobs")
-async def retrieve_scrape_jobs(retrieve: RetrieveScrapeJobs):
-    LOG.info(f"Retrieving jobs for account: {retrieve.user}")
+@app.post("/retrieve-scrape-jobs")
+async def retrieve_scrape_jobs(user: User = Depends(get_current_user)):
+    LOG.info(f"Retrieving jobs for account: {user.email}")
     try:
-        results = await query({"user": retrieve.user})
+        results = await query({"user": user.email})
         return JSONResponse(content=jsonable_encoder(results[::-1]))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
@@ -109,7 +93,7 @@ def clean_text(text: str):
     return text
 
 
-@app.post("/api/download")
+@app.post("/download")
 async def download(download_job: DownloadJob):
     LOG.info(f"Downloading job with ids: {download_job.ids}")
     try:
@@ -177,7 +161,7 @@ async def download(download_job: DownloadJob):
         return {"error": str(e)}
 
 
-@app.post("/api/delete-scrape-jobs")
+@app.post("/delete-scrape-jobs")
 async def delete(delete_scrape_jobs: DeleteScrapeJobs):
     result = await delete_jobs(delete_scrape_jobs.ids)
     return (
@@ -187,9 +171,22 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
     )
 
 
-@app.get("/api/logs")
+@app.get("/initial_logs")
+async def get_initial_logs():
+    container_id = "scraperr_api"
+
+    try:
+        container = client.containers.get(container_id)
+        log_stream = container.logs(stream=False).decode("utf-8")
+        return JSONResponse(content={"logs": log_stream})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {e}")
+
+
+@app.get("/logs")
 async def get_own_logs():
-    container_id = "scraperr"
+    container_id = "scraperr_api"
+
     try:
         container = client.containers.get(container_id)
         log_stream = container.logs(stream=True, follow=True)
@@ -206,12 +203,12 @@ async def get_own_logs():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/statistics/get-average-element-per-link")
-async def get_average_element_per_link(get_statistics: GetStatistics):
-    return await average_elements_per_link(get_statistics.user)
+@app.get("/statistics/get-average-element-per-link")
+async def get_average_element_per_link(user: User = Depends(get_current_user)):
+    return await average_elements_per_link(user.email)
 
 
-@app.post("/api/statistics/get-average-jobs-per-day")
-async def average_jobs_per_day(get_statistics: GetStatistics):
-    data = await get_jobs_per_day(get_statistics.user)
+@app.get("/statistics/get-average-jobs-per-day")
+async def average_jobs_per_day(user: User = Depends(get_current_user)):
+    data = await get_jobs_per_day(user.email)
     return data

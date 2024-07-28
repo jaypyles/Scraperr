@@ -1,14 +1,17 @@
 version: "3"
 services:
   scraperr:
+    environment:
+      - HOSTNAME_DEV=localhost
+      # - NEXT_PUBLIC_API_PATH=http://scraperr_api.$HOSTNAME_DEV
+    command: ["npm", "run", "dev"]
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME_DEV}`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
-      - "traefik.http.services.frontend.loadbalancer.server.port=8000"
-      - "traefik.http.routers.frontend.tls=false"
+      - "traefik.http.routers.scraperr.rule=Host(`${HOSTNAME_DEV}`)"
+      - "traefik.http.routers.scraperr.entrypoints=web"
+      - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
+      - "traefik.http.routers.scraperr.tls=false"
     volumes:
       - "$PWD/dist:/project/dist"
+      - "$PWD/src:/project/src"
       - "$PWD/api/backend:/project/api/backend"
-    ports:
-      - "8000:8000"

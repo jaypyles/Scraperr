@@ -69,8 +69,7 @@ def create_driver():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument(f"user-agent={ua.random}")
 
-    service = Service(ChromeDriverManager().install())
-    return webdriver.Chrome(options=chrome_options, service=service)
+    return webdriver.Chrome(options=chrome_options)
 
 
 async def make_site_request(

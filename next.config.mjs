@@ -1,15 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
   distDir: "./dist",
   images: { unoptimized: true },
-  async rewrites() {
-    return [
-      {
-        source: "/auth/:path*",
-        destination: "/api/auth/:path*",
-      },
-    ];
+  env: {
+    DOMAIN: `${process.env.NEXT_PUBLIC_API_PATH}`,
   },
 };
 

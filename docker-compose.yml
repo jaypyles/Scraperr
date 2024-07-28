@@ -1,22 +1,39 @@
 services:
   scraperr:
     image: jpyles0524/scraperr:latest
-    init: True
     build:
-      context: ./
+      context: .
+      dockerfile: docker/frontend/Dockerfile
     container_name: scraperr
-    ports:
-      - 9000:8000
-    env_file:
-      - ./.env
+    command: ["npm", "run", "start"]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scraperr.rule=Host(`localhost`)" # change this to your domain, if not running on localhost
+      - "traefik.http.routers.scraperr.entrypoints=web" # websecure if using https
+      - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
+    networks:
+      - web
+  scraperr_api:
+    init: True
+    image: jpyles0524/scraperr_api:latest
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    environment:
+      - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
+      - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
+      - ALGORITHM=HS256 # authentication encoding algorithm
+      - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
+    container_name: scraperr_api
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`)"
-      - "traefik.http.routers.frontend.entrypoints=web" # websecure if using https
-      - "traefik.http.services.frontend.loadbalancer.server.port=8000"
-      # - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.routers.scraperr_api.rule=Host(`localhost`) && PathPrefix(`/api`)" # change this to your domain, if not running on localhost
+      - "traefik.http.routers.scraperr_api.entrypoints=web" # websecure if using https
+      - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.scraperr_api.middlewares=api-stripprefix"
+      - "traefik.http.services.scraperr_api.loadbalancer.server.port=8000"
     networks:
       - web
   traefik:
@@ -26,15 +43,11 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      # - "--providers.file.filename=/etc/traefik/dynamic_conf.yaml"
     ports:
       - 80:80
       - 443:443
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      # - "./dynamic_conf.yaml:/etc/traefik/dynamic_conf.yaml"
-      # - "/etc/letsencrypt/live/domain/fullchain.pem:/etc/certs/ssl-cert.pem"
-      # - "/etc/letsencrypt/live/domain/privkey.pem:/etc/certs/ssl-cert.key"
+      - /var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - web
   mongo:

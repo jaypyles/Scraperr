@@ -185,3 +185,4 @@ cython_debug/
 .pdm-python
 .next
 postgres_data
+.vscode

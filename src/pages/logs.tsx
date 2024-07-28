@@ -1,13 +1,45 @@
 import { Container, IconButton } from "@mui/material";
 import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
+import { Constants } from "../lib";
 
-const Logs = () => {
-  const [logs, setLogs] = useState("");
-  const logsContainerRef = useRef<HTMLDivElement>(null);
+interface logs {
+  logs: string;
+}
+
+export async function getStaticProps() {
+  try {
+    const response = await fetch(`http://scraperr_api:8000/api/initial_logs`);
+    const logJson: logs = await response.json();
+    const initialLogs = logJson.logs;
+
+    return {
+      props: {
+        initialLogs,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching logs:", error);
+    return {
+      props: {
+        initialLogs: "Failed to fetch logs.",
+      },
+    };
+  }
+}
+
+interface LogProps {
+  initialLogs: string;
+}
+
+const Logs = ({ initialLogs }: LogProps) => {
+  const [logs, setLogs] = useState<string>(initialLogs);
+  const logsContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource("/api/logs");
+    const eventSource = new EventSource(`${Constants.DOMAIN}/api/logs`);
+
+    setLogs("");
 
     eventSource.onmessage = (event) => {
       setLogs((prevLogs) => prevLogs + event.data + "\n");

@@ -61,18 +61,38 @@ From the table, users can download an excel sheet of the job's results, along wi
 
    ```
 
-2. Create `.env` file.
+2. Set environmental variables and labels in `docker-compose.yml`.
 
-```
-MONGODB_URI=mongodb://root:example@webscrape-mongo:27017
-SECRET_KEY=your_secret_key
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=600
-HOSTNAME="localhost"
-HOSTNAME_DEV="localhost"
+```yaml
+scraperr:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.scraperr.rule=Host(`localhost`)" # change this to your domain, if not running on localhost
+      - "traefik.http.routers.scraperr.entrypoints=web" # websecure if using https
+      - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
+
+scraperr_api:
+ environment:
+      - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
+      - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
+      - ALGORITHM=HS256 # authentication encoding algorithm
+      - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
+  labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.scraperr_api.rule=Host(`localhost`) && PathPrefix(`/api`)" # change this to your domain, if not running on localhost
+        - "traefik.http.routers.scraperr_api.entrypoints=web" # websecure if using https
+        - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
+        - "traefik.http.routers.scraperr_api.middlewares=api-stripprefix"
+        - "traefik.http.services.scraperr_api.loadbalancer.server.port=8000"
+
+mongo:
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
 ```
 
-Change `HOSTNAME` from localhost to your domain, if deploying this through traefik publicly.
+Don't want to use `traefik`? This configuration can be used in other reverse proxies, as long as the API is proxied to `/api` of the frontend container. This is currently
+not able to be used without a reverse proxy, due to limitations of runtime client-side environmental variables in `next.js`.
 
 3. Deploy
 
