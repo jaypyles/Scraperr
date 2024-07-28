@@ -73,6 +73,7 @@ scraperr:
 
 scraperr_api:
  environment:
+      - LOG_LEVEL=INFO
       - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
       - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
       - ALGORITHM=HS256 # authentication encoding algorithm
