@@ -25,7 +25,7 @@ jobs:
           context: .
           file: ./docker/frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/{{ DOCKERHUB_REPO }}:latest # Tag for the first image
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
 
       - name: Build and push api
         uses: docker/build-push-action@v5
@@ -33,4 +33,4 @@ jobs:
           context: .
           file: ./docker/api/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:latest # Tag for the second image
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:latest
