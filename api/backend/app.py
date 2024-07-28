@@ -1,41 +1,56 @@
 # STL
+import os
 import uuid
 import logging
+import traceback
 from io import BytesIO
-from openpyxl import Workbook
+from typing import Optional
 
 # PDM
-from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, BackgroundTasks
+from openpyxl import Workbook
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-import docker
-from api.backend.schemas import User
-
-from api.backend.auth.auth_utils import get_current_user
-
-client = docker.from_env()
 
 # LOCAL
+import docker
 from api.backend.job import (
-    average_elements_per_link,
-    get_jobs_per_day,
     query,
     insert,
-    delete_jobs,
     update_job,
+    delete_jobs,
+    get_jobs_per_day,
+    average_elements_per_link,
 )
 from api.backend.models import (
+    UpdateJobs,
     DownloadJob,
     SubmitScrapeJob,
     DeleteScrapeJobs,
-    UpdateJobs,
 )
+from api.backend.schemas import User
+from api.backend.auth.auth_utils import get_current_user
 from api.backend.auth.auth_router import auth_router
-import traceback
+
+client = docker.from_env()
+
+
+def get_log_level(level_name: Optional[str]) -> int:
+    level = logging.INFO
+
+    if level_name:
+        level_name = level_name.upper()
+        level = getattr(logging, level_name, logging.INFO)
+
+    return level
+
+
+log_level = os.getenv("LOG_LEVEL")
+LOG_LEVEL = get_log_level(log_level)
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=LOG_LEVEL,
     format="%(levelname)s:     %(asctime)s - %(name)s - %(message)s",
     handlers=[logging.StreamHandler()],
 )
