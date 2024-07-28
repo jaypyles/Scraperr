@@ -128,6 +128,15 @@ WARNING: MongoDB 5.0+ requires a CPU with AVX support, and your current system d
 
 To resolve this issue, simply set CPU host type to `host`. This can be done in Proxmox in the VM settings > Processor. [Related issue](https://github.com/jaypyles/Scraperr/issues/9).
 
+## Legal and Ethical Considerations
+
+When using Scraperr, please ensure that you:
+
+1. **Check Robots.txt**: Verify allowed pages by reviewing the `robots.txt` file of the target website.
+2. **Compliance**: Always comply with the website's Terms of Service (ToS) regarding web scraping.
+
+**Disclaimer**: This tool is intended for use only on websites that permit scraping. The author is not responsible for any misuse of this tool.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
