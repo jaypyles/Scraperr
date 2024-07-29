@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { JobTable } from "../components/jobs";
 import { useAuth } from "../contexts/AuthContext";
 import { Box } from "@mui/system";
-import { Constants } from "../lib";
 import { Job } from "../types";
 import { GetServerSideProps } from "next/types";
 import axios from "axios";
 import { parseCookies } from "nookies";
 import Cookies from "js-cookie";
+import { fetchJobs } from "../lib";
 
 interface JobsProps {
   initialJobs: Job[];
@@ -59,7 +59,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
   const { user, setUser } = useAuth();
   const [jobs, setJobs] = useState<Job[]>(initialJobs || []);
-  const token = Cookies.get("token");
 
   useEffect(() => {
     if (!user && initialUser) {
@@ -67,24 +66,9 @@ const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
     }
   }, [user, initialUser, setUser]);
 
-  const fetchJobs = async () => {
-    await fetch(`${Constants.DOMAIN}/api/retrieve-scrape-jobs`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setJobs(data))
-      .catch((error) => {
-        console.error("Error fetching jobs:", error);
-      });
-  };
-
   useEffect(() => {
     if (user) {
-      fetchJobs();
+      fetchJobs(setJobs);
     } else {
       setJobs([]);
     }

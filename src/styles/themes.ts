@@ -2,10 +2,10 @@ import { createTheme } from "@mui/material/styles";
 
 declare module "@mui/material/styles/createPalette" {
   interface Palette {
-    blurple: Palette["primary"];
+    AIMessage: Palette["primary"];
   }
   interface PaletteOptions {
-    blurple?: PaletteOptions["primary"];
+    AIMessage?: PaletteOptions["primary"];
   }
 }
 
@@ -73,8 +73,8 @@ const lightTheme = createTheme({
     secondary: {
       main: "#dc004e",
     },
-    blurple: {
-      main: "#7289da",
+    AIMessage: {
+      main: "rgba(3, 78, 252)",
       contrastText: "#fff",
     },
     background: {
@@ -115,8 +115,8 @@ const darkTheme = createTheme({
     secondary: {
       main: "#f48fb1",
     },
-    blurple: {
-      main: "#7289da",
+    AIMessage: {
+      main: "rgba(3, 78, 252, 0.50)",
       contrastText: "#fff",
     },
     background: {

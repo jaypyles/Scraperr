@@ -57,4 +57,4 @@ class UpdateJobs(pydantic.BaseModel):
 
 
 class AI(pydantic.BaseModel):
-    message: str
+    messages: list[Any]

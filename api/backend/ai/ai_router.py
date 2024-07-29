@@ -1,13 +1,10 @@
 # STL
-import asyncio
 import logging
-from typing import Any, AsyncGenerator
 from collections.abc import AsyncGenerator
 
 # PDM
-from fastapi import Depends, FastAPI, APIRouter, HTTPException, BackgroundTasks
-from fastapi.responses import JSONResponse, StreamingResponse
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
 
 # LOCAL
 from ollama import Message, AsyncClient
@@ -20,11 +17,10 @@ ai_router = APIRouter()
 ollama_client = AsyncClient(host="http://ollama:11434")
 
 
-async def chat(message: str) -> AsyncGenerator[str, None]:
-    m: Message = {"role": "user", "content": message}
+async def chat(chat_messages: list[Message]) -> AsyncGenerator[str, None]:
     try:
         async for part in await ollama_client.chat(
-            model="llama3.1", messages=[m], stream=True
+            model="llama3.1", messages=chat_messages, stream=True
         ):
             yield part["message"]["content"]
     except Exception as e:
@@ -34,4 +30,4 @@ async def chat(message: str) -> AsyncGenerator[str, None]:
 
 @ai_router.post("/ai")
 async def ai(c: AI):
-    return StreamingResponse(chat(message=c.message), media_type="text/plain")
+    return StreamingResponse(chat(chat_messages=c.messages), media_type="text/plain")
