@@ -47,6 +47,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
                 p: 3,
                 bgcolor: "background.default",
                 minHeight: "100vh",
+                overflow: "hidden",
               }}
             >
               <Component {...pageProps} />

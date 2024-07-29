@@ -20,7 +20,7 @@ ollama_client = AsyncClient(host="http://ollama:11434")
 async def chat(chat_messages: list[Message]) -> AsyncGenerator[str, None]:
     try:
         async for part in await ollama_client.chat(
-            model="llama3.1", messages=chat_messages, stream=True
+            model="phi3", messages=chat_messages, stream=True
         ):
             yield part["message"]["content"]
     except Exception as e:

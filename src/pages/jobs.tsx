@@ -75,7 +75,9 @@ const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
   }, [user]);
 
   useEffect(() => {
-    const intervalId = setInterval(fetchJobs, 5000);
+    const intervalId = setInterval(() => {
+      fetchJobs(setJobs);
+    }, 5000);
     return () => clearInterval(intervalId);
   }, []);
 

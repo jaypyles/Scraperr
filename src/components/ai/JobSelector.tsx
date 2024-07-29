@@ -1,13 +1,12 @@
-import React, { useState, useEffect, Dispatch } from "react";
+import React, { useState, useEffect, Dispatch, useRef } from "react";
 import { Job } from "../../types";
 import { fetchJobs } from "../../lib";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Popover from "@mui/material/Popover";
-import { Typography } from "@mui/material";
+import { Typography, MenuItem } from "@mui/material";
 import { SxProps } from "@mui/material";
 
 interface Props {
@@ -55,7 +54,6 @@ export const JobSelector = ({
             value={selectedJob?.id || ""}
             label="Job"
             onChange={(e) => {
-              handlePopoverClose();
               setSelectedJob(
                 jobs.find((job) => job.id === e.target.value) || null
               );
@@ -69,6 +67,7 @@ export const JobSelector = ({
                 aria-haspopup="true"
                 onMouseEnter={(e) => handlePopoverOpen(e, job)}
                 onMouseLeave={handlePopoverClose}
+                onClick={handlePopoverClose}
               >
                 {job.id}
               </MenuItem>
@@ -92,7 +91,6 @@ export const JobSelector = ({
           horizontal: "left",
         }}
         onClose={handlePopoverClose}
-        disableRestoreFocus
       >
         {popoverJob && (
           <>
