@@ -3,9 +3,17 @@ import { createTheme } from "@mui/material/styles";
 declare module "@mui/material/styles/createPalette" {
   interface Palette {
     AIMessage: Palette["primary"];
+    customBorder: {
+      light: string;
+      dark: string;
+    };
   }
   interface PaletteOptions {
     AIMessage?: PaletteOptions["primary"];
+    customBorder?: {
+      light: string;
+      dark: string;
+    };
   }
 }
 
@@ -38,6 +46,10 @@ const commonThemeOptions = {
     },
     overline: {
       fontFamily: '"Schibsted Grotesk", sans-serif',
+    },
+    customBorder: {
+      light: "2px outset black",
+      dark: "2px outset white",
     },
   },
   components: {

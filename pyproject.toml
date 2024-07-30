@@ -35,6 +35,7 @@ dependencies = [
     "setuptools>=71.0.4",
     "docker>=7.1.0",
     "ollama>=0.3.0",
+    "openai>=1.37.1",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

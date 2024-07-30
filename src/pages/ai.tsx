@@ -95,6 +95,7 @@ const AI: React.FC = () => {
           textAlign: "center",
           fontSize: "1.2em",
           position: "relative",
+          borderTop: "2px inset #000",
         }}
       >
         <Box
@@ -182,6 +183,7 @@ const AI: React.FC = () => {
         }}
       >
         <TextField
+          sx={{ marginBottom: 2 }}
           fullWidth
           placeholder="Type your message here..."
           disabled={!selectedJob}

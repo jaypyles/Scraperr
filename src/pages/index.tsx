@@ -74,7 +74,7 @@ const Home = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      minHeight="100vh"
+      height="100%"
       py={4}
     >
       <Container maxWidth="lg">

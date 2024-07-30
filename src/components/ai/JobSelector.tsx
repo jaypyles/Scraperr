@@ -6,7 +6,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Popover from "@mui/material/Popover";
-import { Typography, MenuItem } from "@mui/material";
+import { Typography, MenuItem, useTheme } from "@mui/material";
 import { SxProps } from "@mui/material";
 
 interface Props {
@@ -23,6 +23,7 @@ export const JobSelector = ({
   const [jobs, setJobs] = useState<Job[]>([]);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [popoverJob, setPopoverJob] = useState<Job | null>(null);
+  const theme = useTheme();
 
   useEffect(() => {
     fetchJobs(setJobs);
@@ -79,6 +80,7 @@ export const JobSelector = ({
         id="mouse-over-popover"
         sx={{
           pointerEvents: "none",
+          padding: 0,
         }}
         open={open}
         anchorEl={anchorEl}
@@ -93,12 +95,19 @@ export const JobSelector = ({
         onClose={handlePopoverClose}
       >
         {popoverJob && (
-          <>
+          <Box
+            sx={{
+              border:
+                theme.palette.mode === "light"
+                  ? "2px outset black"
+                  : "2px outset white",
+            }}
+          >
             <Typography sx={{ p: 1 }}>{popoverJob.url}</Typography>
             <Typography sx={{ p: 1 }}>
               {String(popoverJob.time_created)}
             </Typography>
-          </>
+          </Box>
         )}
       </Popover>
     </Box>

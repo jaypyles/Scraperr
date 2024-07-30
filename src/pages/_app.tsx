@@ -38,16 +38,16 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       <AuthProvider>
         <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
           <CssBaseline />
-          <Box sx={{ display: "flex" }}>
+          <Box sx={{ height: "100%", display: "flex" }}>
             <NavDrawer isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
             <Box
               component="main"
               sx={{
-                flexGrow: 1,
                 p: 3,
                 bgcolor: "background.default",
-                minHeight: "100vh",
                 overflow: "hidden",
+                height: "100%",
+                width: "100%",
               }}
             >
               <Component {...pageProps} />

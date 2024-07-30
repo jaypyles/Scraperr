@@ -21,6 +21,8 @@ services:
       dockerfile: docker/api/Dockerfile
     environment:
       - LOG_LEVEL=INFO
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=phi3
       - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
       - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
       - ALGORITHM=HS256 # authentication encoding algorithm
@@ -81,6 +83,9 @@ services:
     environment:
       - OLLAMA_KEEP_ALIVE=24h
       - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_PARALLEL=2 # Reduced parallelism
+      - OLLAMA_BATCH_SIZE=256 # Adjusted batch size
+      - OLLAMA_GPU_LAYERS=16 # Adjusted number of layers offloaded to GPU
     networks:
       - web
 networks:
