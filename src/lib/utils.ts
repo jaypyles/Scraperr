@@ -1,9 +1,14 @@
 import Cookies from "js-cookie";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch } from "react";
 import { Job } from "../types";
 
+interface fetchOptions {
+  chat?: boolean;
+}
+
 export const fetchJobs = async (
-  setJobs: Dispatch<React.SetStateAction<Job[]>>
+  setJobs: Dispatch<React.SetStateAction<Job[]>>,
+  fetchOptions: fetchOptions = {}
 ) => {
   const token = Cookies.get("token");
   await fetch(`/api/retrieve-scrape-jobs`, {
@@ -12,6 +17,7 @@ export const fetchJobs = async (
       "content-type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    body: JSON.stringify(fetchOptions),
   })
     .then((response) => response.json())
     .then((data) => setJobs(data))
@@ -54,4 +60,23 @@ export const checkAI = async (
     console.error("Error fetching jobs:", error);
     throw error;
   }
+};
+
+export const updateJob = async (ids: string[], field: string, value: any) => {
+  const token = Cookies.get("token");
+  const postBody = {
+    ids: ids,
+    field: field,
+    value: value,
+  };
+  await fetch(`/api/update`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(postBody),
+  }).catch((error) => {
+    console.error("Error fetching jobs:", error);
+  });
 };

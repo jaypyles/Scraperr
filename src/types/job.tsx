@@ -1,3 +1,4 @@
+import { Message } from "./message";
 export interface Job {
   id: string;
   url: string;
@@ -7,4 +8,5 @@ export interface Job {
   status: string;
   job_options: Object;
   favorite: boolean;
+  chat?: Message[];
 }

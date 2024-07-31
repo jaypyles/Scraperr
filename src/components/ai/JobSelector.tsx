@@ -13,20 +13,23 @@ interface Props {
   sxProps: SxProps;
   setSelectedJob: Dispatch<React.SetStateAction<Job | null>>;
   selectedJob: Job | null;
+  setJobs: Dispatch<React.SetStateAction<Job[]>>;
+  jobs: Job[];
 }
 
 export const JobSelector = ({
   sxProps,
   selectedJob,
   setSelectedJob,
+  setJobs,
+  jobs,
 }: Props) => {
-  const [jobs, setJobs] = useState<Job[]>([]);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [popoverJob, setPopoverJob] = useState<Job | null>(null);
   const theme = useTheme();
 
   useEffect(() => {
-    fetchJobs(setJobs);
+    fetchJobs(setJobs, { chat: true });
   }, []);
 
   const handlePopoverOpen = (
@@ -105,10 +108,25 @@ export const JobSelector = ({
                   : "2px solid white",
             }}
           >
-            <Typography sx={{ p: 1 }}>{popoverJob.url}</Typography>
-            <Typography sx={{ p: 1 }}>
-              {String(popoverJob.time_created)}
+            <Typography
+              variant="body1"
+              sx={{ paddingLeft: 1, paddingRight: 1 }}
+            >
+              {popoverJob.url}
             </Typography>
+            <div className="flex flex-row w-full justify-end mb-1">
+              <Typography
+                variant="body2"
+                sx={{
+                  paddingLeft: 1,
+                  paddingRight: 1,
+                  color: theme.palette.mode === "dark" ? "#d3d7e6" : "#5b5d63",
+                  fontStyle: "italic",
+                }}
+              >
+                {new Date(popoverJob.time_created).toLocaleString()}
+              </Typography>
+            </div>
           </Box>
         )}
       </Popover>

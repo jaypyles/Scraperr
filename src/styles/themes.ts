@@ -3,6 +3,7 @@ import { createTheme } from "@mui/material/styles";
 declare module "@mui/material/styles/createPalette" {
   interface Palette {
     AIMessage: Palette["primary"];
+    UserMessage: Palette["primary"];
     customBorder: {
       light: string;
       dark: string;
@@ -10,6 +11,7 @@ declare module "@mui/material/styles/createPalette" {
   }
   interface PaletteOptions {
     AIMessage?: PaletteOptions["primary"];
+    UserMessage?: PaletteOptions["primary"];
     customBorder?: {
       light: string;
       dark: string;
@@ -82,7 +84,11 @@ const lightTheme = createTheme({
       main: "#dc004e",
     },
     AIMessage: {
-      main: "rgba(3, 78, 252)",
+      main: "#3863ff",
+      contrastText: "#fff",
+    },
+    UserMessage: {
+      main: "#606575",
       contrastText: "#fff",
     },
     background: {
@@ -96,10 +102,6 @@ const lightTheme = createTheme({
   },
   typography: {
     ...commonThemeOptions.typography,
-    body1: {
-      ...commonThemeOptions.typography.h1,
-      color: "#ffffff",
-    },
   },
   components: {
     ...commonThemeOptions.components,
@@ -137,6 +139,10 @@ const darkTheme = createTheme({
     },
     AIMessage: {
       main: "rgba(3, 78, 252, 0.50)",
+      contrastText: "#fff",
+    },
+    UserMessage: {
+      main: "rgba(62, 72, 89, 1)",
       contrastText: "#fff",
     },
     background: {

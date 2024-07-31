@@ -2,22 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   TextField,
-  Button,
   Typography,
   Paper,
   useTheme,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { JobSelector } from "../components/ai";
-import { Job } from "../types";
+import { Job, Message } from "../types";
 import { useSearchParams } from "next/navigation";
-import { checkAI, fetchJob } from "../lib";
+import { checkAI, fetchJob, fetchJobs, updateJob } from "../lib";
 import SendIcon from "@mui/icons-material/Send";
-
-interface Message {
-  role: string;
-  content: string;
-}
+import EditNoteIcon from "@mui/icons-material/EditNote";
 
 const AI: React.FC = () => {
   const theme = useTheme();
@@ -25,6 +21,8 @@ const AI: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [aiEnabled, setAiEnabled] = useState<boolean>(false);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [thinking, setThinking] = useState<boolean>(false);
 
   const searchParams = useSearchParams();
 
@@ -34,6 +32,9 @@ const AI: React.FC = () => {
       const job = await fetchJob(jobId);
       if (job.length) {
         setSelectedJob(job[0]);
+        if (job[0].chat) {
+          setMessages(job[0].chat);
+        }
       }
     }
   };
@@ -43,6 +44,24 @@ const AI: React.FC = () => {
     getJobFromParam();
   }, []);
 
+  useEffect(() => {
+    if (selectedJob?.chat) {
+      setMessages(selectedJob?.chat);
+      return;
+    }
+
+    setMessages([]);
+  }, [selectedJob]);
+
+  const handleMessageSend = async (msg: string) => {
+    if (!selectedJob) {
+      throw Error("Job is not currently selected, but should be.");
+    }
+
+    const updatedMessages = await sendMessage(msg);
+    await updateJob([selectedJob?.id], "chat", updatedMessages);
+  };
+
   const sendMessage = async (msg: string) => {
     const newMessage = {
       content: msg,
@@ -51,6 +70,7 @@ const AI: React.FC = () => {
 
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setCurrentMessage("");
+    setThinking(true);
 
     const jobMessage = {
       role: "system",
@@ -69,11 +89,14 @@ const AI: React.FC = () => {
       body: JSON.stringify({ messages: [jobMessage, ...messages, newMessage] }),
     });
 
+    const updatedMessages = [...messages, newMessage];
+
     const reader = response.body?.getReader();
     const decoder = new TextDecoder("utf-8");
 
     let aiResponse = "";
     if (reader) {
+      setThinking(false);
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -99,6 +122,13 @@ const AI: React.FC = () => {
         });
       }
     }
+    return [...updatedMessages, { role: "assistant", content: aiResponse }];
+  };
+
+  const handleNewChat = (selectedJob: Job) => {
+    updateJob([selectedJob.id], "chat", []);
+    setMessages([]);
+    fetchJobs(setJobs, { chat: true });
   };
 
   return (
@@ -110,6 +140,11 @@ const AI: React.FC = () => {
         maxWidth: "100%",
         paddingLeft: 0,
         paddingRight: 0,
+        borderRadius: "8px",
+        border:
+          theme.palette.mode === "light" ? "solid white" : "solid #4b5057",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        overflow: "hidden",
       }}
     >
       {aiEnabled ? (
@@ -121,10 +156,8 @@ const AI: React.FC = () => {
               textAlign: "center",
               fontSize: "1.2em",
               position: "relative",
-              borderTop:
-                theme.palette.mode === "light"
-                  ? "2px inset #C0C0C0"
-                  : "2px inset #000",
+              borderRadius: "8px 8px 0 0",
+              borderBottom: `2px solid ${theme.palette.divider}`,
             }}
           >
             <Box
@@ -147,6 +180,8 @@ const AI: React.FC = () => {
               <JobSelector
                 selectedJob={selectedJob}
                 setSelectedJob={setSelectedJob}
+                setJobs={setJobs}
+                jobs={jobs}
                 sxProps={{
                   position: "absolute",
                   right: theme.spacing(2),
@@ -174,6 +209,7 @@ const AI: React.FC = () => {
                   padding: 2,
                   bgcolor: "rgba(128,128,128,0.1)",
                   mt: 1,
+                  borderRadius: "8px",
                 }}
                 className="rounded-md"
               >
@@ -189,18 +225,45 @@ const AI: React.FC = () => {
                     sx={{
                       my: 2,
                       p: 1,
-                      borderRadius: 1,
+                      borderRadius: "8px",
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                       bgcolor:
                         message.role === "user"
-                          ? "#3e4859"
+                          ? theme.palette.UserMessage.main
                           : theme.palette.AIMessage.main,
                       marginLeft: message.role === "user" ? "auto" : "",
                       maxWidth: "40%",
                     }}
                   >
-                    <Typography variant="body1">{message.content}</Typography>
+                    <Typography variant="body1" sx={{ color: "white" }}>
+                      {message.content}
+                    </Typography>
                   </Box>
                 ))}
+                {thinking && (
+                  <Box
+                    sx={{
+                      width: "full",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        bgcolor: "rgba(128,128,128,0.1)",
+                        maxWidth: "20%",
+                        my: 2,
+                        p: 1,
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                      }}
+                      variant="body1"
+                    >
+                      AI is thinking...
+                    </Typography>
+                  </Box>
+                )}
               </>
             )}
           </Box>
@@ -208,9 +271,24 @@ const AI: React.FC = () => {
             sx={{
               display: "flex",
               p: 2,
-              borderTop: "1px solid #ccc",
+              borderTop: `1px solid ${theme.palette.divider}`,
             }}
           >
+            <Tooltip title="New Chat">
+              <IconButton
+                disabled={!(messages.length > 0)}
+                sx={{ marginRight: 2 }}
+                size="medium"
+                onClick={() => {
+                  if (!selectedJob) {
+                    throw new Error("Selected job must be present but isn't.");
+                  }
+                  handleNewChat(selectedJob);
+                }}
+              >
+                <EditNoteIcon fontSize="medium" />
+              </IconButton>
+            </Tooltip>
             <TextField
               fullWidth
               placeholder="Type your message here..."
@@ -219,16 +297,17 @@ const AI: React.FC = () => {
               onChange={(e) => setCurrentMessage(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  sendMessage(currentMessage);
+                  handleMessageSend(currentMessage);
                 }
               }}
+              sx={{ borderRadius: "8px" }}
             />
             <IconButton
               color="primary"
               sx={{ ml: 2 }}
               disabled={!selectedJob}
               onClick={() => {
-                sendMessage(currentMessage);
+                handleMessageSend(currentMessage);
               }}
             >
               <SendIcon />

@@ -26,6 +26,7 @@ from api.backend.job import (
 from api.backend.models import (
     UpdateJobs,
     DownloadJob,
+    FetchOptions,
     SubmitScrapeJob,
     DeleteScrapeJobs,
 )
@@ -93,10 +94,12 @@ async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTa
 
 
 @app.post("/retrieve-scrape-jobs")
-async def retrieve_scrape_jobs(user: User = Depends(get_current_user)):
+async def retrieve_scrape_jobs(
+    fetch_options: FetchOptions, user: User = Depends(get_current_user)
+):
     LOG.info(f"Retrieving jobs for account: {user.email}")
     try:
-        results = await query({"user": user.email})
+        results = await query({"user": user.email}, fetch_options=fetch_options)
         return JSONResponse(content=jsonable_encoder(results[::-1]))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
