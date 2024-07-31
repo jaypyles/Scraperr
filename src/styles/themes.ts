@@ -47,10 +47,6 @@ const commonThemeOptions = {
     overline: {
       fontFamily: '"Schibsted Grotesk", sans-serif',
     },
-    customBorder: {
-      light: "2px outset black",
-      dark: "2px outset white",
-    },
   },
   components: {
     MuiCssBaseline: {
@@ -98,8 +94,13 @@ const lightTheme = createTheme({
       secondary: "#333333",
     },
   },
-
-  ...commonThemeOptions,
+  typography: {
+    ...commonThemeOptions.typography,
+    body1: {
+      ...commonThemeOptions.typography.h1,
+      color: "#ffffff",
+    },
+  },
   components: {
     ...commonThemeOptions.components,
     MuiButton: {
@@ -112,6 +113,13 @@ const lightTheme = createTheme({
           "&:hover": {
             backgroundColor: "#027be0",
           },
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          padding: 0,
         },
       },
     },
@@ -168,19 +176,6 @@ const darkTheme = createTheme({
   },
   components: {
     ...commonThemeOptions.components,
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          fontFamily: '"Schibsted Grotesk", sans-serif',
-        },
-        html: {
-          fontFamily: '"Schibsted Grotesk", sans-serif',
-        },
-        "*": {
-          fontFamily: '"Schibsted Grotesk", sans-serif',
-        },
-      },
-    },
     MuiButton: {
       styleOverrides: {
         root: {

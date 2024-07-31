@@ -47,33 +47,35 @@ export const JobSelector = ({
   return (
     <Box sx={sxProps}>
       <FormControl fullWidth>
-        <InputLabel id="select-job">Job</InputLabel>
         {jobs.length ? (
-          <Select
-            labelId="select-job"
-            id="select-job"
-            value={selectedJob?.id || ""}
-            label="Job"
-            onChange={(e) => {
-              setSelectedJob(
-                jobs.find((job) => job.id === e.target.value) || null
-              );
-            }}
-          >
-            {jobs.map((job) => (
-              <MenuItem
-                key={job.id}
-                value={job.id}
-                aria-owns={open ? "mouse-over-popover" : undefined}
-                aria-haspopup="true"
-                onMouseEnter={(e) => handlePopoverOpen(e, job)}
-                onMouseLeave={handlePopoverClose}
-                onClick={handlePopoverClose}
-              >
-                {job.id}
-              </MenuItem>
-            ))}
-          </Select>
+          <>
+            <InputLabel id="select-job">Job</InputLabel>
+            <Select
+              labelId="select-job"
+              id="select-job"
+              value={selectedJob?.id || ""}
+              label="Job"
+              onChange={(e) => {
+                setSelectedJob(
+                  jobs.find((job) => job.id === e.target.value) || null
+                );
+              }}
+            >
+              {jobs.map((job) => (
+                <MenuItem
+                  key={job.id}
+                  value={job.id}
+                  aria-owns={open ? "mouse-over-popover" : undefined}
+                  aria-haspopup="true"
+                  onMouseEnter={(e) => handlePopoverOpen(e, job)}
+                  onMouseLeave={handlePopoverClose}
+                  onClick={handlePopoverClose}
+                >
+                  {job.id}
+                </MenuItem>
+              ))}
+            </Select>
+          </>
         ) : null}
       </FormControl>
       <Popover
@@ -99,8 +101,8 @@ export const JobSelector = ({
             sx={{
               border:
                 theme.palette.mode === "light"
-                  ? "2px outset black"
-                  : "2px outset white",
+                  ? "2px solid black"
+                  : "2px solid white",
             }}
           >
             <Typography sx={{ p: 1 }}>{popoverJob.url}</Typography>

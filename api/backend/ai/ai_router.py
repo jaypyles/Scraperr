@@ -6,7 +6,7 @@ from collections.abc import Iterable, AsyncGenerator
 # PDM
 from openai import OpenAI
 from fastapi import APIRouter
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from openai.types.chat import ChatCompletionMessageParam
 
 # LOCAL
@@ -63,3 +63,8 @@ async def ai(c: AI):
     return StreamingResponse(
         chat_function(chat_messages=c.messages), media_type="text/plain"
     )
+
+
+@ai_router.get("/ai/check")
+async def check():
+    return JSONResponse(content=bool(open_ai_key or llama_model))

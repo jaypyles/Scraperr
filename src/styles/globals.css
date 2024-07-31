@@ -11,3 +11,7 @@ body {
   height: 100vh;
   font-family: "Schibsted Grotesk", sans-serif;
 }
+
+.MuiPopover-paper {
+  padding: 0 !important;
+}

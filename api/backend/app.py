@@ -103,6 +103,18 @@ async def retrieve_scrape_jobs(user: User = Depends(get_current_user)):
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
+@app.get("/job/{id}")
+async def job(id: str, user: User = Depends(get_current_user)):
+    LOG.info(f"Retrieving jobs for account: {user.email}")
+    try:
+        filter = {"user": user.email, "id": id}
+        results = await query(filter)
+        return JSONResponse(content=jsonable_encoder(results))
+    except Exception as e:
+        LOG.error(f"Exception occurred: {e}")
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
+
 def clean_text(text: str):
     text = text.replace("\r\n", "\n")  # Normalize newlines
     text = text.replace("\n", "\\n")  # Escape newlines
