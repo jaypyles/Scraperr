@@ -55,7 +55,7 @@ async def update_job(ids: list[str], field: str, value: Any):
 async def delete_jobs(jobs: list[str]):
     collection = get_job_collection()
     result = await collection.delete_many({"id": {"$in": jobs}})
-    LOG.info(f"RESULT: {result.deleted_count} documents deleted")
+    LOG.info(f"{result.deleted_count} documents deleted")
 
     return True if result.deleted_count > 0 else False
 

@@ -62,31 +62,5 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     networks:
       - web
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - 11434:11434
-    container_name: ollama
-    pull_policy: always
-    tty: true
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
-    restart: always
-    volumes:
-      - .:/code
-      - ./ollama/ollama:/root/.ollama
-    environment:
-      - OLLAMA_KEEP_ALIVE=24h
-      - OLLAMA_HOST=0.0.0.0
-      - OLLAMA_PARALLEL=2 # Reduced parallelism
-      - OLLAMA_BATCH_SIZE=256 # Adjusted batch size
-      - OLLAMA_GPU_LAYERS=16 # Adjusted number of layers offloaded to GPU
-    networks:
-      - web
 networks:
   web:

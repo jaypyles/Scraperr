@@ -274,7 +274,7 @@ const AI: React.FC = () => {
               borderTop: `1px solid ${theme.palette.divider}`,
             }}
           >
-            <Tooltip title="New Chat">
+            <Tooltip title="New Chat" placement="top">
               <IconButton
                 disabled={!(messages.length > 0)}
                 sx={{ marginRight: 2 }}
@@ -302,16 +302,19 @@ const AI: React.FC = () => {
               }}
               sx={{ borderRadius: "8px" }}
             />
-            <IconButton
-              color="primary"
-              sx={{ ml: 2 }}
-              disabled={!selectedJob}
-              onClick={() => {
-                handleMessageSend(currentMessage);
-              }}
-            >
-              <SendIcon />
-            </IconButton>
+
+            <Tooltip title="Send" placement="top">
+              <IconButton
+                color="primary"
+                sx={{ ml: 2 }}
+                disabled={!selectedJob}
+                onClick={() => {
+                  handleMessageSend(currentMessage);
+                }}
+              >
+                <SendIcon />
+              </IconButton>
+            </Tooltip>
           </Box>
         </>
       ) : (
