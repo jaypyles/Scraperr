@@ -52,6 +52,16 @@ From the table, users can download an excel sheet of the job's results, along wi
 
 ![statistics](https://github.com/jaypyles/www-scrape/blob/master/docs/stats_page.png)
 
+### AI Integration
+
+- Include the results of a selected job into the context of a conversation
+- Currently supports:
+
+1. Ollama
+2. OpenAI
+
+![chat](https://github.com/jaypyles/www-scrape/blob/master/docs/chat_page.png)
+
 ## Installation
 
 1. Clone the repository:
@@ -116,6 +126,22 @@ The app provides its own `traefik` configuration to use independently, but can e
 Use this service as an API for your own projects. Due to this using FastAPI, a docs page is available at `/docs` for the API.
 
 ![docs](https://github.com/jaypyles/www-scrape/blob/master/docs/docs_page.png)
+
+## AI
+
+Currently supports either an Ollama instance or OpenAI's ChatGPT, using your own API key. Setting up is easy as either setting the Ollama url or the OpenAI API key in the API's environmental variables in the `docker-compose.yml` file:
+
+```yaml
+scraperr_api:
+  environment:
+    - OLLAMA_URL=http://ollama:11434
+    - OLLAMA_MODEL=llama3.1
+    # or
+    - OPENAI_KEY=<your_key>
+    - OPENAI_MODEL=gpt3.5-turbo
+```
+
+The model's names are taken from the documentation of their respective technologies.
 
 ## Troubleshooting
 

@@ -1,4 +1,23 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+
+declare module "@mui/material/styles/createPalette" {
+  interface Palette {
+    AIMessage: Palette["primary"];
+    UserMessage: Palette["primary"];
+    customBorder: {
+      light: string;
+      dark: string;
+    };
+  }
+  interface PaletteOptions {
+    AIMessage?: PaletteOptions["primary"];
+    UserMessage?: PaletteOptions["primary"];
+    customBorder?: {
+      light: string;
+      dark: string;
+    };
+  }
+}
 
 const commonThemeOptions = {
   typography: {
@@ -64,6 +83,14 @@ const lightTheme = createTheme({
     secondary: {
       main: "#dc004e",
     },
+    AIMessage: {
+      main: "#3863ff",
+      contrastText: "#fff",
+    },
+    UserMessage: {
+      main: "#606575",
+      contrastText: "#fff",
+    },
     background: {
       default: "#f4f6f8",
       paper: "#ffffff",
@@ -73,8 +100,9 @@ const lightTheme = createTheme({
       secondary: "#333333",
     },
   },
-
-  ...commonThemeOptions,
+  typography: {
+    ...commonThemeOptions.typography,
+  },
   components: {
     ...commonThemeOptions.components,
     MuiButton: {
@@ -90,6 +118,13 @@ const lightTheme = createTheme({
         },
       },
     },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          padding: 0,
+        },
+      },
+    },
   },
 });
 
@@ -101,6 +136,14 @@ const darkTheme = createTheme({
     },
     secondary: {
       main: "#f48fb1",
+    },
+    AIMessage: {
+      main: "rgba(3, 78, 252, 0.50)",
+      contrastText: "#fff",
+    },
+    UserMessage: {
+      main: "rgba(62, 72, 89, 1)",
+      contrastText: "#fff",
     },
     background: {
       default: "#121212",
@@ -139,19 +182,6 @@ const darkTheme = createTheme({
   },
   components: {
     ...commonThemeOptions.components,
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          fontFamily: '"Schibsted Grotesk", sans-serif',
-        },
-        html: {
-          fontFamily: '"Schibsted Grotesk", sans-serif',
-        },
-        "*": {
-          fontFamily: '"Schibsted Grotesk", sans-serif',
-        },
-      },
-    },
     MuiButton: {
       styleOverrides: {
         root: {

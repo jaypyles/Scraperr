@@ -186,3 +186,4 @@ cython_debug/
 .next
 postgres_data
 .vscode
+ollama

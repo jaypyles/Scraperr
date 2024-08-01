@@ -23,6 +23,7 @@ import HttpIcon from "@mui/icons-material/Http";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import BarChart from "@mui/icons-material/BarChart";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { useRouter } from "next/router";
 
 interface NavDrawerProps {
@@ -78,6 +79,15 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
                   <HttpIcon />
                 </ListItemIcon>
                 <ListItemText primary="Previous Jobs" />
+              </ListItemButton>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <ListItemButton onClick={() => router.push("/chat")}>
+                <ListItemIcon>
+                  <AutoAwesomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Chat" />
               </ListItemButton>
             </ListItem>
             <Divider />

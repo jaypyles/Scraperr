@@ -6,6 +6,10 @@ from datetime import datetime
 import pydantic
 
 
+class FetchOptions(pydantic.BaseModel):
+    chat: Optional[bool] = None
+
+
 class Element(pydantic.BaseModel):
     name: str
     xpath: str
@@ -32,6 +36,7 @@ class SubmitScrapeJob(pydantic.BaseModel):
     result: Optional[dict[str, Any]] = None
     job_options: JobOptions
     status: str = "Queued"
+    chat: Optional[str] = None
 
 
 class RetrieveScrapeJobs(pydantic.BaseModel):
@@ -54,3 +59,7 @@ class UpdateJobs(pydantic.BaseModel):
     ids: list[str]
     field: str
     value: Any
+
+
+class AI(pydantic.BaseModel):
+    messages: list[Any]

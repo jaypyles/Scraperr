@@ -26,10 +26,12 @@ from api.backend.job import (
 from api.backend.models import (
     UpdateJobs,
     DownloadJob,
+    FetchOptions,
     SubmitScrapeJob,
     DeleteScrapeJobs,
 )
 from api.backend.schemas import User
+from api.backend.ai.ai_router import ai_router
 from api.backend.auth.auth_utils import get_current_user
 from api.backend.auth.auth_router import auth_router
 
@@ -59,6 +61,7 @@ LOG = logging.getLogger(__name__)
 
 app = FastAPI(title="api")
 app.include_router(auth_router)
+app.include_router(ai_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -91,11 +94,25 @@ async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTa
 
 
 @app.post("/retrieve-scrape-jobs")
-async def retrieve_scrape_jobs(user: User = Depends(get_current_user)):
+async def retrieve_scrape_jobs(
+    fetch_options: FetchOptions, user: User = Depends(get_current_user)
+):
     LOG.info(f"Retrieving jobs for account: {user.email}")
     try:
-        results = await query({"user": user.email})
+        results = await query({"user": user.email}, fetch_options=fetch_options)
         return JSONResponse(content=jsonable_encoder(results[::-1]))
+    except Exception as e:
+        LOG.error(f"Exception occurred: {e}")
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
+
+@app.get("/job/{id}")
+async def job(id: str, user: User = Depends(get_current_user)):
+    LOG.info(f"Retrieving jobs for account: {user.email}")
+    try:
+        filter = {"user": user.email, "id": id}
+        results = await query(filter)
+        return JSONResponse(content=jsonable_encoder(results))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
         return JSONResponse(content={"error": str(e)}, status_code=500)

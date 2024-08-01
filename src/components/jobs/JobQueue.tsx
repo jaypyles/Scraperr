@@ -19,6 +19,8 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarIcon from "@mui/icons-material/Star";
 import { Job } from "../../types";
+import { AutoAwesome } from "@mui/icons-material";
+import { useRouter } from "next/router";
 
 interface stringMap {
   [key: string]: string;
@@ -47,6 +49,7 @@ export const JobQueue = ({
   onFavorite,
 }: Props) => {
   const { selectedJobs, filteredJobs } = stateProps;
+  const router = useRouter();
 
   return (
     <Table sx={{ tableLayout: "fixed", width: "100%" }}>
@@ -70,6 +73,22 @@ export const JobQueue = ({
                 checked={selectedJobs.has(row.id)}
                 onChange={() => onSelectJob(row.id)}
               />
+              <Tooltip title="Chat with AI">
+                <span>
+                  <IconButton
+                    onClick={() => {
+                      router.push({
+                        pathname: "/chat",
+                        query: {
+                          job: row.id,
+                        },
+                      });
+                    }}
+                  >
+                    <AutoAwesome />
+                  </IconButton>
+                </span>
+              </Tooltip>
               <Tooltip title="Favorite Job">
                 <span>
                   <IconButton
