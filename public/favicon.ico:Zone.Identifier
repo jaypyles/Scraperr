@@ -1,4 +1,0 @@
-[ZoneTransfer]
-ZoneId=3
-ReferrerUrl=https://cloudconvert.com/
-HostUrl=https://us-east.storage.cloudconvert.com/tasks/ff0a6031-1745-4e41-871e-35f102bfe11b/scraperr_logo.ico?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20240722%2Fva%2Fs3%2Faws4_request&X-Amz-Date=20240722T165500Z&X-Amz-Expires=86400&X-Amz-Signature=df96cece92026dc08d5b1dbfc2391beffa5101137fade6587625c467f088feb7&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22scraperr_logo.ico%22&response-content-type=image%2Fvnd.microsoft.icon&x-id=GetObject
