@@ -2,30 +2,12 @@
 
 import React from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemButton,
-  ListItemText,
-  Typography,
-  Button,
-  Switch,
-  Drawer,
-  Divider,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
-import HttpIcon from "@mui/icons-material/Http";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import TerminalIcon from "@mui/icons-material/Terminal";
-import BarChart from "@mui/icons-material/BarChart";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { Box, List, Typography, Button, Drawer, Divider } from "@mui/material";
+
 import { useRouter } from "next/router";
 import { QuickSettings } from "../nav/quick-settings/quick-settings";
+import { NavItem } from "./nav-drawer/nav-item";
+import { NavItems } from "./nav-drawer/nav-items/nav-items";
 
 interface NavDrawerProps {
   toggleTheme: () => void;
@@ -64,54 +46,9 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
         }}
       >
         <div>
-          <List>
-            <ListItem>
-              <ListItemButton onClick={() => router.push("/")}>
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemButton onClick={() => router.push("/jobs")}>
-                <ListItemIcon>
-                  <HttpIcon />
-                </ListItemIcon>
-                <ListItemText primary="Previous Jobs" />
-              </ListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemButton onClick={() => router.push("/chat")}>
-                <ListItemIcon>
-                  <AutoAwesomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Chat" />
-              </ListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemButton onClick={() => router.push("/statistics")}>
-                <ListItemIcon>
-                  <BarChart />
-                </ListItemIcon>
-                <ListItemText primary="Statistics" />
-              </ListItemButton>
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemButton onClick={() => router.push("/logs")}>
-                <ListItemIcon>
-                  <TerminalIcon />
-                </ListItemIcon>
-                <ListItemText primary="View App Logs" />
-              </ListItemButton>
-            </ListItem>
-            <Divider />
-          </List>
+          <NavItems />
         </div>
+        <Divider />
         <Box
           sx={{
             display: "flex",
@@ -146,10 +83,7 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
             </Button>
           )}
           <Divider sx={{ marginTop: 2, marginBottom: 2 }}></Divider>
-          <QuickSettings
-            toggleTheme={toggleTheme}
-            isDarkMode={isDarkMode}
-          />
+          <QuickSettings toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
         </Box>
       </Box>
     </Drawer>
