@@ -21,6 +21,7 @@ RUN npm install
 
 COPY public /app/public
 COPY src /app/src
+
 COPY tsconfig.json /app/tsconfig.json
 COPY tailwind.config.js /app/tailwind.config.js
 COPY next.config.mjs /app/next.config.mjs
@@ -42,7 +43,6 @@ ENV PYTHONPATH=/project/pkgs
 COPY --from=pybuilder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY --from=pybuilder /usr/local/bin /usr/local/bin
 COPY --from=pybuilder /project/app /project/
-# COPY --from=jsbuilder /app/dist /project/dist
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 

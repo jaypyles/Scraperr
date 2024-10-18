@@ -9,6 +9,12 @@ services:
       - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
       - "traefik.http.routers.scraperr.tls=false"
     volumes:
-      - "$PWD/dist:/project/dist"
-      - "$PWD/src:/project/src"
-      - "$PWD/api/backend:/project/api/backend"
+      - "$PWD/src:/app/src"
+      - "$PWD/public:/app/public"
+      - "$PWD/next.config.mjs:/app/next.config.mjs"
+      - "$PWD/package.json:/app/package.json"
+      - "$PWD/package-lock.json:/app/package-lock.json"
+      - "$PWD/tsconfig.json:/app/tsconfig.json"
+  scraperr_api:
+    ports:
+      - "8000:8000"
