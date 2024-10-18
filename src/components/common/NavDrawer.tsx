@@ -25,6 +25,7 @@ import TerminalIcon from "@mui/icons-material/Terminal";
 import BarChart from "@mui/icons-material/BarChart";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { useRouter } from "next/router";
+import { QuickSettings } from "../nav/quick-settings/quick-settings";
 
 interface NavDrawerProps {
   toggleTheme: () => void;
@@ -145,23 +146,10 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
             </Button>
           )}
           <Divider sx={{ marginTop: 2, marginBottom: 2 }}></Divider>
-          <Accordion sx={{ padding: 0, width: "90%", marginBottom: 1 }}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>Quick Settings</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div className="flex flex-row mr-1">
-                <Typography className="mr-2" component="span">
-                  <p className="text-sm">Dark Theme Toggle</p>
-                </Typography>
-                <Switch checked={isDarkMode} onChange={toggleTheme} />
-              </div>
-            </AccordionDetails>
-          </Accordion>
+          <QuickSettings
+            toggleTheme={toggleTheme}
+            isDarkMode={isDarkMode}
+          />
         </Box>
       </Box>
     </Drawer>
