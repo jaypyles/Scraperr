@@ -20,8 +20,6 @@ async def test_download(mock_query: AsyncMock):
     # Make a POST request to the /download endpoint
     response = client.post("/download", json=download_job.model_dump())
 
-    print(f"RESPONSE: {response}")
-
     # Assertions
     assert response.status_code == 200
     assert response.headers["Content-Disposition"] == "attachment; filename=export.csv"
