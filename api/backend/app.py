@@ -8,8 +8,7 @@ from typing import Optional
 import csv
 
 # PDM
-from fastapi import Depends, FastAPI, HTTPException, BackgroundTasks
-from openpyxl import Workbook
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,8 +27,8 @@ from api.backend.models import (
     UpdateJobs,
     DownloadJob,
     FetchOptions,
-    SubmitScrapeJob,
     DeleteScrapeJobs,
+    Job,
 )
 from api.backend.schemas import User
 from api.backend.ai.ai_router import ai_router
@@ -80,7 +79,7 @@ async def update(update_jobs: UpdateJobs, user: User = Depends(get_current_user)
 
 
 @app.post("/submit-scrape-job")
-async def submit_scrape_job(job: SubmitScrapeJob):
+async def submit_scrape_job(job: Job):
     LOG.info(f"Recieved job: {job}")
     try:
         job.id = uuid.uuid4().hex
@@ -128,6 +127,7 @@ def clean_text(text: str):
 @app.post("/download")
 async def download(download_job: DownloadJob):
     LOG.info(f"Downloading job with ids: {download_job.ids}")
+
     try:
         results = await query({"id": {"$in": download_job.ids}})
 
