@@ -1,0 +1,13 @@
+.userControl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome {
+  margin: 0.25rem;
+}
+
+.userControlButton {
+  width: 100%;
+}

@@ -1,5 +1,7 @@
 # STL
 import os
+from gc import disable
+from queue import Empty
 from typing import Any, Optional
 from datetime import datetime, timedelta
 
@@ -22,6 +24,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+
+EMPTY_USER = User(email="", full_name="", disabled=False)
 
 
 def verify_password(plain_password: str, hashed_password: str):
@@ -70,6 +74,32 @@ def create_access_token(
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload: Optional[dict[str, Any]] = jwt.decode(
+            token, SECRET_KEY, algorithms=[ALGORITHM]
+        )
+        if not payload:
+            return EMPTY_USER
+
+        email = payload.get("sub")
+
+        if email is None:
+            return EMPTY_USER
+
+        token_data = TokenData(email=email)
+
+    except JWTError:
+        return EMPTY_USER
+
+    user = await get_user(email=token_data.email)
+
+    if user is None:
+        return EMPTY_USER
+
+    return user
+
+
+async def require_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

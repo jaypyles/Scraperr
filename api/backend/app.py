@@ -3,12 +3,12 @@ import os
 import uuid
 import logging
 import traceback
-from io import BytesIO
+from io import StringIO
 from typing import Optional
+import csv
 
 # PDM
-from fastapi import Depends, FastAPI, HTTPException, BackgroundTasks
-from openpyxl import Workbook
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,8 +27,8 @@ from api.backend.models import (
     UpdateJobs,
     DownloadJob,
     FetchOptions,
-    SubmitScrapeJob,
     DeleteScrapeJobs,
+    Job,
 )
 from api.backend.schemas import User
 from api.backend.ai.ai_router import ai_router
@@ -79,14 +79,13 @@ async def update(update_jobs: UpdateJobs, user: User = Depends(get_current_user)
 
 
 @app.post("/submit-scrape-job")
-async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTasks):
+async def submit_scrape_job(job: Job):
     LOG.info(f"Recieved job: {job}")
     try:
         job.id = uuid.uuid4().hex
 
-        if job.user:
-            job_dict = job.model_dump()
-            await insert(job_dict)
+        job_dict = job.model_dump()
+        await insert(job_dict)
 
         return JSONResponse(content=f"Job queued for scraping: {job.id}")
     except Exception as e:
@@ -103,7 +102,7 @@ async def retrieve_scrape_jobs(
         return JSONResponse(content=jsonable_encoder(results[::-1]))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+        return JSONResponse(content=[], status_code=500)
 
 
 @app.get("/job/{id}")
@@ -128,63 +127,40 @@ def clean_text(text: str):
 @app.post("/download")
 async def download(download_job: DownloadJob):
     LOG.info(f"Downloading job with ids: {download_job.ids}")
+
     try:
         results = await query({"id": {"$in": download_job.ids}})
 
-        flattened_results = []
+        csv_buffer = StringIO()
+        csv_writer = csv.writer(csv_buffer)
+
+        headers = ["id", "url", "element_name", "xpath", "text", "user", "time_created"]
+        csv_writer.writerow(headers)
+
         for result in results:
             for res in result["result"]:
                 for url, elements in res.items():
                     for element_name, values in elements.items():
                         for value in values:
                             text = clean_text(value.get("text", ""))
-                            flattened_results.append(
-                                {
-                                    "id": result.get("id", None),
-                                    "url": url,
-                                    "element_name": element_name,
-                                    "xpath": value.get("xpath", ""),
-                                    "text": text,
-                                    "user": result.get("user", ""),
-                                    "time_created": result.get("time_created", ""),
-                                }
+                            csv_writer.writerow(
+                                [
+                                    result.get("id", ""),
+                                    url,
+                                    element_name,
+                                    value.get("xpath", ""),
+                                    text,
+                                    result.get("user", ""),
+                                    result.get("time_created", ""),
+                                ]
                             )
 
-        # Create an Excel workbook and sheet
-        workbook = Workbook()
-        sheet = workbook.active
-        assert sheet
-        sheet.title = "Results"
-
-        # Write the header
-        headers = ["id", "url", "element_name", "xpath", "text", "user", "time_created"]
-        sheet.append(headers)
-
-        # Write the rows
-        for row in flattened_results:
-            sheet.append(
-                [
-                    row["id"],
-                    row["url"],
-                    row["element_name"],
-                    row["xpath"],
-                    row["text"],
-                    row["user"],
-                    row["time_created"],
-                ]
-            )
-
-        # Save the workbook to a BytesIO buffer
-        excel_buffer = BytesIO()
-        workbook.save(excel_buffer)
-        _ = excel_buffer.seek(0)
-
-        # Create the response
+        _ = csv_buffer.seek(0)
         response = StreamingResponse(
-            excel_buffer,
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            csv_buffer,
+            media_type="text/csv",
         )
-        response.headers["Content-Disposition"] = "attachment; filename=export.xlsx"
+        response.headers["Content-Disposition"] = "attachment; filename=export.csv"
         return response
 
     except Exception as e:

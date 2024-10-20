@@ -1,0 +1,13 @@
+.quickSettings {
+  padding: 0;
+  margin-bottom: 0.25rem;
+}
+
+.details {
+  display: flex;
+  margin-right: 0.25rem;
+}
+
+.detailsText p {
+  font-size: 1rem;
+}

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { JobTable } from "../components/jobs";
 import { useAuth } from "../contexts/AuthContext";
-import { Box } from "@mui/system";
 import { Job } from "../types";
 import { GetServerSideProps } from "next/types";
 import axios from "axios";
 import { parseCookies } from "nookies";
-import Cookies from "js-cookie";
 import { fetchJobs } from "../lib";
 
 interface JobsProps {
@@ -67,11 +65,7 @@ const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
   }, [user, initialUser, setUser]);
 
   useEffect(() => {
-    if (user) {
-      fetchJobs(setJobs);
-    } else {
-      setJobs([]);
-    }
+    fetchJobs(setJobs);
   }, [user]);
 
   useEffect(() => {
@@ -81,33 +75,7 @@ const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
     return () => clearInterval(intervalId);
   }, []);
 
-  return (
-    <>
-      {user ? (
-        <JobTable jobs={jobs} setJobs={setJobs} />
-      ) : (
-        <Box
-          bgcolor="background.default"
-          minHeight="100vh"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <h4
-            style={{
-              color: "#fff",
-              padding: "20px",
-              borderRadius: "8px",
-              background: "rgba(0, 0, 0, 0.6)",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-            }}
-          >
-            Previous jobs not viewable unless logged in.
-          </h4>
-        </Box>
-      )}
-    </>
-  );
+  return <JobTable jobs={jobs} setJobs={setJobs} />;
 };
 
 export default Jobs;

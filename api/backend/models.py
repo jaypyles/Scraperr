@@ -1,5 +1,5 @@
 # STL
-from typing import Any, Optional
+from typing import Any, Optional, Union
 from datetime import datetime
 
 # PDM
@@ -27,18 +27,6 @@ class JobOptions(pydantic.BaseModel):
     custom_headers: Optional[dict[str, Any]]
 
 
-class SubmitScrapeJob(pydantic.BaseModel):
-    id: Optional[str] = None
-    url: str
-    elements: list[Element]
-    user: Optional[str] = None
-    time_created: Optional[datetime] = None
-    result: Optional[dict[str, Any]] = None
-    job_options: JobOptions
-    status: str = "Queued"
-    chat: Optional[str] = None
-
-
 class RetrieveScrapeJobs(pydantic.BaseModel):
     user: str
 
@@ -63,3 +51,15 @@ class UpdateJobs(pydantic.BaseModel):
 
 class AI(pydantic.BaseModel):
     messages: list[Any]
+
+
+class Job(pydantic.BaseModel):
+    id: Optional[str] = None
+    url: str
+    elements: list[Element]
+    user: str = ""
+    time_created: Optional[Union[datetime, str]] = None
+    result: list[dict[str, dict[str, list[CapturedElement]]]] = []
+    job_options: JobOptions
+    status: str = "Queued"
+    chat: Optional[str] = None

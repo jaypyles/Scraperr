@@ -1,5 +1,5 @@
-export interface Element {
+export type Element = {
   name: string;
   xpath: string;
   url: string;
-}
+};

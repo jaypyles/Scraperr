@@ -60,10 +60,11 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      a.download = `job_${ids.splice(0, 1)}.xlsx`;
+      a.download = `job_${ids[0]}.csv`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     } else {
       console.error("Failed to download the file.");
     }

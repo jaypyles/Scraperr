@@ -36,6 +36,9 @@ dependencies = [
     "docker>=7.1.0",
     "ollama>=0.3.0",
     "openai>=1.37.1",
+    "exceptiongroup>=1.2.2",
+    "Faker>=30.6.0",
+    "pytest-asyncio>=0.24.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -47,6 +50,7 @@ distribution = true
 [tool.pdm.dev-dependencies]
 dev = [
     "ipython>=8.26.0",
+    "pytest>=8.3.3",
 ]
 [tool.pyright]
 include = ["./api/backend/"]
