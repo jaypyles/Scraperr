@@ -1,5 +1,5 @@
 # Build python dependencies
-FROM python:3.10-slim AS pybuilder
+FROM python:3.10.12-slim as pybuilder
 
 RUN apt update && apt install -y uvicorn
 RUN python -m pip --no-cache-dir install pdm
@@ -11,26 +11,8 @@ COPY ./api/ /project/app/api
 WORKDIR /project/app
 RUN pdm install
 
-# Build next dependencies
-FROM node:latest as jsbuilder
-WORKDIR /app
-
-COPY package*.json ./
-
-RUN npm install
-
-COPY public /app/public
-COPY src /app/src
-
-COPY tsconfig.json /app/tsconfig.json
-COPY tailwind.config.js /app/tailwind.config.js
-COPY next.config.mjs /app/next.config.mjs
-COPY postcss.config.js /app/postcss.config.js
-
-RUN npm run build
-
 # Create final image
-FROM python:3.10-slim
+FROM python:3.10.12-slim
 
 RUN apt-get update
 RUN apt-get install -y wget gnupg supervisor
