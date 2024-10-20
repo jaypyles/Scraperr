@@ -3,8 +3,9 @@ import os
 import uuid
 import logging
 import traceback
-from io import BytesIO
+from io import StringIO
 from typing import Optional
+import csv
 
 # PDM
 from fastapi import Depends, FastAPI, HTTPException, BackgroundTasks
@@ -130,60 +131,36 @@ async def download(download_job: DownloadJob):
     try:
         results = await query({"id": {"$in": download_job.ids}})
 
-        flattened_results = []
+        csv_buffer = StringIO()
+        csv_writer = csv.writer(csv_buffer)
+
+        headers = ["id", "url", "element_name", "xpath", "text", "user", "time_created"]
+        csv_writer.writerow(headers)
+
         for result in results:
             for res in result["result"]:
                 for url, elements in res.items():
                     for element_name, values in elements.items():
                         for value in values:
                             text = clean_text(value.get("text", ""))
-                            flattened_results.append(
-                                {
-                                    "id": result.get("id", None),
-                                    "url": url,
-                                    "element_name": element_name,
-                                    "xpath": value.get("xpath", ""),
-                                    "text": text,
-                                    "user": result.get("user", ""),
-                                    "time_created": result.get("time_created", ""),
-                                }
+                            csv_writer.writerow(
+                                [
+                                    result.get("id", ""),
+                                    url,
+                                    element_name,
+                                    value.get("xpath", ""),
+                                    text,
+                                    result.get("user", ""),
+                                    result.get("time_created", ""),
+                                ]
                             )
 
-        # Create an Excel workbook and sheet
-        workbook = Workbook()
-        sheet = workbook.active
-        assert sheet
-        sheet.title = "Results"
-
-        # Write the header
-        headers = ["id", "url", "element_name", "xpath", "text", "user", "time_created"]
-        sheet.append(headers)
-
-        # Write the rows
-        for row in flattened_results:
-            sheet.append(
-                [
-                    row["id"],
-                    row["url"],
-                    row["element_name"],
-                    row["xpath"],
-                    row["text"],
-                    row["user"],
-                    row["time_created"],
-                ]
-            )
-
-        # Save the workbook to a BytesIO buffer
-        excel_buffer = BytesIO()
-        workbook.save(excel_buffer)
-        _ = excel_buffer.seek(0)
-
-        # Create the response
+        _ = csv_buffer.seek(0)
         response = StreamingResponse(
-            excel_buffer,
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            csv_buffer,
+            media_type="text/csv",
         )
-        response.headers["Content-Disposition"] = "attachment; filename=export.xlsx"
+        response.headers["Content-Disposition"] = "attachment; filename=export.csv"
         return response
 
     except Exception as e:

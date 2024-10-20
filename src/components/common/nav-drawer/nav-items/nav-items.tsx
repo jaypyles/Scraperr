@@ -35,6 +35,7 @@ const items = [
     href: "/logs",
   },
 ];
+
 export const NavItems = () => {
   return (
     <List>
