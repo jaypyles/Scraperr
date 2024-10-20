@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Box, Snackbar, Alert } from "@mui/material";
+import { Button, Container, Box, Snackbar, Alert } from "@mui/material";
 import { useRouter } from "next/router";
-import { Element, Result } from "../types";
-import { ElementTable, JobSubmitter } from "../components/submit";
+import { Element, Result } from "@/types";
+import { ElementTable } from "@/components/submit";
+import { JobSubmitter } from "@/components/submit/job-submitter";
 
 const Home = () => {
   const router = useRouter();
@@ -54,13 +55,23 @@ const Home = () => {
   };
 
   const NotifySnackbar = () => {
+    const goTo = () => {
+      router.push("/jobs");
+    };
+
+    const action = (
+      <Button color="inherit" size="small" onClick={goTo}>
+        Go To Job
+      </Button>
+    );
+
     return (
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity="info">
+        <Alert onClose={handleCloseSnackbar} severity="info" action={action}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

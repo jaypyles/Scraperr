@@ -1,19 +1,14 @@
 "use client";
 
 import React, { useEffect, useState, Dispatch } from "react";
-import {
-  TextField,
-  Button,
-  Box,
-  Checkbox,
-  FormControlLabel,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
-import { Element } from "../../types";
-import { useAuth } from "../../contexts/AuthContext";
+import { Element } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/router";
-import { Constants } from "../../lib";
+import { Constants } from "@/lib";
+
+import { JobSubmitterHeader } from "./job-submitter-header";
+import { JobSubmitterInput } from "./job-submitter-input";
+import { JobSubmitterOptions } from "./job-submitter-options";
 
 interface StateProps {
   submittedURL: string;
@@ -153,84 +148,22 @@ export const JobSubmitter = ({ stateProps }: Props) => {
 
   return (
     <>
-      <Typography variant="h3" className="mb-4 text-center">
-        Scraping Made Easy
-      </Typography>
-      <div className="flex flex-row space-x-4 items-center mb-2">
-        <TextField
-          label="URL"
-          variant="outlined"
-          fullWidth
-          value={submittedURL}
-          onChange={(e) => setSubmittedURL(e.target.value)}
-          error={!isValidURL}
-          helperText={!isValidURL ? urlError : ""}
-          className="rounded-md"
+      <div>
+        <JobSubmitterHeader />
+        <JobSubmitterInput
+          {...stateProps}
+          urlError={urlError}
+          handleSubmit={handleSubmit}
+          loading={loading}
         />
-        <Button
-          variant="contained"
-          size="small"
-          onClick={handleSubmit}
-          disabled={!(rows.length > 0) || loading}
-          className={`bg-gradient-to-r from-[#034efc] to-gray-500 text-white font-semibold rounded-md 
-                    transition-transform transform hover:scale-105 disabled:opacity-50`}
-        >
-          {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
-        </Button>
+        <JobSubmitterOptions
+          {...stateProps}
+          jobOptions={jobOptions}
+          setJobOptions={setJobOptions}
+          customJSONSelected={customJSONSelected}
+          setCustomJSONSelected={setCustomJSONSelected}
+        />
       </div>
-      <Box bgcolor="background.paper" className="flex flex-col mb-2 rounded-md">
-        <div id="options" className="p-2 flex flex-row space-x-2">
-          <FormControlLabel
-            label="Multi-Page Scrape"
-            control={
-              <Checkbox
-                checked={jobOptions.multi_page_scrape}
-                onChange={() =>
-                  setJobOptions((prevJobOptions) => ({
-                    ...prevJobOptions,
-                    multi_page_scrape: !prevJobOptions.multi_page_scrape,
-                  }))
-                }
-              />
-            }
-          ></FormControlLabel>
-          <FormControlLabel
-            label="Custom Headers (JSON)"
-            control={
-              <Checkbox
-                checked={customJSONSelected}
-                onChange={() => {
-                  setCustomJSONSelected(!customJSONSelected);
-                  setJobOptions((prevJobOptions) => ({
-                    ...prevJobOptions,
-                    custom_headers: "",
-                  }));
-                }}
-              />
-            }
-          ></FormControlLabel>
-        </div>
-        {customJSONSelected ? (
-          <div id="custom-json" className="pl-2 pr-2 pb-2">
-            <TextField
-              InputLabelProps={{ shrink: false }}
-              fullWidth
-              multiline
-              minRows={4}
-              variant="outlined"
-              value={jobOptions.custom_headers || ""}
-              onChange={(e) =>
-                setJobOptions((prevJobOptions) => ({
-                  ...prevJobOptions,
-                  custom_headers: e.target.value,
-                }))
-              }
-              style={{ maxHeight: "20vh", overflow: "auto" }}
-              className="mt-2"
-            />
-          </div>
-        ) : null}
-      </Box>
     </>
   );
 };

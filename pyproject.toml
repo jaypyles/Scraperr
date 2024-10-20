@@ -36,6 +36,7 @@ dependencies = [
     "docker>=7.1.0",
     "ollama>=0.3.0",
     "openai>=1.37.1",
+    "exceptiongroup>=1.2.2",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

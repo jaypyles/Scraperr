@@ -1,4 +1,5 @@
 import { Message } from "./message";
+
 export interface Job {
   id: string;
   url: string;
@@ -10,3 +11,8 @@ export interface Job {
   favorite: boolean;
   chat?: Message[];
 }
+
+export type JobOptions = {
+  multi_page_scrape: boolean;
+  custom_headers: null | string;
+};

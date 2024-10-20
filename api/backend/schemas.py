@@ -1,5 +1,5 @@
 # STL
-from typing import Optional
+from typing import Union, Literal, Optional
 
 # PDM
 from pydantic import EmailStr, BaseModel
@@ -15,7 +15,7 @@ class TokenData(BaseModel):
 
 
 class User(BaseModel):
-    email: EmailStr
+    email: Union[EmailStr, Literal[""]]
     full_name: Optional[str] = None
     disabled: Optional[bool] = None
 

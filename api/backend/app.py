@@ -79,14 +79,13 @@ async def update(update_jobs: UpdateJobs, user: User = Depends(get_current_user)
 
 
 @app.post("/submit-scrape-job")
-async def submit_scrape_job(job: SubmitScrapeJob, background_tasks: BackgroundTasks):
+async def submit_scrape_job(job: SubmitScrapeJob):
     LOG.info(f"Recieved job: {job}")
     try:
         job.id = uuid.uuid4().hex
 
-        if job.user:
-            job_dict = job.model_dump()
-            await insert(job_dict)
+        job_dict = job.model_dump()
+        await insert(job_dict)
 
         return JSONResponse(content=f"Job queued for scraping: {job.id}")
     except Exception as e:
@@ -103,7 +102,7 @@ async def retrieve_scrape_jobs(
         return JSONResponse(content=jsonable_encoder(results[::-1]))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+        return JSONResponse(content=[], status_code=500)
 
 
 @app.get("/job/{id}")
