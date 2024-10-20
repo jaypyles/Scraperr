@@ -36,7 +36,7 @@ From the table, users can download an excel sheet of the job's results, along wi
 
 ### User Management
 
-- User login/signup to organize jobs
+- User login/signup to organize jobs (optional)
 
 ![login](https://github.com/jaypyles/www-scrape/blob/master/docs/login.png)
 
