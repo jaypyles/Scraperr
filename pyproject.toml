@@ -20,7 +20,7 @@ dependencies = [
     "requests-html>=0.10.0",
     "selenium>=4.22.0",
     "webdriver-manager>=4.0.1",
-    "pydantic>=2.8.2",
+    "pydantic[email]>=2.9.2",
     "pandas>=2.2.2",
     "openpyxl>=3.1.5",
     "xlsxwriter>=3.2.0",
@@ -39,6 +39,7 @@ dependencies = [
     "exceptiongroup>=1.2.2",
     "Faker>=30.6.0",
     "pytest-asyncio>=0.24.0",
+    "python-multipart>=0.0.12",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
