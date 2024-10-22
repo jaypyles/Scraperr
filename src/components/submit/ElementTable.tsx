@@ -86,6 +86,7 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                 <TableRow>
                   <TableCell>
                     <TextField
+                      data-cy="name-field"
                       label="Name"
                       variant="outlined"
                       fullWidth
@@ -97,6 +98,7 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                   </TableCell>
                   <TableCell>
                     <TextField
+                      data-cy="xpath-field"
                       label="XPath"
                       variant="outlined"
                       fullWidth
@@ -117,6 +119,7 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                     >
                       <span>
                         <IconButton
+                          data-cy="add-button"
                           aria-label="add"
                           size="small"
                           onClick={handleAddRow}

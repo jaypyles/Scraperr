@@ -24,6 +24,7 @@ export const JobSubmitterInput = ({
   return (
     <div className="flex flex-row space-x-4 items-center mb-2">
       <TextField
+        data-cy="url-input"
         label="URL"
         variant="outlined"
         fullWidth
@@ -34,6 +35,7 @@ export const JobSubmitterInput = ({
         className="rounded-md"
       />
       <Button
+        data-cy="submit-button"
         variant="contained"
         size="small"
         onClick={handleSubmit}
