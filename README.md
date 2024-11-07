@@ -13,6 +13,8 @@ Scraperr is a self-hosted web application that allows users to scrape data from 
 
 From the table, users can download an excel sheet of the job's results, along with an option to rerun the job.
 
+View the [docs](https://scraperr-docs.pages.dev).
+
 ## Features
 
 ### Submitting URLs for Scraping
