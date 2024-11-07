@@ -111,7 +111,10 @@ export const JobSubmitter = ({ stateProps }: Props) => {
         return response.json();
       })
       .then((data) => {
-        setSnackbarMessage(data || "Job submitted successfully.");
+        setSnackbarMessage(
+          `Job: ${data.id} submitted successfully.` ||
+            "Job submitted successfully."
+        );
         setSnackbarSeverity("info");
         setSnackbarOpen(true);
       })
