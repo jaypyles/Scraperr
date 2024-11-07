@@ -98,19 +98,20 @@ async def download(download_job: DownloadJob):
                     for element_name, values in elements.items():
                         for value in values:
                             text = clean_text(value.get("text", ""))
-                            csv_writer.writerow(
-                                [
-                                    result.get("id", "")
-                                    + "-"
-                                    + str(random.randint(0, 1000000)),
-                                    url,
-                                    element_name,
-                                    value.get("xpath", ""),
-                                    text,
-                                    result.get("user", ""),
-                                    result.get("time_created", ""),
-                                ]
-                            )
+                            if text:
+                                csv_writer.writerow(
+                                    [
+                                        result.get("id", "")
+                                        + "-"
+                                        + str(random.randint(0, 1000000)),
+                                        url,
+                                        element_name,
+                                        value.get("xpath", ""),
+                                        text,
+                                        result.get("user", ""),
+                                        result.get("time_created", ""),
+                                    ]
+                                )
 
         _ = csv_buffer.seek(0)
         response = StreamingResponse(
