@@ -43,7 +43,7 @@ def clean_xpath(xpath: str) -> str:
 
 
 def sxpath(context: _Element, xpath: str) -> list[HtmlElement]:
-    return context.xpath(xpath)  # type: ignore [reportReturnType]
+    return context.xpath(xpath)  # pyright: ignore [reportReturnType]
 
 
 def interceptor(headers: dict[str, Any]):
@@ -139,16 +139,18 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
 
     for elem in xpaths:
         el = sxpath(root, clean_xpath(elem.xpath))
-        text = ["\t".join(str(e) for e in e.itertext()) for e in el]
-        captured_element = CapturedElement(
-            xpath=elem.xpath, text=",".join(text), name=elem.name
-        )
 
-        if elem.name in elements:
-            elements[elem.name].append(captured_element)
-            continue
+        for e in el:
+            text = "\t".join(str(t) for t in e.itertext())
+            captured_element = CapturedElement(
+                xpath=elem.xpath, text=text, name=elem.name
+            )
 
-        elements[elem.name] = [captured_element]
+            if elem.name in elements:
+                elements[elem.name].append(captured_element)
+                continue
+
+            elements[elem.name] = [captured_element]
 
     return {page[1]: elements}
 

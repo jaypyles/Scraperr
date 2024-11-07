@@ -1,6 +1,7 @@
 # STL
 import uuid
 import traceback
+import random
 from io import StringIO
 import csv
 import logging
@@ -99,7 +100,9 @@ async def download(download_job: DownloadJob):
                             text = clean_text(value.get("text", ""))
                             csv_writer.writerow(
                                 [
-                                    result.get("id", ""),
+                                    result.get("id", "")
+                                    + "-"
+                                    + str(random.randint(0, 1000000)),
                                     url,
                                     element_name,
                                     value.get("xpath", ""),
