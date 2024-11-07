@@ -5,6 +5,7 @@ from io import StringIO
 import csv
 import logging
 import random
+from typing import Optional
 
 # PDM
 from fastapi import Depends, APIRouter
@@ -26,7 +27,7 @@ from api.backend.models import (
     Job,
 )
 from api.backend.schemas import User
-from api.backend.auth.auth_utils import get_current_user
+from api.backend.auth.auth_utils import get_current_user, EMPTY_USER
 from api.backend.utils import clean_text
 
 LOG = logging.getLogger(__name__)
@@ -49,7 +50,7 @@ async def submit_scrape_job(job: Job):
         job_dict = job.model_dump()
         await insert(job_dict)
 
-        return JSONResponse(content=f"Job queued for scraping: {job.id}")
+        return JSONResponse(content={"id": job.id})
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
@@ -70,6 +71,7 @@ async def retrieve_scrape_jobs(
 @job_router.get("/job/{id}")
 async def job(id: str, user: User = Depends(get_current_user)):
     LOG.info(f"Retrieving jobs for account: {user.email}")
+
     try:
         filter = {"user": user.email, "id": id}
         results = await query(filter)

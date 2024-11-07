@@ -219,27 +219,28 @@ const AI: React.FC = () => {
               </Box>
             ) : (
               <>
-                {messages.map((message, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      my: 2,
-                      p: 1,
-                      borderRadius: "8px",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      bgcolor:
-                        message.role === "user"
-                          ? theme.palette.UserMessage.main
-                          : theme.palette.AIMessage.main,
-                      marginLeft: message.role === "user" ? "auto" : "",
-                      maxWidth: "40%",
-                    }}
-                  >
-                    <Typography variant="body1" sx={{ color: "white" }}>
-                      {message.content}
-                    </Typography>
-                  </Box>
-                ))}
+                {messages &&
+                  messages.map((message, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        my: 2,
+                        p: 1,
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        bgcolor:
+                          message.role === "user"
+                            ? theme.palette.UserMessage.main
+                            : theme.palette.AIMessage.main,
+                        marginLeft: message.role === "user" ? "auto" : "",
+                        maxWidth: "40%",
+                      }}
+                    >
+                      <Typography variant="body1" sx={{ color: "white" }}>
+                        {message.content}
+                      </Typography>
+                    </Box>
+                  ))}
                 {thinking && (
                   <Box
                     sx={{

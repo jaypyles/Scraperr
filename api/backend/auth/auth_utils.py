@@ -4,6 +4,7 @@ from gc import disable
 from queue import Empty
 from typing import Any, Optional
 from datetime import datetime, timedelta
+import logging
 
 # PDM
 from jose import JWTError, jwt
@@ -15,6 +16,8 @@ from fastapi.security import OAuth2PasswordBearer
 # LOCAL
 from api.backend.schemas import User, UserInDB, TokenData
 from api.backend.database import get_user_collection
+
+LOG = logging.getLogger(__name__)
 
 _ = load_dotenv()
 
@@ -74,10 +77,16 @@ def create_access_token(
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
+    LOG.info(f"Getting current user with token: {token}")
+
+    if not token:
+        return EMPTY_USER
+
     try:
         payload: Optional[dict[str, Any]] = jwt.decode(
             token, SECRET_KEY, algorithms=[ALGORITHM]
         )
+
         if not payload:
             return EMPTY_USER
 
@@ -89,6 +98,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(email=email)
 
     except JWTError:
+        return EMPTY_USER
+
+    except Exception as e:
+        LOG.error(f"Exception occurred: {e}")
         return EMPTY_USER
 
     user = await get_user(email=token_data.email)

@@ -7,12 +7,10 @@ from lxml import etree
 from seleniumwire import webdriver
 from lxml.etree import _Element  # type: ignore [reportPrivateImport]
 from fake_useragent import UserAgent
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.chrome.service import Service
 from urllib.parse import urlparse, urljoin
 
 from api.backend.models import Element, CapturedElement
