@@ -106,7 +106,7 @@ async def make_site_request(
         while True:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-            time.sleep(2)  # Wait for the page to load
+            time.sleep(3)  # Wait for the page to load
             new_height = driver.execute_script("return document.body.scrollHeight")
 
             if new_height == last_height:
@@ -114,9 +114,9 @@ async def make_site_request(
 
             last_height = new_height
 
-        driver.execute_script("return document.body.scrollHeight")
-        page_source = driver.page_source
+        final_height = driver.execute_script("return document.body.scrollHeight")
 
+        page_source = driver.page_source
         LOG.debug(f"Page source for url: {url}\n{page_source}")
         pages.add((page_source, final_url))
     finally:
