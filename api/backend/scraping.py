@@ -39,6 +39,7 @@ def clean_xpath(xpath: str) -> str:
             clean_parts.append(part)
     clean_xpath = "//".join(clean_parts).replace("////", "//")
     clean_xpath = clean_xpath.replace("'", "\\'")
+    LOG.info(f"Cleaned xpath: {clean_xpath}")
     return clean_xpath
 
 
@@ -100,8 +101,22 @@ async def make_site_request(
         _ = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
-        time.sleep(5)
+
+        last_height = driver.execute_script("return document.body.scrollHeight")
+        while True:
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+            time.sleep(2)  # Wait for the page to load
+            new_height = driver.execute_script("return document.body.scrollHeight")
+
+            if new_height == last_height:
+                break
+
+            last_height = new_height
+
+        driver.execute_script("return document.body.scrollHeight")
         page_source = driver.page_source
+
         LOG.debug(f"Page source for url: {url}\n{page_source}")
         pages.add((page_source, final_url))
     finally:
@@ -138,7 +153,7 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
     elements: dict[str, list[CapturedElement]] = dict()
 
     for elem in xpaths:
-        el = sxpath(root, clean_xpath(elem.xpath))
+        el = sxpath(root, elem.xpath)
 
         for e in el:
             text = "\t".join(str(t) for t in e.itertext())

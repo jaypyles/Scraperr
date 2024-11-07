@@ -19,4 +19,4 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - "$PWD/api:/project/api"
+      - "$PWD/api:/project/app/api"
