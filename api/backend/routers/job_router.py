@@ -1,10 +1,10 @@
 # STL
 import uuid
 import traceback
-import random
 from io import StringIO
 import csv
 import logging
+import random
 
 # PDM
 from fastapi import Depends, APIRouter
@@ -87,7 +87,7 @@ async def download(download_job: DownloadJob):
         results = await query({"id": {"$in": download_job.ids}})
 
         csv_buffer = StringIO()
-        csv_writer = csv.writer(csv_buffer)
+        csv_writer = csv.writer(csv_buffer, quotechar='"', quoting=csv.QUOTE_ALL)
 
         headers = ["id", "url", "element_name", "xpath", "text", "user", "time_created"]
         csv_writer.writerow(headers)
@@ -97,7 +97,7 @@ async def download(download_job: DownloadJob):
                 for url, elements in res.items():
                     for element_name, values in elements.items():
                         for value in values:
-                            text = clean_text(value.get("text", ""))
+                            text = clean_text(value.get("text", "")).strip()
                             if text:
                                 csv_writer.writerow(
                                     [
