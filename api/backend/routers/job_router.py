@@ -5,7 +5,6 @@ from io import StringIO
 import csv
 import logging
 import random
-from typing import Optional
 
 # PDM
 from fastapi import Depends, APIRouter
@@ -27,7 +26,7 @@ from api.backend.models import (
     Job,
 )
 from api.backend.schemas import User
-from api.backend.auth.auth_utils import get_current_user, EMPTY_USER
+from api.backend.auth.auth_utils import get_current_user
 from api.backend.utils import clean_text
 
 LOG = logging.getLogger(__name__)

@@ -1,4 +1,6 @@
 name: ci
+requires:
+  - unit-tests
 on:
   push:
     branches: ["master"]

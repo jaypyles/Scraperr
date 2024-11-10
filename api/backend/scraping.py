@@ -1,6 +1,7 @@
 import logging
 from typing import Any, Optional
 import time
+import random
 
 from bs4 import BeautifulSoup
 from lxml import etree
@@ -12,7 +13,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from urllib.parse import urlparse, urljoin
-
 from api.backend.models import Element, CapturedElement
 
 LOG = logging.getLogger(__name__)
@@ -60,7 +60,7 @@ def interceptor(headers: dict[str, Any]):
     return _interceptor
 
 
-def create_driver():
+def create_driver(proxies: Optional[list[str]] = []):
     ua = UserAgent()
     chrome_options = ChromeOptions()
     chrome_options.add_argument("--headless")
@@ -68,7 +68,23 @@ def create_driver():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument(f"user-agent={ua.random}")
 
-    return webdriver.Chrome(options=chrome_options)
+    sw_options = {}
+    if proxies:
+        selected_proxy = proxies[random.randint(0, len(proxies) - 1)]
+        LOG.info(f"Using proxy: {selected_proxy}")
+
+        sw_options = {
+            "proxy": {
+                "https": f"https://{selected_proxy}",
+                "http": f"http://{selected_proxy}",
+            }
+        }
+
+    driver = webdriver.Chrome(
+        options=chrome_options,
+        seleniumwire_options=sw_options,
+    )
+    return driver
 
 
 async def make_site_request(
@@ -78,13 +94,14 @@ async def make_site_request(
     visited_urls: set[str] = set(),
     pages: set[tuple[str, str]] = set(),
     original_url: str = "",
+    proxies: Optional[list[str]] = [],
 ) -> None:
     """Make basic `GET` request to site using Selenium."""
     # Check if URL has already been visited
     if url in visited_urls:
         return
 
-    driver = create_driver()
+    driver = create_driver(proxies)
     driver.implicitly_wait(10)
 
     if headers:
@@ -93,6 +110,7 @@ async def make_site_request(
     try:
         LOG.info(f"Visiting URL: {url}")
         driver.get(url)
+
         final_url = driver.current_url
         visited_urls.add(url)
         visited_urls.add(final_url)
@@ -173,6 +191,7 @@ async def scrape(
     xpaths: list[Element],
     headers: Optional[dict[str, Any]],
     multi_page_scrape: bool = False,
+    proxies: Optional[list[str]] = [],
 ):
     visited_urls: set[str] = set()
     pages: set[tuple[str, str]] = set()
@@ -184,6 +203,7 @@ async def scrape(
         visited_urls=visited_urls,
         pages=pages,
         original_url=url,
+        proxies=proxies,
     )
 
     elements: list[dict[str, dict[str, list[CapturedElement]]]] = list()
