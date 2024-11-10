@@ -1,7 +1,7 @@
-name: ci
+name: Docker Image
 on:
   workflow_run:
-    workflows: ["unit-tests"]
+    workflows: ["Unit Tests"]
     types:
       - completed
 
