@@ -1,11 +1,12 @@
 name: ci
-requires:
-  - unit-tests
 on:
-  push:
-    branches: ["master"]
+  workflow_run:
+    workflows: ["unit-tests"]
+    types:
+      - completed
 
 jobs:
+  if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/master' }}
   build:
     runs-on: ubuntu-latest
     steps:
