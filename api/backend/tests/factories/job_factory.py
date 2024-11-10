@@ -5,12 +5,14 @@ from faker import Faker
 fake = Faker()
 
 
-def create_job():
+def create_job(
+    job_options: JobOptions = JobOptions(multi_page_scrape=False, custom_headers={})
+):
     return Job(
         id=uuid.uuid4().hex,
         url="https://example.com",
         elements=[Element(name="test", xpath="xpath")],
-        job_options=JobOptions(multi_page_scrape=False, custom_headers={}),
+        job_options=job_options,
     )
 
 

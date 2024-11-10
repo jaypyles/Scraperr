@@ -23,8 +23,9 @@ class CapturedElement(pydantic.BaseModel):
 
 
 class JobOptions(pydantic.BaseModel):
-    multi_page_scrape: bool
-    custom_headers: Optional[dict[str, Any]]
+    multi_page_scrape: bool = False
+    custom_headers: Optional[dict[str, Any]] = {}
+    proxies: Optional[list[str]] = []
 
 
 class RetrieveScrapeJobs(pydantic.BaseModel):

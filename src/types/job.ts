@@ -15,4 +15,11 @@ export interface Job {
 export type JobOptions = {
   multi_page_scrape: boolean;
   custom_headers: null | string;
+  proxies: string[];
+};
+
+export type RawJobOptions = {
+  multi_page_scrape: boolean;
+  custom_headers: string | null;
+  proxies: string | null;
 };

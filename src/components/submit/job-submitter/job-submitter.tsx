@@ -4,11 +4,12 @@ import React, { useEffect, useState, Dispatch } from "react";
 import { Element } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/router";
-import { Constants } from "@/lib";
-
+import { RawJobOptions } from "@/types/job";
+import { parseJobOptions, validateURL } from "@/lib";
 import { JobSubmitterHeader } from "./job-submitter-header";
 import { JobSubmitterInput } from "./job-submitter-input";
 import { JobSubmitterOptions } from "./job-submitter-options";
+import { ApiService } from "@/services";
 
 interface StateProps {
   submittedURL: string;
@@ -25,22 +26,20 @@ interface Props {
   stateProps: StateProps;
 }
 
-interface JobOptions {
-  multi_page_scrape: boolean;
-  custom_headers: null | string;
-}
+const initialJobOptions: RawJobOptions = {
+  multi_page_scrape: false,
+  custom_headers: null,
+  proxies: null,
+};
 
 export const JobSubmitter = ({ stateProps }: Props) => {
   const { user } = useAuth();
   const router = useRouter();
-
   const { job_options } = router.query;
 
   const {
     submittedURL,
-    setSubmittedURL,
     rows,
-    isValidURL,
     setIsValidUrl,
     setSnackbarMessage,
     setSnackbarOpen,
@@ -49,22 +48,16 @@ export const JobSubmitter = ({ stateProps }: Props) => {
 
   const [urlError, setUrlError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [jobOptions, setJobOptions] = useState<JobOptions>({
-    multi_page_scrape: false,
-    custom_headers: null,
-  });
+  const [jobOptions, setJobOptions] =
+    useState<RawJobOptions>(initialJobOptions);
   const [customJSONSelected, setCustomJSONSelected] = useState<boolean>(false);
+  const [proxiesSelected, setProxiesSelected] = useState<boolean>(false);
 
-  function validateURL(url: string): boolean {
-    try {
-      new URL(url);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
+  const handleSelectProxies = () => {
+    setProxiesSelected(!proxiesSelected);
+  };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateURL(submittedURL)) {
       setIsValidUrl(false);
       setUrlError("Please enter a valid URL.");
@@ -76,6 +69,7 @@ export const JobSubmitter = ({ stateProps }: Props) => {
     setLoading(true);
 
     let customHeaders;
+
     try {
       customHeaders = jobOptions.custom_headers
         ? JSON.parse(jobOptions.custom_headers)
@@ -88,21 +82,14 @@ export const JobSubmitter = ({ stateProps }: Props) => {
       return;
     }
 
-    fetch(`${Constants.DOMAIN}/api/submit-scrape-job`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        url: submittedURL,
-        elements: rows,
-        user: user?.email,
-        time_created: new Date().toISOString(),
-        job_options: {
-          ...jobOptions,
-          custom_headers: customHeaders,
-        },
-      }),
-    })
-      .then((response) => {
+    await ApiService.submitJob(
+      submittedURL,
+      rows,
+      user,
+      jobOptions,
+      customHeaders
+    )
+      .then(async (response) => {
         if (!response.ok) {
           return response.json().then((error) => {
             throw new Error(error.error);
@@ -126,26 +113,15 @@ export const JobSubmitter = ({ stateProps }: Props) => {
       .finally(() => setLoading(false));
   };
 
+  // Parse the job options from the query string
   useEffect(() => {
     if (job_options) {
-      const jsonOptions = JSON.parse(job_options as string);
-      const newJobOptions: JobOptions = {
-        multi_page_scrape: false,
-        custom_headers: null,
-      };
-
-      if (
-        jsonOptions.custom_headers &&
-        Object.keys(jsonOptions.custom_headers).length
-      ) {
-        setCustomJSONSelected(true);
-        newJobOptions.custom_headers = JSON.stringify(
-          jsonOptions.custom_headers
-        );
-      }
-
-      newJobOptions.multi_page_scrape = jsonOptions.multi_page_scrape;
-      setJobOptions(newJobOptions);
+      parseJobOptions(
+        job_options as string,
+        setCustomJSONSelected,
+        setProxiesSelected,
+        setJobOptions
+      );
     }
   }, [job_options]);
 
@@ -165,6 +141,8 @@ export const JobSubmitter = ({ stateProps }: Props) => {
           setJobOptions={setJobOptions}
           customJSONSelected={customJSONSelected}
           setCustomJSONSelected={setCustomJSONSelected}
+          handleSelectProxies={handleSelectProxies}
+          proxiesSelected={proxiesSelected}
         />
       </div>
     </>
