@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (token) {
     try {
       const userResponse = await axios.get(
-        `http://scraperr_api:8000/api/auth/users/me`,
+        `${process.env.SERVER_URL}/api/auth/users/me`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       user = userResponse.data;
 
       const jobsResponse = await axios.post(
-        `http://scraperr_api:8000/api/retrieve-scrape-jobs`,
+        `${process.env.SERVER_URL}/api/retrieve-scrape-jobs`,
         { user: user.email },
         {
           headers: {

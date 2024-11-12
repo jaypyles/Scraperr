@@ -25,7 +25,7 @@ logging.basicConfig(
 
 LOG = logging.getLogger(__name__)
 
-app = FastAPI(title="api")
+app = FastAPI(title="api", root_path="/api")
 
 app.add_middleware(
     CORSMiddleware,

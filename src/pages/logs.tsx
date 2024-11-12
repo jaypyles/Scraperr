@@ -6,7 +6,9 @@ interface logs {
 
 export async function getStaticProps() {
   try {
-    const response = await fetch(`http://scraperr_api:8000/initial_logs`);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/initial_logs`
+    );
     const logJson: logs = await response.json();
     const initialLogs = logJson.logs;
 

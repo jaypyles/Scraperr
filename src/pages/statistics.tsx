@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (token) {
     try {
       const averageElementResponse = await fetch(
-        `http://scraperr_api:8000/statistics/get-average-element-per-link`,
+        `${process.env.SERVER_URL}/statistics/get-average-element-per-link`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       averageElement = await averageElementResponse.json();
 
       const averageJobResponse = await fetch(
-        `http://scraperr_api:8000/statistics/get-average-jobs-per-day`,
+        `${process.env.SERVER_URL}/statistics/get-average-jobs-per-day`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -76,7 +76,7 @@ const Statistics: React.FC<StatProps> = ({ averageElement, averageJob }) => {
   const fetchElementsData = async () => {
     try {
       const response = await fetch(
-        `${Constants.DOMAIN}/api/statistics/get-average-element-per-link`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/statistics/get-average-element-per-link`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const Statistics: React.FC<StatProps> = ({ averageElement, averageJob }) => {
   const fetchJobsData = async () => {
     try {
       const response = await fetch(
-        `${Constants.DOMAIN}/api/statistics/get-average-jobs-per-day`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/statistics/get-average-jobs-per-day`,
         {
           headers: {
             "Content-Type": "application/json",
