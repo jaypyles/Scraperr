@@ -81,7 +81,7 @@ const AI: React.FC = () => {
       }. The following messages will pertain to the content of the scraped job.`,
     };
 
-    const response = await fetch("/api/ai", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ai`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

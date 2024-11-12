@@ -13,7 +13,7 @@ Scraperr is a self-hosted web application that allows users to scrape data from 
 
 From the table, users can download an excel sheet of the job's results, along with an option to rerun the job.
 
-View the [docs](https://scraperr-docs.pages.dev).
+View the [docs](https://scraperr-docs.pages.dev) for a quickstart guide and more information.
 
 ## Features
 
@@ -64,86 +64,11 @@ View the [docs](https://scraperr-docs.pages.dev).
 
 ![chat](https://github.com/jaypyles/www-scrape/blob/master/docs/chat_page.png)
 
-## Installation
-
-1. Clone the repository:
-
-   ```sh
-   git clone https://github.com/jaypyles/scraperr.git
-
-   ```
-
-2. Set environmental variables and labels in `docker-compose.yml`.
-
-```yaml
-scraperr:
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.scraperr.rule=Host(`localhost`)" # change this to your domain, if not running on localhost
-      - "traefik.http.routers.scraperr.entrypoints=web" # websecure if using https
-      - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
-
-scraperr_api:
- environment:
-      - LOG_LEVEL=INFO
-      - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
-      - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
-      - ALGORITHM=HS256 # authentication encoding algorithm
-      - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
-  labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.scraperr_api.rule=Host(`localhost`) && PathPrefix(`/api`)" # change this to your domain, if not running on localhost
-        - "traefik.http.routers.scraperr_api.entrypoints=web" # websecure if using https
-        - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
-        - "traefik.http.routers.scraperr_api.middlewares=api-stripprefix"
-        - "traefik.http.services.scraperr_api.loadbalancer.server.port=8000"
-
-mongo:
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-```
-
-Don't want to use `traefik`? This configuration can be used in other reverse proxies, as long as the API is proxied to `/api` of the frontend container. This is currently
-not able to be used without a reverse proxy, due to limitations of runtime client-side environmental variables in `next.js`.
-
-3. Deploy
-
-```sh
-make up
-```
-
-The app provides its own `traefik` configuration to use independently, but can easily be reverse-proxied by any other app, or your own reverse-proxy.
-
-## Usage
-
-1. Open the application in your browser at `http://localhost`.
-2. Enter the URL you want to scrape in the URL field.
-3. Add elements to scrape by specifying a name and the corresponding XPath.
-4. Click the "Submit" button to queue URL to be scraped.
-5. View queue in the "Previous Jobs" section.
-
 ## API Endpoints
 
 Use this service as an API for your own projects. Due to this using FastAPI, a docs page is available at `/docs` for the API.
 
 ![docs](https://github.com/jaypyles/www-scrape/blob/master/docs/docs_page.png)
-
-## AI
-
-Currently supports either an Ollama instance or OpenAI's ChatGPT, using your own API key. Setting up is easy as either setting the Ollama url or the OpenAI API key in the API's environmental variables in the `docker-compose.yml` file:
-
-```yaml
-scraperr_api:
-  environment:
-    - OLLAMA_URL=http://ollama:11434
-    - OLLAMA_MODEL=llama3.1
-    # or
-    - OPENAI_KEY=<your_key>
-    - OPENAI_MODEL=gpt3.5-turbo
-```
-
-The model's names are taken from the documentation of their respective technologies.
 
 ## Troubleshooting
 

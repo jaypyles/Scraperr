@@ -2,12 +2,6 @@ version: "3"
 services:
   scraperr:
     command: ["npm", "run", "dev"]
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.scraperr.rule=Host(`localhost`)"
-      - "traefik.http.routers.scraperr.entrypoints=web"
-      - "traefik.http.services.scraperr.loadbalancer.server.port=3000"
-      - "traefik.http.routers.scraperr.tls=false"
     volumes:
       - "$PWD/src:/app/src"
       - "$PWD/public:/app/public"
@@ -16,7 +10,5 @@ services:
       - "$PWD/package-lock.json:/app/package-lock.json"
       - "$PWD/tsconfig.json:/app/tsconfig.json"
   scraperr_api:
-    ports:
-      - "8000:8000"
     volumes:
       - "$PWD/api:/project/api"
