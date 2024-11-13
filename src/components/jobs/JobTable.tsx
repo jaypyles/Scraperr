@@ -48,14 +48,11 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
   const router = useRouter();
 
   const handleDownload = async (ids: string[]) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/download`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: ids }),
-      }
-    );
+    const response = await fetch("/api/download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: { ids: ids } }),
+    });
 
     if (response.ok) {
       const blob = await response.blob();
@@ -107,14 +104,11 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
   };
 
   const handleDeleteSelected = async () => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/delete-scrape-jobs`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: Array.from(selectedJobs) }),
-      }
-    );
+    const response = await fetch("/api/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: { ids: Array.from(selectedJobs) } }),
+    });
 
     if (response.ok) {
       setJobs((jobs) =>
@@ -148,13 +142,13 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
       value: value,
     };
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/update`, {
+    await fetch("/api/update", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(postBody),
+      body: JSON.stringify({ data: postBody }),
     });
   };
 

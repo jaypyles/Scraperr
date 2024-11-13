@@ -11,13 +11,13 @@ export const fetchJobs = async (
   fetchOptions: fetchOptions = {}
 ) => {
   const token = Cookies.get("token");
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/retrieve-scrape-jobs`, {
+  await fetch("/api/retrieve", {
     method: "POST",
     headers: {
       "content-type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(fetchOptions),
+    body: JSON.stringify({ data: fetchOptions }),
   })
     .then((response) => response.json())
     .then((data) => setJobs(data))
@@ -29,15 +29,12 @@ export const fetchJobs = async (
 export const fetchJob = async (id: string) => {
   const token = Cookies.get("token");
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/job/${id}`,
-      {
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`/api/job/${id}`, {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data = await response.json();
     return data;
   } catch (error) {
@@ -51,15 +48,12 @@ export const checkAI = async (
 ) => {
   const token = Cookies.get("token");
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/ai/check`,
-      {
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch("/api/ai/check", {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data = await response.json();
     setAiEnabled(data);
   } catch (error) {
@@ -75,13 +69,13 @@ export const updateJob = async (ids: string[], field: string, value: any) => {
     field: field,
     value: value,
   };
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/update`, {
+  await fetch("/api/update", {
     method: "POST",
     headers: {
       "content-type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(postBody),
+    body: JSON.stringify({ data: postBody }),
   }).catch((error) => {
     console.error("Error fetching jobs:", error);
   });

@@ -81,12 +81,14 @@ const AI: React.FC = () => {
       }. The following messages will pertain to the content of the scraped job.`,
     };
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ai`, {
+    const response = await fetch("/api/ai", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ messages: [jobMessage, ...messages, newMessage] }),
+      body: JSON.stringify({
+        data: { messages: [jobMessage, ...messages, newMessage] },
+      }),
     });
 
     const updatedMessages = [...messages, newMessage];

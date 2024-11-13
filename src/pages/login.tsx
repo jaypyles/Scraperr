@@ -27,10 +27,12 @@ const AuthForm: React.FC = () => {
         alert("Login successful");
         router.push("/");
       } else {
-        await axios.post(`${Constants.DOMAIN}/api/auth/signup`, {
-          email: email,
-          password: password,
-          full_name: fullName,
+        await axios.post(`/api/signup`, {
+          data: {
+            email: email,
+            password: password,
+            full_name: fullName,
+          },
         });
         alert("Signup successful");
         router.push("/login");

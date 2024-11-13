@@ -75,15 +75,12 @@ const Statistics: React.FC<StatProps> = ({ averageElement, averageJob }) => {
 
   const fetchElementsData = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/statistics/get-average-element-per-link`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch("/api/get-average-element-per-link", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       setElementsData(data);
     } catch (error) {
@@ -93,10 +90,8 @@ const Statistics: React.FC<StatProps> = ({ averageElement, averageJob }) => {
 
   const fetchJobsData = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/statistics/get-average-jobs-per-day`,
-        {
-          headers: {
+      const response = await fetch("/api/get-average-jobs-per-day", {
+        headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },

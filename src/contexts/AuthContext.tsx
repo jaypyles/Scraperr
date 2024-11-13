@@ -25,7 +25,7 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     const token = Cookies.get("token");
     if (token) {
       axios
-        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users/me`, {
+        .get(`/api/me`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -42,10 +42,8 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     const params = new URLSearchParams();
     params.append("username", email);
     params.append("password", password);
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/token`,
-      params
-    );
+    const response = await axios.post(`/api/token`, params);
+
     Cookies.set("token", response.data.access_token, {
       expires: 7,
       path: "/",
@@ -53,12 +51,10 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
       secure: false,
       sameSite: "Lax",
     });
-    const userResponse = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/users/me`,
-      {
-        headers: { Authorization: `Bearer ${response.data.access_token}` },
-      }
-    );
+
+    const userResponse = await axios.get(`/api/me`, {
+      headers: { Authorization: `Bearer ${response.data.access_token}` },
+    });
     setUser(userResponse.data);
     setIsAuthenticated(true);
   };

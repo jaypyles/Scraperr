@@ -14,19 +14,24 @@ export const LogContainer: React.FC<LogContainerProps> = ({ initialLogs }) => {
   const logsContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const eventSource = new EventSource(`${Constants.DOMAIN}/api/logs`);
+    const eventSource = new EventSource(`/api/logs`);
 
     setLogs("");
 
     eventSource.onmessage = (event) => {
       setLogs((prevLogs) => prevLogs + event.data + "\n");
+
       if (logsContainerRef.current) {
         logsContainerRef.current.scrollTop =
           logsContainerRef.current.scrollHeight;
       }
     };
 
-    eventSource.onerror = () => {
+    eventSource.onopen = (e) => {
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("EventSource failed:", error);
       eventSource.close();
     };
 

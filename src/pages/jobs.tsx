@@ -21,26 +21,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (token) {
     try {
-      const userResponse = await axios.get(
-        `${process.env.SERVER_URL}/api/auth/users/me`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const userResponse = await axios.get(`/api/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       user = userResponse.data;
 
-      const jobsResponse = await axios.post(
-        `${process.env.SERVER_URL}/api/retrieve-scrape-jobs`,
-        { user: user.email },
-        {
-          headers: {
-            "content-type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const jobsResponse = await fetch(`/api/retrieve-scrape-jobs`, {
+        method: "POST",
+        body: JSON.stringify({ user: user.email }),
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      initialJobs = jobsResponse.data;
+      initialJobs = await jobsResponse.json();
     } catch (error) {
       console.error("Error fetching user or jobs:", error);
     }

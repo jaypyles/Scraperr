@@ -65,9 +65,30 @@ async def average_elements_per_link(user: str):
     pipeline = [
         {"$match": {"status": "Completed", "user": user}},
         {
+            "$addFields": {
+                "time_created_date": {
+                    "$cond": {
+                        "if": {"$eq": [{"$type": "$time_created"}, "date"]},
+                        "then": "$time_created",
+                        "else": {
+                            "$convert": {
+                                "input": "$time_created",
+                                "to": "date",
+                                "onError": None,
+                                "onNull": None,
+                            }
+                        },
+                    }
+                }
+            }
+        },
+        {
             "$project": {
                 "date": {
-                    "$dateToString": {"format": "%Y-%m-%d", "date": "$time_created"}
+                    "$dateToString": {
+                        "format": "%Y-%m-%d",
+                        "date": "$time_created_date",
+                    }
                 },
                 "num_elements": {"$size": "$elements"},
             }
@@ -101,9 +122,30 @@ async def get_jobs_per_day(user: str):
     pipeline = [
         {"$match": {"status": "Completed", "user": user}},
         {
+            "$addFields": {
+                "time_created_date": {
+                    "$cond": {
+                        "if": {"$eq": [{"$type": "$time_created"}, "date"]},
+                        "then": "$time_created",
+                        "else": {
+                            "$convert": {
+                                "input": "$time_created",
+                                "to": "date",
+                                "onError": None,
+                                "onNull": None,
+                            }
+                        },
+                    }
+                }
+            }
+        },
+        {
             "$project": {
                 "date": {
-                    "$dateToString": {"format": "%Y-%m-%d", "date": "$time_created"}
+                    "$dateToString": {
+                        "format": "%Y-%m-%d",
+                        "date": "$time_created_date",
+                    }
                 }
             }
         },
