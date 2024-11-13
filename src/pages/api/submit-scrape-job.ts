@@ -7,7 +7,8 @@ export default async function handler(
   if (req.method === "POST") {
     const { data } = req.body;
 
-    const headers = new Headers(req.headers as Record<string, string>);
+    const headers = new Headers();
+    headers.set("Authorization", `Bearer ${req.headers.authorization}`);
     headers.set("content-type", "application/json");
 
     try {

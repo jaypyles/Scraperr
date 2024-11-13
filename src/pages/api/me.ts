@@ -5,7 +5,8 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const headers = new Headers(req.headers as Record<string, string>);
+    const headers = new Headers();
+    headers.set("Authorization", `Bearer ${req.headers.authorization}`);
     headers.set("content-type", "application/json");
 
     const response = await fetch(
