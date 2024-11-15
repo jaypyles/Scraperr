@@ -1,15 +1,17 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { RawJobOptions } from "@/types";
+import { RawJobOptions, SiteMap } from "@/types";
 
 export const parseJobOptions = (
   job_options: string,
   setCustomJSONSelected: Dispatch<SetStateAction<boolean>>,
   setProxiesSelected: Dispatch<SetStateAction<boolean>>,
-  setJobOptions: Dispatch<SetStateAction<RawJobOptions>>
+  setJobOptions: Dispatch<SetStateAction<RawJobOptions>>,
+  setSiteMap: Dispatch<SetStateAction<any>>
 ) => {
   if (job_options) {
     const jsonOptions = JSON.parse(job_options as string);
+    console.log(jsonOptions);
     const newJobOptions: RawJobOptions = {
       multi_page_scrape: false,
       custom_headers: null,
@@ -29,6 +31,10 @@ export const parseJobOptions = (
     if (jsonOptions.proxies) {
       setProxiesSelected(true);
       newJobOptions.proxies = jsonOptions.proxies.join(",");
+    }
+
+    if (jsonOptions.site_map) {
+      setSiteMap(jsonOptions.site_map);
     }
 
     setJobOptions(newJobOptions);

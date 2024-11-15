@@ -1,6 +1,7 @@
 import { RawJobOptions } from "@/types/job";
 import { Box, FormControlLabel, Checkbox, TextField } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
+import { useJobSubmitterProvider } from "../provider";
 
 export type JobSubmitterOptionsProps = {
   jobOptions: RawJobOptions;
@@ -14,9 +15,9 @@ export type JobSubmitterOptionsProps = {
 export const JobSubmitterOptions = ({
   jobOptions,
   setJobOptions,
+  handleSelectProxies,
   customJSONSelected,
   setCustomJSONSelected,
-  handleSelectProxies,
   proxiesSelected,
 }: JobSubmitterOptionsProps) => {
   const handleMultiPageScrapeChange = () => {

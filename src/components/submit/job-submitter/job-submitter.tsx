@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, Dispatch } from "react";
-import { Element } from "@/types";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/router";
 import { RawJobOptions } from "@/types/job";
@@ -10,21 +9,7 @@ import { JobSubmitterHeader } from "./job-submitter-header";
 import { JobSubmitterInput } from "./job-submitter-input";
 import { JobSubmitterOptions } from "./job-submitter-options";
 import { ApiService } from "@/services";
-
-interface StateProps {
-  submittedURL: string;
-  setSubmittedURL: Dispatch<React.SetStateAction<string>>;
-  rows: Element[];
-  isValidURL: boolean;
-  setIsValidUrl: Dispatch<React.SetStateAction<boolean>>;
-  setSnackbarMessage: Dispatch<React.SetStateAction<string>>;
-  setSnackbarOpen: Dispatch<React.SetStateAction<boolean>>;
-  setSnackbarSeverity: Dispatch<React.SetStateAction<string>>;
-}
-
-interface Props {
-  stateProps: StateProps;
-}
+import { useJobSubmitterProvider } from "./provider";
 
 const initialJobOptions: RawJobOptions = {
   multi_page_scrape: false,
@@ -32,7 +17,7 @@ const initialJobOptions: RawJobOptions = {
   proxies: null,
 };
 
-export const JobSubmitter = ({ stateProps }: Props) => {
+export const JobSubmitter = () => {
   const { user } = useAuth();
   const router = useRouter();
   const { job_options } = router.query;
@@ -40,11 +25,13 @@ export const JobSubmitter = ({ stateProps }: Props) => {
   const {
     submittedURL,
     rows,
+    siteMap,
     setIsValidUrl,
     setSnackbarMessage,
     setSnackbarOpen,
     setSnackbarSeverity,
-  } = stateProps;
+    setSiteMap,
+  } = useJobSubmitterProvider();
 
   const [urlError, setUrlError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -87,7 +74,8 @@ export const JobSubmitter = ({ stateProps }: Props) => {
       rows,
       user,
       jobOptions,
-      customHeaders
+      customHeaders,
+      siteMap
     )
       .then(async (response) => {
         if (!response.ok) {
@@ -120,31 +108,28 @@ export const JobSubmitter = ({ stateProps }: Props) => {
         job_options as string,
         setCustomJSONSelected,
         setProxiesSelected,
-        setJobOptions
+        setJobOptions,
+        setSiteMap
       );
     }
   }, [job_options]);
 
   return (
-    <>
-      <div>
-        <JobSubmitterHeader />
-        <JobSubmitterInput
-          {...stateProps}
-          urlError={urlError}
-          handleSubmit={handleSubmit}
-          loading={loading}
-        />
-        <JobSubmitterOptions
-          {...stateProps}
-          jobOptions={jobOptions}
-          setJobOptions={setJobOptions}
-          customJSONSelected={customJSONSelected}
-          setCustomJSONSelected={setCustomJSONSelected}
-          handleSelectProxies={handleSelectProxies}
-          proxiesSelected={proxiesSelected}
-        />
-      </div>
-    </>
+    <div>
+      <JobSubmitterHeader />
+      <JobSubmitterInput
+        urlError={urlError}
+        handleSubmit={handleSubmit}
+        loading={loading}
+      />
+      <JobSubmitterOptions
+        jobOptions={jobOptions}
+        setJobOptions={setJobOptions}
+        customJSONSelected={customJSONSelected}
+        setCustomJSONSelected={setCustomJSONSelected}
+        handleSelectProxies={handleSelectProxies}
+        proxiesSelected={proxiesSelected}
+      />
+    </div>
   );
 };

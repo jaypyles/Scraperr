@@ -1,9 +1,12 @@
+import { SiteMap } from "@/types/job";
+
 export const submitJob = async (
   submittedURL: string,
   rows: any[],
   user: any,
   jobOptions: any,
-  customHeaders: any
+  customHeaders: any,
+  siteMap: SiteMap | null
 ) => {
   return await fetch(`/api/submit-scrape-job`, {
     method: "POST",
@@ -18,6 +21,7 @@ export const submitJob = async (
           ...jobOptions,
           custom_headers: customHeaders || {},
           proxies: jobOptions.proxies ? jobOptions.proxies.split(",") : [],
+          site_map: siteMap,
         },
       },
     }),

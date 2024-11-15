@@ -16,10 +16,24 @@ export type JobOptions = {
   multi_page_scrape: boolean;
   custom_headers: null | string;
   proxies: string[];
+  site_map?: SiteMap;
 };
 
 export type RawJobOptions = {
   multi_page_scrape: boolean;
   custom_headers: string | null;
   proxies: string | null;
+};
+
+export type ActionOption = "click" | "input";
+
+export type Action = {
+  type: ActionOption;
+  xpath: string;
+  name: string;
+  click_once?: boolean;
+};
+
+export type SiteMap = {
+  actions: Action[];
 };

@@ -2,12 +2,14 @@
 from typing import Any, Optional, Union
 from datetime import datetime
 
+# LOCAL
+from api.backend.job.models.job_options import JobOptions
+
 # PDM
 import pydantic
 
 
-class FetchOptions(pydantic.BaseModel):
-    chat: Optional[bool] = None
+
 
 
 class Element(pydantic.BaseModel):
@@ -20,12 +22,6 @@ class CapturedElement(pydantic.BaseModel):
     xpath: str
     text: str
     name: str
-
-
-class JobOptions(pydantic.BaseModel):
-    multi_page_scrape: bool = False
-    custom_headers: Optional[dict[str, Any]] = {}
-    proxies: Optional[list[str]] = []
 
 
 class RetrieveScrapeJobs(pydantic.BaseModel):

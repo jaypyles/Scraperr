@@ -15,9 +15,11 @@ import {
   IconButton,
   Tooltip,
   useTheme,
+  Divider,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { Element } from "../../types";
+import { Element } from "@/types";
+import { SiteMap } from "../site-map";
 
 interface Props {
   rows: Element[];
@@ -169,6 +171,13 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
           </div>
         </TableContainer>
       </Box>
+      <Divider
+        sx={{
+          borderColor: theme.palette.mode === "dark" ? "#ffffff" : "0000000",
+          marginBottom: 2,
+        }}
+      />
+      <SiteMap />
     </Box>
   );
 };
