@@ -34,6 +34,12 @@ const commonThemeOptions = {
     h4: {
       fontWeight: 500,
     },
+    h5: {
+      fontWeight: 500,
+    },
+    h6: {
+      fontWeight: 500,
+    },
     body1: {
       fontFamily: '"Schibsted Grotesk", sans-serif',
     },
@@ -173,6 +179,9 @@ const darkTheme = createTheme({
       color: "#ffffff",
     },
     h5: {
+      color: "#ffffff",
+    },
+    h6: {
       color: "#ffffff",
     },
     body1: {

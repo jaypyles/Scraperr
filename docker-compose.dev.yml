@@ -10,5 +10,8 @@ services:
       - "$PWD/package-lock.json:/app/package-lock.json"
       - "$PWD/tsconfig.json:/app/tsconfig.json"
   scraperr_api:
+    environment:
+      - LOG_LEVEL=INFO
     volumes:
       - "$PWD/api:/project/api"
+      - "$PWD/scraping:/project/scraping"

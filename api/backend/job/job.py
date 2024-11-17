@@ -6,8 +6,8 @@ from typing import Any, Optional
 from pymongo import DESCENDING
 
 # LOCAL
-from api.backend.models import FetchOptions
 from api.backend.database import get_job_collection
+from api.backend.job.models.job_options import FetchOptions
 
 LOG = logging.getLogger(__name__)
 

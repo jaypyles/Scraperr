@@ -1,0 +1,21 @@
+.button {
+  height: 3rem;
+  width: 2rem;
+
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  transition: transform 0.2s ease-in-out;
+  transform: scale(1);
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.remove {
+  background-color: var(--delete-red) !important;
+}
+
+.remove:hover {
+  background-color: var(--delete-red-hover) !important;
+}

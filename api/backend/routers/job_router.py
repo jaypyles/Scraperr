@@ -12,22 +12,17 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
 
 # LOCAL
-from api.backend.job import (
-    query,
-    insert,
-    update_job,
-    delete_jobs,
-)
+from api.backend.job import query, insert, update_job, delete_jobs
 from api.backend.models import (
     UpdateJobs,
     DownloadJob,
-    FetchOptions,
     DeleteScrapeJobs,
     Job,
 )
 from api.backend.schemas import User
 from api.backend.auth.auth_utils import get_current_user
 from api.backend.utils import clean_text
+from api.backend.job.models.job_options import FetchOptions
 
 LOG = logging.getLogger(__name__)
 

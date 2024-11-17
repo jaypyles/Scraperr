@@ -1,19 +1,20 @@
 import logging
 from typing import Any, Optional
-import time
 import random
 
 from bs4 import BeautifulSoup
 from lxml import etree
 from seleniumwire import webdriver
-from lxml.etree import _Element  # type: ignore [reportPrivateImport]
+from lxml.etree import _Element  # pyright: ignore [reportPrivateUsage]
 from fake_useragent import UserAgent
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from urllib.parse import urlparse, urljoin
 from api.backend.models import Element, CapturedElement
+from api.backend.job.site_mapping.site_mapping import (
+    handle_site_mapping,
+)
+from api.backend.job.scraping.scraping_utils import scrape_content
+from api.backend.job.models.site_map import SiteMap
 
 LOG = logging.getLogger(__name__)
 
@@ -95,6 +96,7 @@ async def make_site_request(
     pages: set[tuple[str, str]] = set(),
     original_url: str = "",
     proxies: Optional[list[str]] = [],
+    site_map: Optional[dict[str, Any]] = None,
 ) -> None:
     """Make basic `GET` request to site using Selenium."""
     # Check if URL has already been visited
@@ -114,27 +116,16 @@ async def make_site_request(
         final_url = driver.current_url
         visited_urls.add(url)
         visited_urls.add(final_url)
-        _ = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.TAG_NAME, "body"))
-        )
 
-        last_height = driver.execute_script("return document.body.scrollHeight")
-        while True:
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        page_source = scrape_content(driver, pages)
 
-            time.sleep(3)  # Wait for the page to load
-            new_height = driver.execute_script("return document.body.scrollHeight")
-
-            if new_height == last_height:
-                break
-
-            last_height = new_height
-
-        final_height = driver.execute_script("return document.body.scrollHeight")
-
-        page_source = driver.page_source
-        LOG.debug(f"Page source for url: {url}\n{page_source}")
-        pages.add((page_source, final_url))
+        if site_map:
+            LOG.info("Site map: %s", site_map)
+            _ = await handle_site_mapping(
+                site_map,
+                driver,
+                pages,
+            )
     finally:
         driver.quit()
 
@@ -192,6 +183,7 @@ async def scrape(
     headers: Optional[dict[str, Any]],
     multi_page_scrape: bool = False,
     proxies: Optional[list[str]] = [],
+    site_map: Optional[SiteMap] = None,
 ):
     visited_urls: set[str] = set()
     pages: set[tuple[str, str]] = set()
@@ -204,6 +196,7 @@ async def scrape(
         pages=pages,
         original_url=url,
         proxies=proxies,
+        site_map=site_map,
     )
 
     elements: list[dict[str, dict[str, list[CapturedElement]]]] = list()

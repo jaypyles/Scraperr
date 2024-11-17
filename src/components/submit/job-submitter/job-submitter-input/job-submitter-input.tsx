@@ -1,26 +1,20 @@
-import React, { Dispatch } from "react";
+import React from "react";
 import { TextField, Button, CircularProgress } from "@mui/material";
-import { Element } from "@/types";
+import { useJobSubmitterProvider } from "../provider";
 
 export type JobSubmitterInputProps = {
-  submittedURL: string;
-  setSubmittedURL: Dispatch<React.SetStateAction<string>>;
-  isValidURL: boolean;
   urlError: string | null;
   handleSubmit: () => void;
   loading: boolean;
-  rows: Element[];
 };
 
 export const JobSubmitterInput = ({
-  submittedURL,
-  setSubmittedURL,
-  isValidURL,
-  urlError,
   handleSubmit,
   loading,
-  rows,
+  urlError,
 }: JobSubmitterInputProps) => {
+  const { submittedURL, setSubmittedURL, isValidURL, rows } =
+    useJobSubmitterProvider();
   return (
     <div className="flex flex-row space-x-4 items-center mb-2">
       <TextField
