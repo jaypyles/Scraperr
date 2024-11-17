@@ -31,7 +31,8 @@ export type Action = {
   type: ActionOption;
   xpath: string;
   name: string;
-  click_once?: boolean;
+  do_once?: boolean;
+  input?: string;
 };
 
 export type SiteMap = {

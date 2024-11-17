@@ -7,7 +7,7 @@ class Action(BaseModel):
     xpath: str
     name: str
     input: str = ""
-    click_once: bool = True
+    do_once: bool = True
 
 
 class SiteMap(BaseModel):

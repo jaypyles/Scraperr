@@ -18,6 +18,7 @@ export type SiteMapInputProps = {
   xpath?: string;
   option?: ActionOption;
   clickOnce?: boolean;
+  input?: string;
 };
 
 export const SiteMapInput = ({
@@ -25,6 +26,7 @@ export const SiteMapInput = ({
   xpath,
   option,
   clickOnce,
+  input,
 }: SiteMapInputProps) => {
   console.log(clickOnce);
   const [optionState, setOptionState] = useState<ActionOption>(
@@ -34,22 +36,14 @@ export const SiteMapInput = ({
   const [clickOnceState, setClickOnceState] = useState<boolean>(
     clickOnce || false
   );
-  const [inputState, setInputState] = useState<string>("");
+  const [inputState, setInputState] = useState<string>(input || "");
 
   const { siteMap, setSiteMap } = useJobSubmitterProvider();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (optionState === "input") {
-      setInputState(e.target.value);
-    }
-
-    if (optionState === "click") {
-      setXpathState(e.target.value);
-    }
-  };
-
   const handleAdd = () => {
     if (!siteMap) return;
+
+    console.log(optionState, xpathState, clickOnceState, inputState);
 
     setSiteMap((prevSiteMap) => ({
       ...prevSiteMap,
@@ -58,7 +52,8 @@ export const SiteMapInput = ({
           type: optionState,
           xpath: xpathState,
           name: "",
-          click_once: clickOnceState,
+          do_once: clickOnceState,
+          input: inputState,
         },
         ...(prevSiteMap?.actions || []),
       ],
@@ -77,7 +72,7 @@ export const SiteMapInput = ({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <div className="flex gap-2 items-center">
         <FormControl className="w-1/4">
           <Select
@@ -92,7 +87,7 @@ export const SiteMapInput = ({
         </FormControl>
         {optionState === "input" && (
           <TextField
-            label="Input Keys"
+            label="Input Text"
             fullWidth
             value={inputState}
             onChange={(e) => setInputState(e.target.value)}
@@ -123,9 +118,9 @@ export const SiteMapInput = ({
           </Button>
         )}
       </div>
-      {optionState === "click" && !disabled && (
+      {!disabled && (
         <FormControlLabel
-          label="Click Once"
+          label="Do Once"
           control={
             <Checkbox
               checked={clickOnceState}

@@ -42,19 +42,27 @@ export const SiteMap = () => {
                     theme.palette.mode === "dark" ? "#ffffff" : "0000000",
                 }}
               />
-              <Typography className="w-full text-center">
+              <Typography className="w-full text-center" variant="h5">
                 Site Map Actions
               </Typography>
             </>
           )}
-          {siteMap?.actions.reverse().map((action) => (
-            <SiteMapInput
-              disabled={Boolean(siteMap)}
-              xpath={action.xpath}
-              option={action.type}
-              clickOnce={action.click_once}
-            />
-          ))}
+          <ul className="flex flex-col gap-4">
+            {siteMap?.actions.reverse().map((action, index) => (
+              <li key={action.xpath} className="flex w-full items-center">
+                <Typography variant="h6" className="w-[10%] mr-2">
+                  Action {index + 1}:
+                </Typography>
+                <SiteMapInput
+                  disabled={Boolean(siteMap)}
+                  xpath={action.xpath}
+                  option={action.type}
+                  clickOnce={action.do_once}
+                  input={action.input}
+                />
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

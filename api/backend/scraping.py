@@ -5,7 +5,7 @@ import random
 from bs4 import BeautifulSoup
 from lxml import etree
 from seleniumwire import webdriver
-from lxml.etree import _Element  # type: ignore [reportPrivateImport]
+from lxml.etree import _Element  # pyright: ignore [reportPrivateUsage]
 from fake_useragent import UserAgent
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from urllib.parse import urlparse, urljoin
@@ -118,9 +118,6 @@ async def make_site_request(
         visited_urls.add(final_url)
 
         page_source = scrape_content(driver, pages)
-
-        with open("scraping/page_source.html", "w") as f:
-            f.write(page_source)
 
         if site_map:
             LOG.info("Site map: %s", site_map)
