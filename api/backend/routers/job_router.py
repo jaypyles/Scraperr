@@ -91,8 +91,6 @@ async def download(download_job: DownloadJob):
         )
         results = query(job_query, tuple(download_job.ids))
 
-        LOG.info(f"Results: {results}")
-
         csv_buffer = StringIO()
         csv_writer = csv.writer(csv_buffer, quotechar='"', quoting=csv.QUOTE_ALL)
 

@@ -77,7 +77,6 @@ async def handle_site_mapping(
     pages: set[tuple[str, str]],
 ):
     site_map = SiteMap(**site_map_dict)
-    LOG.info(f"Handling site map: {site_map}")
 
     for action in site_map.actions:
         action_handler = ACTION_MAP[action.type]

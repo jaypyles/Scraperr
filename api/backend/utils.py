@@ -44,9 +44,6 @@ def format_sql_row_to_python(row: dict[str, Any]):
 
 def format_json(items: list[Any]):
     for idx, item in enumerate(items):
-        LOG.info(f"Formatting item: {item}")
         if isinstance(item, (dict, list)):
             formatted_item = json.dumps(item)
-            LOG.info(f"Formatted item: {formatted_item}")
-            LOG.info(f"Formatted item class: {type(formatted_item)}")
             items[idx] = formatted_item
