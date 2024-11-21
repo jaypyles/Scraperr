@@ -57,8 +57,10 @@ async def retrieve_scrape_jobs(
     fetch_options: FetchOptions, user: User = Depends(get_current_user)
 ):
     LOG.info(f"Retrieving jobs for account: {user.email}")
+    ATTRIBUTES = "chat" if fetch_options.chat else "*"
+
     try:
-        job_query = "SELECT * FROM jobs WHERE user = ?"
+        job_query = f"SELECT {ATTRIBUTES} FROM jobs WHERE user = ?"
         results = query(job_query, (user.email,))
         return JSONResponse(content=jsonable_encoder(results[::-1]))
     except Exception as e:
