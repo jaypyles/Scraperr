@@ -12,7 +12,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
 
 # LOCAL
-from api.backend.job import query, insert, update_job, delete_jobs
+from api.backend.job import insert, update_job, delete_jobs
 from api.backend.models import (
     UpdateJobs,
     DownloadJob,
@@ -21,8 +21,10 @@ from api.backend.models import (
 )
 from api.backend.schemas import User
 from api.backend.auth.auth_utils import get_current_user
-from api.backend.utils import clean_text
+from api.backend.utils import clean_text, format_list_for_query
 from api.backend.job.models.job_options import FetchOptions
+
+from api.backend.database.common import query
 
 LOG = logging.getLogger(__name__)
 
@@ -46,6 +48,7 @@ async def submit_scrape_job(job: Job):
 
         return JSONResponse(content={"id": job.id})
     except Exception as e:
+        LOG.error(f"Exception occurred: {traceback.format_exc()}")
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
@@ -55,7 +58,8 @@ async def retrieve_scrape_jobs(
 ):
     LOG.info(f"Retrieving jobs for account: {user.email}")
     try:
-        results = await query({"user": user.email}, fetch_options=fetch_options)
+        job_query = "SELECT * FROM jobs WHERE user = ?"
+        results = query(job_query, (user.email,))
         return JSONResponse(content=jsonable_encoder(results[::-1]))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
@@ -67,8 +71,8 @@ async def job(id: str, user: User = Depends(get_current_user)):
     LOG.info(f"Retrieving jobs for account: {user.email}")
 
     try:
-        filter = {"user": user.email, "id": id}
-        results = await query(filter)
+        job_query = "SELECT * FROM jobs WHERE user = ? AND id = ?"
+        results = query(job_query, (user.email, id))
         return JSONResponse(content=jsonable_encoder(results))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
@@ -80,7 +84,12 @@ async def download(download_job: DownloadJob):
     LOG.info(f"Downloading job with ids: {download_job.ids}")
 
     try:
-        results = await query({"id": {"$in": download_job.ids}})
+        job_query = (
+            f"SELECT * FROM jobs WHERE id IN {format_list_for_query(download_job.ids)}"
+        )
+        results = query(job_query, tuple(download_job.ids))
+
+        LOG.info(f"Results: {results}")
 
         csv_buffer = StringIO()
         csv_writer = csv.writer(csv_buffer, quotechar='"', quoting=csv.QUOTE_ALL)

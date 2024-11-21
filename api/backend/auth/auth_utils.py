@@ -15,7 +15,8 @@ from fastapi.security import OAuth2PasswordBearer
 
 # LOCAL
 from api.backend.schemas import User, UserInDB, TokenData
-from api.backend.database import get_user_collection
+
+from api.backend.database.common import query
 
 LOG = logging.getLogger(__name__)
 
@@ -40,8 +41,8 @@ def get_password_hash(password: str):
 
 
 async def get_user(email: str):
-    user_collection = get_user_collection()
-    user = await user_collection.find_one({"email": email})
+    user_query = "SELECT * FROM users WHERE email = ?"
+    user = query(user_query, (email,))[0]
 
     if not user:
         return

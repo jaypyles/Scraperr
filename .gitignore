@@ -187,3 +187,4 @@ cython_debug/
 postgres_data
 .vscode
 ollama
+data

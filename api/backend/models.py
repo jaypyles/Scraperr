@@ -9,9 +9,6 @@ from api.backend.job.models.job_options import JobOptions
 import pydantic
 
 
-
-
-
 class Element(pydantic.BaseModel):
     name: str
     xpath: str

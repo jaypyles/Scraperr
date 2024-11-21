@@ -1,5 +1,4 @@
 from .job import (
-    query,
     insert,
     update_job,
     delete_jobs,
@@ -9,7 +8,6 @@ from .job import (
 )
 
 __all__ = [
-    "query",
     "insert",
     "update_job",
     "delete_jobs",
