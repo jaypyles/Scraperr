@@ -72,10 +72,7 @@ def update(query: str, values: Optional[tuple[Any, ...]] = None):
     try:
         if copy:
             res = cursor.execute(query, copy)
-
-            LOG.info(f"Executed query: {query} with values: {copy}")
         else:
-            LOG.info(f"Executing query: {query}")
             res = cursor.execute(query)
         connection.commit()
         return res.rowcount
