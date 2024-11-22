@@ -1,5 +1,5 @@
 # Build next dependencies
-FROM node:latest
+FROM node:23.1
 WORKDIR /app
 
 COPY package*.json ./
@@ -16,5 +16,3 @@ COPY src /app/src
 RUN npm run build
 
 EXPOSE 3000
-
-# CMD [ "npm", "run" ]

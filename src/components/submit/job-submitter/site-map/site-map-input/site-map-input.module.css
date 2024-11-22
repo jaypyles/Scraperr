@@ -7,9 +7,10 @@
   border-radius: 0.375rem;
   transition: transform 0.2s ease-in-out;
   transform: scale(1);
-  &:hover {
-    transform: scale(1.05);
-  }
+}
+
+.button:hover {
+  transform: scale(1.05);
 }
 
 .remove {

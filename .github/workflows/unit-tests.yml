@@ -15,6 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set env
+        run: echo "ENV=test" >> $GITHUB_ENV
+
       - name: Install pdm
         run: pip install pdm
 

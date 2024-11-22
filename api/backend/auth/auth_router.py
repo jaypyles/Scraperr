@@ -7,7 +7,6 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 # LOCAL
 from api.backend.schemas import User, Token, UserCreate
-from api.backend.database import get_user_collection
 from api.backend.auth.auth_utils import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     get_current_user,
@@ -15,6 +14,8 @@ from api.backend.auth.auth_utils import (
     get_password_hash,
     create_access_token,
 )
+
+from api.backend.database.common import update
 
 auth_router = APIRouter()
 
@@ -43,12 +44,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 @auth_router.post("/auth/signup", response_model=User)
 async def create_user(user: UserCreate):
-    users_collection = get_user_collection()
     hashed_password = get_password_hash(user.password)
     user_dict = user.model_dump()
     user_dict["hashed_password"] = hashed_password
     del user_dict["password"]
-    _ = await users_collection.insert_one(user_dict)
+
+    query = "INSERT INTO users (email, hashed_password, full_name) VALUES (?, ?, ?)"
+    _ = update(query, (user_dict["email"], hashed_password, user_dict["full_name"]))
     return user_dict
 
 

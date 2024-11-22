@@ -23,7 +23,6 @@ services:
       dockerfile: docker/api/Dockerfile
     environment:
       - LOG_LEVEL=INFO
-      - MONGODB_URI=mongodb://root:example@webscrape-mongo:27017 # used to access MongoDB
       - SECRET_KEY=your_secret_key # used to encode authentication tokens (can be a random string)
       - ALGORITHM=HS256 # authentication encoding algorithm
       - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
@@ -31,16 +30,8 @@ services:
     ports:
       - 8000:8000
     volumes:
+      - "$PWD/data:/project/data"
       - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - web
-  mongo:
-    container_name: webscrape-mongo
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
     networks:
       - web
 networks:
