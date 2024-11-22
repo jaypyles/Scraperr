@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' }}
+    if: github.ref == 'refs/heads/master' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
