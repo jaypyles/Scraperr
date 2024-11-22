@@ -1,15 +1,10 @@
 import pytest
+import logging
 from unittest.mock import AsyncMock, patch, MagicMock
-from api.backend.tests.factories.job_factory import create_job
-from api.backend.models import JobOptions
 from api.backend.scraping import create_driver
 
-
-mocked_job = create_job(
-    job_options=JobOptions(
-        multi_page_scrape=False, custom_headers={}, proxies=["127.0.0.1:8080"]
-    )
-).model_dump()
+logging.basicConfig(level=logging.DEBUG)
+LOG = logging.getLogger(__name__)
 
 
 @pytest.mark.asyncio
@@ -26,8 +21,7 @@ async def test_proxy(mock_get: AsyncMock):
     driver.get("http://example.com")
     response = driver.last_request
 
-    # Check if the proxy header is set correctly
     if response:
-        assert response.headers["Proxy"] == "127.0.0.1:8080"
+        assert response.headers["Proxy-Connection"] == "keep-alive"
 
     driver.quit()

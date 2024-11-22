@@ -26,8 +26,6 @@ logging.basicConfig(
 
 LOG = logging.getLogger(__name__)
 
-init_database()
-
 app = FastAPI(title="api", root_path="/api")
 
 app.add_middleware(
@@ -44,3 +42,10 @@ app.include_router(ai_router)
 app.include_router(job_router)
 app.include_router(log_router)
 app.include_router(stats_router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    if os.getenv("ENV") != "test":
+        init_database()
+        LOG.info("Starting up...")
