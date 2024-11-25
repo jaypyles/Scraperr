@@ -165,7 +165,7 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
         for e in el:
             if isinstance(e, etree._Element):
                 text = "\t".join(str(t) for t in e.itertext())
-            else:  # Es un texto directamente
+            else:
                 text = str(e)
             captured_element = CapturedElement(
                 xpath=elem.xpath, text=text, name=elem.name
