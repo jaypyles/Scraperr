@@ -81,24 +81,39 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     LOG.info(f"Getting current user with token: {token}")
 
     if not token:
+        LOG.error("No token provided")
+        return EMPTY_USER
+
+    if len(token.split(".")) != 3:
+        LOG.error(f"Malformed token: {token}")
         return EMPTY_USER
 
     try:
+        LOG.info(
+            f"Decoding token: {token} with secret key: {SECRET_KEY} and algorithm: {ALGORITHM}"
+        )
+
+        if token.startswith("Bearer "):
+            token = token.split(" ")[1]
+
         payload: Optional[dict[str, Any]] = jwt.decode(
             token, SECRET_KEY, algorithms=[ALGORITHM]
         )
 
         if not payload:
+            LOG.error("No payload found in token")
             return EMPTY_USER
 
         email = payload.get("sub")
 
         if email is None:
+            LOG.error("No email found in payload")
             return EMPTY_USER
 
         token_data = TokenData(email=email)
 
-    except JWTError:
+    except JWTError as e:
+        LOG.error(f"JWTError occurred: {e}")
         return EMPTY_USER
 
     except Exception as e:
@@ -106,7 +121,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         return EMPTY_USER
 
     user = await get_user(email=token_data.email)
-
     if user is None:
         return EMPTY_USER
 

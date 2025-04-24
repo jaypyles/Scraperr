@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { Constants } from "../lib";
 import Cookies from "js-cookie";
 
 interface AuthContextProps {
@@ -55,6 +54,7 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     const userResponse = await axios.get(`/api/me`, {
       headers: { Authorization: `Bearer ${response.data.access_token}` },
     });
+
     setUser(userResponse.data);
     setIsAuthenticated(true);
   };

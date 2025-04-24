@@ -1,3 +1,0 @@
-github_repo: https://github.com/jaypyles/webapp-template.git
-deploy_path: /home/admin/site-test6
-deploy_command: make pull up-prd

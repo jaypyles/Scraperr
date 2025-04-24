@@ -109,5 +109,5 @@
     "isolatedModules": true
   },
   "include": ["src", "src/declaration.d.ts", "src/next-auth.d.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src-tauri"]
 }

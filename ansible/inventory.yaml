@@ -1,6 +1,0 @@
-all:
-  hosts:
-    host1:
-      ansible_host: 192.168.0.1
-      ansible_user: admin
-      ansible_ssh_private_key_file: private_key.pem

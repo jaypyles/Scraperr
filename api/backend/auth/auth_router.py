@@ -14,10 +14,13 @@ from api.backend.auth.auth_utils import (
     get_password_hash,
     create_access_token,
 )
+import logging
 
 from api.backend.database.common import update
 
 auth_router = APIRouter()
+
+LOG = logging.getLogger("auth_router")
 
 
 @auth_router.post("/auth/token", response_model=Token)
@@ -51,6 +54,7 @@ async def create_user(user: UserCreate):
 
     query = "INSERT INTO users (email, hashed_password, full_name) VALUES (?, ?, ?)"
     _ = update(query, (user_dict["email"], hashed_password, user_dict["full_name"]))
+
     return user_dict
 
 

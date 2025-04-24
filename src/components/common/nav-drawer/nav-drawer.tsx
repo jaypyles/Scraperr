@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAuth } from "../../../contexts/AuthContext";
-import { Box, Drawer, Divider } from "@mui/material";
+import { Box, Drawer } from "@mui/material";
 
 import { QuickSettings } from "../../nav/quick-settings";
 import { NavItems } from "./nav-items/nav-items";

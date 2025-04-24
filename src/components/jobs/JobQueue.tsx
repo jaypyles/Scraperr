@@ -175,7 +175,11 @@ export const JobQueue = ({
                       onDownload([row.id]);
                     }}
                     size="small"
-                    sx={{ minWidth: 0, padding: "4px 8px" }}
+                    sx={{
+                      minWidth: 0,
+                      padding: "4px 8px",
+                      fontSize: "0.625rem",
+                    }}
                   >
                     Download
                   </Button>
@@ -184,7 +188,11 @@ export const JobQueue = ({
                       onNavigate(row.elements, row.url, row.job_options)
                     }
                     size="small"
-                    sx={{ minWidth: 0, padding: "4px 8px" }}
+                    sx={{
+                      minWidth: 0,
+                      padding: "4px 8px",
+                      fontSize: "0.625rem",
+                    }}
                   >
                     Rerun
                   </Button>
