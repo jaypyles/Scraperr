@@ -39,6 +39,7 @@ dependencies = [
     "pytest-asyncio>=0.24.0",
     "python-multipart>=0.0.1",
     "bcrypt==4.0.1",
+    "apscheduler>=3.11.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -56,14 +57,42 @@ ignore = []
 defineConstant = { DEBUG = true }
 stubPath = ""
 
-reportUnknownMemberType = false
-reportMissingImports = true
-reportMissingTypeStubs = false
-reportAny = false
-reportCallInDefaultInitializer = false
+# Type checking strictness
+typeCheckingMode = "strict"  # Enables strict type checking mode
+reportPrivateUsage = "error"
+reportMissingTypeStubs = "error"
+reportUntypedFunctionDecorator = "error"
+reportUntypedClassDecorator = "error"
+reportUntypedBaseClass = "error"
+reportInvalidTypeVarUse = "error"
+reportUnnecessaryTypeIgnoreComment = "information"
+reportUnknownVariableType = "none"
+reportUnknownMemberType = "none"
+reportUnknownParameterType = "none"
 
-pythonVersion = "3.9"
-pythonPlatform = "Linux"
+# Additional checks
+reportImplicitStringConcatenation = "error"
+reportInvalidStringEscapeSequence = "error"
+reportMissingImports = "error"
+reportMissingModuleSource = "error"
+reportOptionalCall = "error"
+reportOptionalIterable = "error"
+reportOptionalMemberAccess = "error"
+reportOptionalOperand = "error"
+reportOptionalSubscript = "error"
+reportTypedDictNotRequiredAccess = "error"
+
+# Function return type checking
+reportIncompleteStub = "error"
+reportIncompatibleMethodOverride = "error"
+reportInvalidStubStatement = "error"
+reportInconsistentOverload = "error"
+
+# Misc settings
+pythonVersion = "3.10"  # Matches your Python version from pyproject.toml
+strictListInference = true
+strictDictionaryInference = true
+strictSetInference = true
 
 
 [tool.isort]

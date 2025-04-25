@@ -1,7 +1,5 @@
 # STL
 import os
-from gc import disable
-from queue import Empty
 from typing import Any, Optional
 from datetime import datetime, timedelta
 import logging
@@ -78,10 +76,10 @@ def create_access_token(
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
-    LOG.info(f"Getting current user with token: {token}")
+    LOG.debug(f"Getting current user with token: {token}")
 
     if not token:
-        LOG.error("No token provided")
+        LOG.debug("No token provided")
         return EMPTY_USER
 
     if len(token.split(".")) != 3:
@@ -89,7 +87,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         return EMPTY_USER
 
     try:
-        LOG.info(
+        LOG.debug(
             f"Decoding token: {token} with secret key: {SECRET_KEY} and algorithm: {ALGORITHM}"
         )
 
