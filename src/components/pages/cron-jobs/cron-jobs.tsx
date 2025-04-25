@@ -8,6 +8,8 @@ import {
   TableCell,
   TableBody,
   Button,
+  Box,
+  Typography,
 } from "@mui/material";
 import Cookies from "js-cookie";
 
@@ -50,6 +52,16 @@ export const CronJobs = ({
       console.error("Failed to delete cron job");
     }
   };
+
+  if (!user) {
+    return (
+      <Box>
+        <Typography variant="h6">
+          Please login to view your cron jobs
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <div>
