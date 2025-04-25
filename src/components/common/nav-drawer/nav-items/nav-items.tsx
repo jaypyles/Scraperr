@@ -7,6 +7,7 @@ import TerminalIcon from "@mui/icons-material/Terminal";
 import BarChart from "@mui/icons-material/BarChart";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { List } from "@mui/material";
+import { Schedule } from "@mui/icons-material";
 
 const items = [
   {
@@ -33,6 +34,11 @@ const items = [
     icon: <TerminalIcon />,
     text: "View App Logs",
     href: "/logs",
+  },
+  {
+    icon: <Schedule />,
+    text: "Cron Jobs",
+    href: "/cron-jobs",
   },
 ];
 

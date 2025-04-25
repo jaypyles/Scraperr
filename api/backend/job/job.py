@@ -14,7 +14,7 @@ from api.backend.database.common import (
 LOG = logging.getLogger(__name__)
 
 
-async def insert(item: dict[str, Any]) -> None:
+def insert(item: dict[str, Any]) -> None:
     common_insert(
         QUERIES["insert_job"],
         (

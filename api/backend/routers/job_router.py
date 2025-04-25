@@ -1,4 +1,5 @@
 # STL
+import datetime
 import uuid
 import traceback
 from io import StringIO
@@ -10,14 +11,18 @@ import random
 from fastapi import Depends, APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, StreamingResponse
+from api.backend.scheduler import scheduler
+from apscheduler.triggers.cron import CronTrigger  # type: ignore
 
 # LOCAL
 from api.backend.job import insert, update_job, delete_jobs
 from api.backend.models import (
+    DeleteCronJob,
     UpdateJobs,
     DownloadJob,
     DeleteScrapeJobs,
     Job,
+    CronJob,
 )
 from api.backend.schemas import User
 from api.backend.auth.auth_utils import get_current_user
@@ -25,6 +30,14 @@ from api.backend.utils import clean_text, format_list_for_query
 from api.backend.job.models.job_options import FetchOptions
 
 from api.backend.database.common import query
+
+from api.backend.job.cron_scheduling.cron_scheduling import (
+    delete_cron_job,
+    get_cron_job_trigger,
+    insert_cron_job,
+    get_cron_jobs,
+    insert_job_from_cron_job,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -44,7 +57,7 @@ async def submit_scrape_job(job: Job):
         job.id = uuid.uuid4().hex
 
         job_dict = job.model_dump()
-        await insert(job_dict)
+        insert(job_dict)
 
         return JSONResponse(content={"id": job.id})
     except Exception as e:
@@ -140,3 +153,47 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
         if result
         else JSONResponse({"error": "Jobs not deleted."})
     )
+
+
+@job_router.post("/schedule-cron-job")
+async def schedule_cron_job(cron_job: CronJob):
+    if not cron_job.id:
+        cron_job.id = uuid.uuid4().hex
+
+    if not cron_job.time_created:
+        cron_job.time_created = datetime.datetime.now()
+
+    if not cron_job.time_updated:
+        cron_job.time_updated = datetime.datetime.now()
+
+    insert_cron_job(cron_job)
+
+    queried_job = query("SELECT * FROM jobs WHERE id = ?", (cron_job.job_id,))
+
+    scheduler.add_job(
+        insert_job_from_cron_job,
+        get_cron_job_trigger(cron_job.cron_expression),
+        id=cron_job.id,
+        args=[queried_job[0]],
+    )
+
+    return JSONResponse(content={"message": "Cron job scheduled successfully."})
+
+
+@job_router.post("/delete-cron-job")
+async def delete_cron_job_request(request: DeleteCronJob):
+    if not request.id:
+        return JSONResponse(
+            content={"error": "Cron job id is required."}, status_code=400
+        )
+
+    delete_cron_job(request.id, request.user_email)
+    scheduler.remove_job(request.id)
+
+    return JSONResponse(content={"message": "Cron job deleted successfully."})
+
+
+@job_router.get("/cron-jobs")
+async def get_cron_jobs_request(user: User = Depends(get_current_user)):
+    cron_jobs = get_cron_jobs(user.email)
+    return JSONResponse(content=jsonable_encoder(cron_jobs))

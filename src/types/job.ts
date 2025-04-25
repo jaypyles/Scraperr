@@ -38,3 +38,12 @@ export type Action = {
 export type SiteMap = {
   actions: Action[];
 };
+
+export type CronJob = {
+  id: string;
+  user_email: string;
+  job_id: string;
+  cron_expression: string;
+  time_created: Date;
+  time_updated: Date;
+};
