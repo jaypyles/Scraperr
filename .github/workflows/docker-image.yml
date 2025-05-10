@@ -41,6 +41,8 @@ jobs:
 
   success-message:
     runs-on: ubuntu-latest
+    needs:
+      - build
     steps:
       - name: Send Discord Message
         uses: jaypyles/discord-webhook-action@v1.0.0

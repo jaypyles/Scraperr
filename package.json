@@ -19,6 +19,7 @@
     "bootstrap": "^5.3.0",
     "chart.js": "^4.4.3",
     "cookie": "^0.6.0",
+    "dotenv": "^16.5.0",
     "framer-motion": "^4.1.17",
     "js-cookie": "^3.0.5",
     "next": "^14.2.4",
@@ -64,7 +65,10 @@
   "devDependencies": {
     "@types/cypress": "^1.1.6",
     "@types/js-cookie": "^3.0.6",
+    "autoprefixer": "^10.4.21",
     "cypress": "^13.17.0",
+    "eslint": "^9.26.0",
+    "postcss": "^8.5.3",
     "tailwindcss": "^3.3.5"
   },
   "overrides": {
