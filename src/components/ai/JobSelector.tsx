@@ -28,10 +28,6 @@ export const JobSelector = ({
   const [popoverJob, setPopoverJob] = useState<Job | null>(null);
   const theme = useTheme();
 
-  useEffect(() => {
-    fetchJobs(setJobs, { chat: true });
-  }, []);
-
   const handlePopoverOpen = (
     event: React.MouseEvent<HTMLElement>,
     job: Job
@@ -124,7 +120,9 @@ export const JobSelector = ({
                   fontStyle: "italic",
                 }}
               >
-                {new Date(popoverJob.time_created).toLocaleString()}
+                {popoverJob.time_created
+                  ? new Date(popoverJob.time_created).toLocaleString()
+                  : "Unknown"}
               </Typography>
             </div>
           </Box>
