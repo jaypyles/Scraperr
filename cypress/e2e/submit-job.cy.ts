@@ -11,12 +11,18 @@ describe.only("Job", () => {
 
     cy.contains("Submit").click();
 
-    cy.wait("@submitScrapeJob")
-      .then((interception) => {
-        cy.log("Response: " + JSON.stringify(interception.response?.body));
-      })
-      .its("response.statusCode")
-      .should("eq", 200);
+    cy.wait("@submitScrapeJob").then((interception) => {
+      if (!interception.response) {
+        cy.log("No response received!");
+        cy.log("Request body: " + JSON.stringify(interception.request?.body));
+        throw new Error("submitScrapeJob request did not return a response");
+      }
+
+      cy.log("Response status: " + interception.response.statusCode);
+      cy.log("Response body: " + JSON.stringify(interception.response.body));
+
+      expect(interception.response.statusCode).to.eq(200);
+    });
 
     cy.get("li").contains("Previous Jobs").click();
 
