@@ -31,7 +31,7 @@
     "react-modal-image": "^2.6.0",
     "react-router": "^6.14.1",
     "react-router-dom": "^6.14.1",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "^3.0.1",
     "react-spinners": "^0.14.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
@@ -63,9 +63,9 @@
     ]
   },
   "devDependencies": {
-    "@types/cypress": "^0.1.6",
+    "@types/cypress": "^1.1.6",
     "@types/js-cookie": "^3.0.6",
-    "cypress": "^13.15.0",
+    "cypress": "^13.17.0",
     "tailwindcss": "^3.3.5"
   },
   "overrides": {

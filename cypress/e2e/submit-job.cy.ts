@@ -1,5 +1,7 @@
 describe.only("Job", () => {
   it("should create a job", () => {
+    cy.intercept("POST", "/api/submit-scrape-job").as("submitScrapeJob");
+
     cy.visit("/");
 
     cy.get('[data-cy="url-input"]').type("https://example.com");
@@ -9,12 +11,13 @@ describe.only("Job", () => {
 
     cy.contains("Submit").click();
 
+    cy.wait("@submitScrapeJob").its("response.statusCode").should("eq", 200);
+
     cy.get("li").contains("Previous Jobs").click();
 
     cy.contains("div", "https://example.com", { timeout: 10000 }).should(
       "exist"
     );
-
     cy.contains("div", "Completed", { timeout: 20000 }).should("exist");
   });
 });
