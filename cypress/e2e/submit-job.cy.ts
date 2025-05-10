@@ -2,29 +2,19 @@ describe.only("Job", () => {
   it("should create a job", () => {
     cy.visit("/");
 
-    const input = cy.get('[data-cy="url-input"]');
-    input.type("https://example.com");
+    cy.get('[data-cy="url-input"]').type("https://example.com");
+    cy.get('[data-cy="name-field"]').type("example");
+    cy.get('[data-cy="xpath-field"]').type("//body");
+    cy.get('[data-cy="add-button"]').click();
 
-    const nameField = cy.get('[data-cy="name-field"]');
-    const xPathField = cy.get('[data-cy="xpath-field"]');
-    const addButton = cy.get('[data-cy="add-button"]');
+    cy.contains("Submit").click();
 
-    nameField.type("example");
-    xPathField.type("//body");
-    addButton.click();
+    cy.get("li").contains("Previous Jobs").click();
 
-    const submit = cy.contains("Submit");
-    submit.click();
+    cy.contains("div", "https://example.com", { timeout: 10000 }).should(
+      "exist"
+    );
 
-    const previousJobs = cy.get("li").contains("Previous Jobs");
-    previousJobs.click();
-
-    const jobUrl = cy.get("div").contains("https://example.com");
-    jobUrl.should("exist");
-
-    cy.wait(10000);
-
-    const completedJobStatus = cy.get("div").contains("Completed");
-    completedJobStatus.should("exist");
+    cy.contains("div", "Completed", { timeout: 20000 }).should("exist");
   });
 });
