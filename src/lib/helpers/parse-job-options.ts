@@ -11,11 +11,11 @@ export const parseJobOptions = (
 ) => {
   if (job_options) {
     const jsonOptions = JSON.parse(job_options as string);
-    console.log(jsonOptions);
     const newJobOptions: RawJobOptions = {
       multi_page_scrape: false,
       custom_headers: null,
       proxies: null,
+      collect_media: false,
     };
 
     if (
