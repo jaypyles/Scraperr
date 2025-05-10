@@ -11,7 +11,12 @@ describe.only("Job", () => {
 
     cy.contains("Submit").click();
 
-    cy.wait("@submitScrapeJob").its("response.statusCode").should("eq", 200);
+    cy.wait("@submitScrapeJob")
+      .then((interception) => {
+        console.log("Response:", interception.response?.body);
+      })
+      .its("response.statusCode")
+      .should("eq", 200);
 
     cy.get("li").contains("Previous Jobs").click();
 
