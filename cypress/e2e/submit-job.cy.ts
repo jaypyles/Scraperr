@@ -13,7 +13,7 @@ describe.only("Job", () => {
 
     cy.wait("@submitScrapeJob")
       .then((interception) => {
-        console.log("Response:", interception.response?.body);
+        cy.log("Response: " + JSON.stringify(interception.response?.body));
       })
       .its("response.statusCode")
       .should("eq", 200);
