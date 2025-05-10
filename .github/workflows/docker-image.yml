@@ -4,6 +4,7 @@ on:
     workflows: ["Unit Tests"]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   build:
