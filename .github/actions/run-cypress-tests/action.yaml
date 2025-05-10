@@ -43,6 +43,15 @@ runs:
         echo "Backend failed to be ready after 10 retries"
         exit 1
 
+    - name: Show backend logs on failure
+      if: failure()
+      shell: bash
+      run: |
+        echo "== Docker Containers =="
+        docker ps -a
+        echo "== Backend Logs =="
+        docker logs $(docker ps -a --filter "name=scraperr_api" --format "{{.Names}}") || echo "Could not get backend logs"
+
     - name: Run Cypress tests
       shell: bash
       run: npm run cy:run
