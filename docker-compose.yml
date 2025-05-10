@@ -31,6 +31,7 @@ services:
       - 8000:8000
     volumes:
       - "$PWD/data:/project/data"
+      - "$PWD/media:/project/media"
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - web

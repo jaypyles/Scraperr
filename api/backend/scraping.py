@@ -104,6 +104,7 @@ async def make_site_request(
     original_url: str = "",
     proxies: Optional[list[str]] = [],
     site_map: Optional[dict[str, Any]] = None,
+    collect_media: bool = False,
 ) -> None:
     """Make basic `GET` request to site using Selenium."""
     # Check if URL has already been visited
@@ -124,7 +125,7 @@ async def make_site_request(
         visited_urls.add(url)
         visited_urls.add(final_url)
 
-        page_source = scrape_content(driver, pages)
+        page_source = scrape_content(driver, pages, collect_media)
 
         if site_map:
             LOG.info("Site map: %s", site_map)
@@ -197,6 +198,7 @@ async def scrape(
     multi_page_scrape: bool = False,
     proxies: Optional[list[str]] = [],
     site_map: Optional[dict[str, Any]] = None,
+    collect_media: bool = False,
 ):
     visited_urls: set[str] = set()
     pages: set[tuple[str, str]] = set()
@@ -210,6 +212,7 @@ async def scrape(
         original_url=url,
         proxies=proxies,
         site_map=site_map,
+        collect_media=collect_media,
     )
 
     elements: list[dict[str, dict[str, list[CapturedElement]]]] = list()

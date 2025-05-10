@@ -12,3 +12,4 @@ class JobOptions(BaseModel):
     custom_headers: dict[str, Any] = {}
     proxies: list[str] = []
     site_map: Optional[SiteMap] = None
+    collect_media: bool = False

@@ -27,6 +27,7 @@ async def process_job():
                 job["job_options"]["multi_page_scrape"],
                 job["job_options"]["proxies"],
                 job["job_options"]["site_map"],
+                job["job_options"]["collect_media"],
             )
             LOG.info(
                 f"Scraped result for url: {job['url']}, with elements: {job['elements']}\n{scraped}"
