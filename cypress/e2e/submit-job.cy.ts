@@ -1,4 +1,4 @@
-describe("Job", () => {
+describe.only("Job", () => {
   it("should create a job", () => {
     cy.visit("/");
 
@@ -15,5 +15,16 @@ describe("Job", () => {
 
     const submit = cy.contains("Submit");
     submit.click();
+
+    const previousJobs = cy.get("li").contains("Previous Jobs");
+    previousJobs.click();
+
+    const jobUrl = cy.get("div").contains("https://example.com");
+    jobUrl.should("exist");
+
+    cy.wait(10000);
+
+    const completedJobStatus = cy.get("div").contains("Completed");
+    completedJobStatus.should("exist");
   });
 });

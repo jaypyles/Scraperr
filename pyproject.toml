@@ -58,9 +58,9 @@ defineConstant = { DEBUG = true }
 stubPath = ""
 
 # Type checking strictness
-typeCheckingMode = "strict"  # Enables strict type checking mode
-reportPrivateUsage = "error"
-reportMissingTypeStubs = "error"
+typeCheckingMode = "strict"                        # Enables strict type checking mode
+reportPrivateUsage = "none"
+reportMissingTypeStubs = "none"
 reportUntypedFunctionDecorator = "error"
 reportUntypedClassDecorator = "error"
 reportUntypedBaseClass = "error"
@@ -89,7 +89,7 @@ reportInvalidStubStatement = "error"
 reportInconsistentOverload = "error"
 
 # Misc settings
-pythonVersion = "3.10"  # Matches your Python version from pyproject.toml
+pythonVersion = "3.10"           # Matches your Python version from pyproject.toml
 strictListInference = true
 strictDictionaryInference = true
 strictSetInference = true

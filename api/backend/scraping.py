@@ -2,10 +2,10 @@ import logging
 from typing import Any, Optional
 import random
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from lxml import etree
 from seleniumwire import webdriver  # type: ignore
-from lxml.etree import _Element  # pyright: ignore [reportPrivateUsage]
+from lxml.etree import _Element
 from fake_useragent import UserAgent
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from urllib.parse import urlparse, urljoin
@@ -16,7 +16,6 @@ from api.backend.job.site_mapping.site_mapping import (
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from api.backend.job.scraping.scraping_utils import scrape_content
-from api.backend.job.models.site_map import SiteMap
 
 LOG = logging.getLogger(__name__)
 
@@ -143,7 +142,10 @@ async def make_site_request(
     soup = BeautifulSoup(page_source, "html.parser")
 
     for a_tag in soup.find_all("a"):
-        link = a_tag.get("href")
+        if not isinstance(a_tag, Tag):
+            continue
+
+        link = str(a_tag.get("href", ""))
 
         if link:
             if not urlparse(link).netloc:
@@ -171,7 +173,7 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
         el = sxpath(root, elem.xpath)
 
         for e in el:
-            if isinstance(e, etree._Element):
+            if isinstance(e, etree._Element):  # type: ignore
                 text = "\t".join(str(t) for t in e.itertext())
             else:
                 text = str(e)
@@ -194,7 +196,7 @@ async def scrape(
     headers: Optional[dict[str, Any]],
     multi_page_scrape: bool = False,
     proxies: Optional[list[str]] = [],
-    site_map: Optional[SiteMap] = None,
+    site_map: Optional[dict[str, Any]] = None,
 ):
     visited_urls: set[str] = set()
     pages: set[tuple[str, str]] = set()

@@ -27,3 +27,12 @@ jobs:
 
       - name: Run tests
         run: PYTHONPATH=. pdm run pytest api/backend/tests
+
+  cypress-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Cypress tests
+        uses: ./.github/actions/run-cypress-tests/action.yaml
