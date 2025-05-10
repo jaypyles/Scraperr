@@ -8,6 +8,8 @@ import logging
 import sys
 import traceback
 
+from api.backend.database.startup import init_database
+
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOG = logging.getLogger(__name__)
 
@@ -41,6 +43,9 @@ async def process_job():
 
 async def main():
     LOG.info("Starting job worker...")
+
+    init_database()
+
     while True:
         await process_job()
         await asyncio.sleep(5)
