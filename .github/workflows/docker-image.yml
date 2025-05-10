@@ -38,3 +38,18 @@ jobs:
           file: ./docker/api/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:latest
+
+  success-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord Message
+        uses: jaypyles/discord-webhook-action@v1.0.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          content: "Scraperr Successfully Built Docker Images"
+          username: "Scraperr CI"
+          embed-title: "✅ Deployment Status"
+          embed-description: "Scraperr successfully built docker images."
+          embed-color: 3066993 # Green
+          embed-footer-text: "Scraperr CI"
+          embed-timestamp: ${{ github.event.head_commit.timestamp }}

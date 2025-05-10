@@ -31,7 +31,6 @@
     "react-modal-image": "^2.6.0",
     "react-router": "^6.14.1",
     "react-router-dom": "^6.14.1",
-    "react-scripts": "^3.0.1",
     "react-spinners": "^0.14.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
@@ -70,5 +69,8 @@
   },
   "overrides": {
     "react-refresh": "0.11.0"
+  },
+  "resolutions": {
+    "postcss": "^8.4.31"
   }
 }
