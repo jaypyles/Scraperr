@@ -24,6 +24,7 @@ View the [docs](https://scraperr-docs.pages.dev) for a quickstart guide and more
 - Scrape all pages within same domain
 - Add custom json headers to send in requests to URLs
 - Display results of scraped data
+- Download media found on the page (images, videos, etc.)
 
 ![main_page](https://github.com/jaypyles/www-scrape/blob/master/docs/main_page.png)
 
