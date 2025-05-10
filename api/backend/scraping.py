@@ -4,7 +4,7 @@ import random
 
 from bs4 import BeautifulSoup, Tag
 from lxml import etree
-from seleniumwire import webdriver  # type: ignore
+from seleniumwire import webdriver
 from lxml.etree import _Element
 from fake_useragent import UserAgent
 from selenium.webdriver.chrome.options import Options as ChromeOptions
