@@ -4,7 +4,7 @@ import random
 
 from bs4 import BeautifulSoup
 from lxml import etree
-from seleniumwire import webdriver
+from seleniumwire import webdriver  # type: ignore
 from lxml.etree import _Element  # pyright: ignore [reportPrivateUsage]
 from fake_useragent import UserAgent
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -13,6 +13,8 @@ from api.backend.models import Element, CapturedElement
 from api.backend.job.site_mapping.site_mapping import (
     handle_site_mapping,
 )
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from api.backend.job.scraping.scraping_utils import scrape_content
 from api.backend.job.models.site_map import SiteMap
 
@@ -70,21 +72,27 @@ def create_driver(proxies: Optional[list[str]] = []):
     chrome_options.add_argument(f"user-agent={ua.random}")
 
     sw_options = {}
+
     if proxies:
-        selected_proxy = proxies[random.randint(0, len(proxies) - 1)]
+        selected_proxy = random.choice(proxies)
         LOG.info(f"Using proxy: {selected_proxy}")
 
         sw_options = {
             "proxy": {
                 "https": f"https://{selected_proxy}",
                 "http": f"http://{selected_proxy}",
+                "no_proxy": "localhost,127.0.0.1",
             }
         }
 
+    service = Service(ChromeDriverManager().install())
+
     driver = webdriver.Chrome(
+        service=service,
         options=chrome_options,
         seleniumwire_options=sw_options,
     )
+
     return driver
 
 
