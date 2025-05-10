@@ -23,6 +23,7 @@ export type RawJobOptions = {
   multi_page_scrape: boolean;
   custom_headers: string | null;
   proxies: string | null;
+  collect_media: boolean;
 };
 
 export type ActionOption = "click" | "input";

@@ -15,6 +15,7 @@ const initialJobOptions: RawJobOptions = {
   multi_page_scrape: false,
   custom_headers: null,
   proxies: null,
+  collect_media: false,
 };
 
 export const JobSubmitter = () => {

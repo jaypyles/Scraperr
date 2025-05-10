@@ -1,7 +1,6 @@
 import { RawJobOptions } from "@/types/job";
 import { Box, FormControlLabel, Checkbox, TextField } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
-import { useJobSubmitterProvider } from "../provider";
 
 export type JobSubmitterOptionsProps = {
   jobOptions: RawJobOptions;
@@ -40,6 +39,13 @@ export const JobSubmitterOptions = ({
     setJobOptions((prevJobOptions) => ({
       ...prevJobOptions,
       custom_headers: e.target.value,
+    }));
+  };
+
+  const handleCollectMediaChange = () => {
+    setJobOptions((prevJobOptions) => ({
+      ...prevJobOptions,
+      collect_media: !prevJobOptions.collect_media,
     }));
   };
 
@@ -95,6 +101,15 @@ export const JobSubmitterOptions = ({
             />
           }
         ></FormControlLabel>
+        <FormControlLabel
+          label="Collect Media"
+          control={
+            <Checkbox
+              checked={jobOptions.collect_media}
+              onChange={handleCollectMediaChange}
+            />
+          }
+        />
       </div>
       {customJSONSelected ? (
         <div id="custom-json" className="pl-2 pr-2 pb-2">

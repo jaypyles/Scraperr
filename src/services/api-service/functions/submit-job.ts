@@ -19,6 +19,7 @@ export const submitJob = async (
         time_created: new Date().toISOString(),
         job_options: {
           ...jobOptions,
+          collect_media: jobOptions.collect_media || false,
           custom_headers: customHeaders || {},
           proxies: jobOptions.proxies ? jobOptions.proxies.split(",") : [],
           site_map: siteMap,
