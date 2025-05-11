@@ -67,4 +67,4 @@ async def ai(c: AI):
 
 @ai_router.get("/ai/check")
 async def check():
-    return JSONResponse(content=bool(open_ai_key or llama_model))
+    return JSONResponse(content={"ai_enabled": bool(open_ai_key or llama_model)})

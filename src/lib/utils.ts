@@ -48,14 +48,14 @@ export const checkAI = async (
 ) => {
   const token = Cookies.get("token");
   try {
-    const response = await fetch("/api/ai/check", {
+    const response = await fetch("/api/check", {
       headers: {
         "content-type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
     const data = await response.json();
-    setAiEnabled(data);
+    setAiEnabled(data.ai_enabled);
   } catch (error) {
     console.error("Error fetching jobs:", error);
     throw error;

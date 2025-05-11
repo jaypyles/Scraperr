@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, TextField, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -18,7 +18,16 @@ const AuthForm: React.FC = () => {
   const theme = useTheme();
   const router = useRouter();
   const { login } = useAuth();
+  const [registrationEnabled, setRegistrationEnabled] = useState<boolean>(true);
 
+  const checkRegistrationEnabled = async () => {
+    const response = await axios.get(`/api/check`);
+    setRegistrationEnabled(response.data.registration);
+  };
+
+  useEffect(() => {
+    checkRegistrationEnabled();
+  }, []);
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
@@ -124,9 +133,37 @@ const AuthForm: React.FC = () => {
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}
           </Button>
-          <Button onClick={toggleMode} fullWidth variant="text" color="primary">
-            {mode === "login" ? "No Account? Sign up" : "Login"}
-          </Button>
+          {!registrationEnabled && (
+            <Button
+              onClick={toggleMode}
+              fullWidth
+              variant="text"
+              color="primary"
+            >
+              {mode === "login" ? "No Account? Sign up" : "Login"}
+            </Button>
+          )}
+
+          {registrationEnabled && (
+            <div
+              style={{
+                marginTop: 10,
+                width: "100%",
+                textAlign: "center",
+                border: "1px solid #ccc",
+                backgroundColor: "#f8f8f8",
+                padding: 8,
+                borderRadius: 4,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="body2" color="text">
+                Registration has been disabled
+              </Typography>
+            </div>
+          )}
         </Box>
       </Box>
     </Box>

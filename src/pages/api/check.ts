@@ -17,12 +17,21 @@ export default async function handler(
       }
     );
 
+    const checksResponse = await fetch(
+      `${global.process.env.NEXT_PUBLIC_API_URL}/api/auth/check`,
+      {
+        method: "GET",
+        headers,
+      }
+    );
+
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
     }
 
     const result = await response.json();
-    res.status(200).json(result);
+    const checksResult = await checksResponse.json();
+    res.status(200).json({ ...result, ...checksResult });
   } catch (error) {
     console.error("Error submitting scrape job:", error);
     res.status(500).json({ error: "Internal Server Error" });

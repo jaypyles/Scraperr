@@ -1,5 +1,6 @@
 # STL
 from datetime import timedelta
+import os
 
 # PDM
 from fastapi import Depends, APIRouter, HTTPException, status
@@ -61,3 +62,8 @@ async def create_user(user: UserCreate):
 @auth_router.get("/auth/users/me", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@auth_router.get("/auth/check")
+async def check_auth():
+    return {"registration": os.environ.get("REGISTRATION_ENABLED", True)}
