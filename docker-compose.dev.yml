@@ -11,6 +11,6 @@ services:
       - "$PWD/tsconfig.json:/app/tsconfig.json"
   scraperr_api:
     environment:
-      - LOG_LEVEL=INFO
+      - LOG_LEVEL=DEBUG
     volumes:
       - "$PWD/api:/project/api"

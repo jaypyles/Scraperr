@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import Any, Optional
 import random
 
@@ -53,11 +54,14 @@ def interceptor(headers: dict[str, Any]):
             if request.headers.get(key):
                 del request.headers[key]
             request.headers[key] = val
+
         if "sec-ch-ua" in request.headers:
             original_value = request.headers["sec-ch-ua"]
             del request.headers["sec-ch-ua"]
             modified_value = original_value.replace("HeadlessChrome", "Chrome")
             request.headers["sec-ch-ua"] = modified_value
+
+        LOG.debug(f"Request headers: {request.headers}")
 
     return _interceptor
 
@@ -121,11 +125,15 @@ async def make_site_request(
         LOG.info(f"Visiting URL: {url}")
         driver.get(url)
 
+        time.sleep(10)  # Let content load
+
         final_url = driver.current_url
         visited_urls.add(url)
         visited_urls.add(final_url)
 
         page_source = scrape_content(driver, pages, collect_media)
+
+        LOG.debug(f"Page source: {page_source}")
 
         if site_map:
             LOG.info("Site map: %s", site_map)

@@ -19,6 +19,7 @@ def scrape_content(
     )
 
     last_height = cast(str, driver.execute_script("return document.body.scrollHeight"))
+
     while True:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 

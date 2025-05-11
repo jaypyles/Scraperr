@@ -156,6 +156,26 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
     });
   };
 
+  const scrollbarStyles = {
+    "&::-webkit-scrollbar": {
+      width: "8px",
+      height: "8px",
+    },
+    "&::-webkit-scrollbar-track": {
+      backgroundColor: "rgba(0,0,0,0.05)",
+      borderRadius: "8px",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0,0,0,0.2)",
+      borderRadius: "8px",
+      "&:hover": {
+        backgroundColor: "rgba(0,0,0,0.3)",
+      },
+    },
+    scrollbarWidth: "thin",
+    scrollbarColor: "rgba(0,0,0,0.2) rgba(0,0,0,0.05)",
+  };
+
   return (
     <Box
       width="100%"
@@ -170,6 +190,7 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
         maxWidth="100%"
         bgcolor="background.default"
         overflow="auto"
+        sx={scrollbarStyles}
       >
         <Box
           className="flex flex-row justify-between p-2 w-full"
