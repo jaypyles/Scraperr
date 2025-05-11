@@ -1,27 +1,25 @@
 import pytest
 import logging
-from unittest.mock import AsyncMock, patch, MagicMock
-from api.backend.scraping import create_driver
+from playwright.async_api import async_playwright, Error
 
 logging.basicConfig(level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
 
 @pytest.mark.asyncio
-@patch("seleniumwire.webdriver.Chrome.get")
-async def test_proxy(mock_get: AsyncMock):
-    # Mock the response of the requests.get call
-    mock_response = MagicMock()
-    mock_get.return_value = mock_response
+async def test_proxy():
+    proxy = "127.0.0.1:8080"
 
-    driver = create_driver(proxies=["127.0.0.1:8080"])
-    assert driver is not None
+    async with async_playwright() as p:
+        browser = await p.firefox.launch(
+            headless=True, proxy={"server": f"http://{proxy}"}
+        )
+        context = await browser.new_context()
+        page = await context.new_page()
 
-    # Simulate a request
-    driver.get("http://example.com")
-    response = driver.last_request
+        with pytest.raises(Error) as excinfo:
+            await page.goto("http://example.com")
 
-    if response:
-        assert response.headers["Proxy-Connection"] == "keep-alive"
+        assert "NS_ERROR_PROXY_CONNECTION_REFUSED" in str(excinfo.value)
 
-    driver.quit()
+        await browser.close()

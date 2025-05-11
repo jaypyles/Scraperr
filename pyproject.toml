@@ -16,7 +16,6 @@ dependencies = [
     "lxml-stubs>=0.5.1",
     "fake-useragent>=1.5.1",
     "requests-html>=0.10.0",
-    "selenium>=4.22.0",
     "webdriver-manager>=4.0.1",
     "pydantic[email]>=2.9.2",
     "pandas>=2.2.2",

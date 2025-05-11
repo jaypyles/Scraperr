@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:bdd46eaeb2b071254d85172e352ec36153f65f4c6d3c1f6d90d90feafedbe7f2"
+content_hash = "sha256:cb37fedd6d022515dde14e475588a8da2144ba22e41dfdfacfe3f7a7d14486ca"
 
 [[metadata.targets]]
 requires_python = ">=3.10"
@@ -2962,7 +2962,7 @@ files = [
 
 [[package]]
 name = "selenium"
-version = "4.31.0"
+version = "4.32.0"
 requires_python = ">=3.9"
 summary = "Official Python bindings for Selenium WebDriver"
 groups = ["default"]
@@ -2975,8 +2975,8 @@ dependencies = [
     "websocket-client~=1.8",
 ]
 files = [
-    {file = "selenium-4.31.0-py3-none-any.whl", hash = "sha256:7b8b8d5e424d7133cb7aa656263b19ac505ec26d65c0f921a696e7e2c5ccd95b"},
-    {file = "selenium-4.31.0.tar.gz", hash = "sha256:441cffc436a2e6659fe3cfb012692435652efd38b0d368d16f661a5db47825f5"},
+    {file = "selenium-4.32.0-py3-none-any.whl", hash = "sha256:c4d9613f8a45693d61530c9660560fadb52db7d730237bc788ddedf442391f97"},
+    {file = "selenium-4.32.0.tar.gz", hash = "sha256:b9509bef4056f4083772abb1ae19ff57247d617a29255384b26be6956615b206"},
 ]
 
 [[package]]
