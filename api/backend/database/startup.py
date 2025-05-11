@@ -1,5 +1,5 @@
 import os
-from api.backend.database.common import connect, QUERIES
+from api.backend.database.common import connect, QUERIES, insert
 import logging
 
 from api.backend.auth.auth_utils import get_password_hash
@@ -31,7 +31,7 @@ def init_database():
             exit(1)
 
         query = "INSERT INTO users (email, hashed_password, full_name) VALUES (?, ?, ?)"
-        _ = cursor.execute(
+        _ = insert(
             query,
             (
                 default_user_email,
