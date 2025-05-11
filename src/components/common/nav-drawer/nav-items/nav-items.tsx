@@ -17,7 +17,7 @@ const items = [
   },
   {
     icon: <HttpIcon />,
-    text: "Previous Jobs",
+    text: "Jobs",
     href: "/jobs",
   },
   {
@@ -29,11 +29,6 @@ const items = [
     icon: <BarChart />,
     text: "Statistics",
     href: "/statistics",
-  },
-  {
-    icon: <TerminalIcon />,
-    text: "View App Logs",
-    href: "/logs",
   },
   {
     icon: <Schedule />,

@@ -92,11 +92,10 @@ const Statistics: React.FC<StatProps> = ({ averageElement, averageJob }) => {
     try {
       const response = await fetch("/api/get-average-jobs-per-day", {
         headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       setJobsData(data);
     } catch (error) {
@@ -251,10 +250,16 @@ const Statistics: React.FC<StatProps> = ({ averageElement, averageJob }) => {
       ) : (
         <Box
           bgcolor="background.default"
-          minHeight="100vh"
           display="flex"
+          height="100%"
           justifyContent="center"
           alignItems="center"
+          sx={{
+            borderRadius: "8px",
+            border:
+              theme.palette.mode === "light" ? "solid white" : "solid #4b5057",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
         >
           <h4
             style={{
@@ -262,7 +267,6 @@ const Statistics: React.FC<StatProps> = ({ averageElement, averageJob }) => {
               padding: "20px",
               borderRadius: "8px",
               background: "rgba(0, 0, 0, 0.6)",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             }}
           >
             Statistics for jobs not viewable unless logged in.

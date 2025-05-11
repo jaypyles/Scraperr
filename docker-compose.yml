@@ -23,17 +23,14 @@ services:
       dockerfile: docker/api/Dockerfile
     environment:
       - LOG_LEVEL=INFO
-      - SECRET_KEY=MRo9PfasPibnqFeK4Oswb6Z+PhFmjzdvxZzwdAkbf/Y= # used to encode authentication tokens (can be a random string)
-      - ALGORITHM=HS256 # authentication encoding algorithm
-      - ACCESS_TOKEN_EXPIRE_MINUTES=600 # access token expire minutes
     container_name: scraperr_api
     ports:
       - 8000:8000
     volumes:
-      - "$PWD/data:/project/data"
-      - "$PWD/media:/project/media"
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "$PWD/data:/project/app/data"
+      - "$PWD/media:/project/app/media"
     networks:
       - web
+
 networks:
   web:

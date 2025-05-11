@@ -24,7 +24,7 @@ describe.only("Job", () => {
       expect(interception.response.statusCode).to.eq(200);
     });
 
-    cy.get("li").contains("Previous Jobs").click();
+    cy.get("li").contains("Jobs").click();
 
     cy.contains("div", "https://example.com", { timeout: 10000 }).should(
       "exist"

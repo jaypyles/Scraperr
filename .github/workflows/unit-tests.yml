@@ -26,6 +26,9 @@ jobs:
       - name: Install project dependencies
         run: pdm install
 
+      - name: Install playwright
+        run: pdm run playwright install
+
       - name: Run tests
         run: PYTHONPATH=. pdm run pytest api/backend/tests
 

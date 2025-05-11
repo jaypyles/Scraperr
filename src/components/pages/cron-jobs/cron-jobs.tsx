@@ -10,6 +10,7 @@ import {
   Button,
   Box,
   Typography,
+  useTheme,
 } from "@mui/material";
 import Cookies from "js-cookie";
 
@@ -27,6 +28,7 @@ export const CronJobs = ({
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
   const [cronJobs, setCronJobs] = useState<CronJob[]>(initialCronJobs);
   const [user, setUser] = useState<any>(initialUser);
+  const theme = useTheme();
 
   useEffect(() => {
     setJobs(initialJobs);
@@ -55,10 +57,28 @@ export const CronJobs = ({
 
   if (!user) {
     return (
-      <Box>
-        <Typography variant="h6">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+          borderRadius: "8px",
+          border:
+            theme.palette.mode === "light" ? "solid white" : "solid #4b5057",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h4
+          style={{
+            color: "#fff",
+            padding: "20px",
+            borderRadius: "8px",
+            background: "rgba(0, 0, 0, 0.6)",
+          }}
+        >
           Please login to view your cron jobs
-        </Typography>
+        </h4>
       </Box>
     );
   }

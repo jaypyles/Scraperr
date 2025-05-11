@@ -10,6 +10,9 @@ from api.backend.worker.post_job_complete.discord_notification import (
 
 
 async def post_job_complete(job: dict[str, Any], options: PostJobCompleteOptions):
+    if options["channel"] == "":
+        return
+
     if not options.values():
         return
 

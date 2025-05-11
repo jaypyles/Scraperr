@@ -15,7 +15,6 @@ from api.backend.ai.ai_router import ai_router
 from api.backend.auth.auth_router import auth_router
 from api.backend.utils import get_log_level
 from api.backend.routers.job_router import job_router
-from api.backend.routers.log_router import log_router
 from api.backend.routers.stats_router import stats_router
 from api.backend.database.startup import init_database
 from fastapi.responses import JSONResponse
@@ -48,7 +47,6 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(ai_router)
 app.include_router(job_router)
-app.include_router(log_router)
 app.include_router(stats_router)
 
 

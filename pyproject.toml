@@ -16,7 +16,6 @@ dependencies = [
     "lxml-stubs>=0.5.1",
     "fake-useragent>=1.5.1",
     "requests-html>=0.10.0",
-    "selenium>=4.22.0",
     "webdriver-manager>=4.0.1",
     "pydantic[email]>=2.9.2",
     "pandas>=2.2.2",
@@ -40,6 +39,8 @@ dependencies = [
     "python-multipart>=0.0.1",
     "bcrypt==4.0.1",
     "apscheduler>=3.11.0",
+    "playwright>=1.52.0",
+    "camoufox>=0.4.11",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

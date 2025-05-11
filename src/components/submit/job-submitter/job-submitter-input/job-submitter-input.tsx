@@ -34,7 +34,7 @@ export const JobSubmitterInput = ({
         size="small"
         onClick={handleSubmit}
         disabled={!(rows.length > 0) || loading}
-        className={`bg-gradient-to-r from-[#034efc] to-gray-500 text-white font-semibold rounded-md 
+        className={`bg-[#034efc] text-white font-semibold rounded-md 
                     transition-transform transform hover:scale-105 disabled:opacity-50`}
       >
         {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
