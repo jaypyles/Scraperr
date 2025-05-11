@@ -1,14 +1,15 @@
 import os
-import requests
 from pathlib import Path
-from selenium.webdriver.common.by import By
-from seleniumwire import webdriver
 from urllib.parse import urlparse
+from typing import Dict, List
+
+import aiohttp
+from playwright.async_api import Page
 
 from api.backend.utils import LOG
 
 
-def collect_media(driver: webdriver.Chrome):
+async def collect_media(page: Page) -> dict[str, list[dict[str, str]]]:
     media_types = {
         "images": "img",
         "videos": "video",
@@ -24,62 +25,69 @@ def collect_media(driver: webdriver.Chrome):
 
     media_urls = {}
 
-    for media_type, selector in media_types.items():
-        elements = driver.find_elements(By.CSS_SELECTOR, selector)
-        urls: list[dict[str, str]] = []
+    async with aiohttp.ClientSession() as session:
+        for media_type, selector in media_types.items():
+            elements = await page.query_selector_all(selector)
+            urls: List[Dict[str, str]] = []
 
-        media_dir = base_dir / media_type
-        media_dir.mkdir(exist_ok=True)
+            media_dir = base_dir / media_type
+            media_dir.mkdir(exist_ok=True)
 
-        for element in elements:
-            if media_type == "images":
-                url = element.get_attribute("src")
-            elif media_type == "videos":
-                url = element.get_attribute("src") or element.get_attribute("data-src")
-            else:
-                url = element.get_attribute("href")
+            for element in elements:
+                if media_type == "images":
+                    url = await element.get_attribute("src")
+                elif media_type == "videos":
+                    url = await element.get_attribute(
+                        "src"
+                    ) or await element.get_attribute("data-src")
+                else:
+                    url = await element.get_attribute("href")
 
-            if url and url.startswith(("http://", "https://")):
-                try:
-                    filename = os.path.basename(urlparse(url).path)
+                if url and url.startswith("/"):
+                    root_url = urlparse(page.url)
+                    root_domain = f"{root_url.scheme}://{root_url.netloc}"
+                    url = f"{root_domain}{url}"
 
-                    if not filename:
-                        filename = f"{media_type}_{len(urls)}"
+                if url and url.startswith(("http://", "https://")):
+                    try:
+                        parsed = urlparse(url)
+                        filename = (
+                            os.path.basename(parsed.path) or f"{media_type}_{len(urls)}"
+                        )
 
-                        if media_type == "images":
-                            filename += ".jpg"
-                        elif media_type == "videos":
-                            filename += ".mp4"
-                        elif media_type == "audio":
-                            filename += ".mp3"
-                        elif media_type == "pdfs":
-                            filename += ".pdf"
-                        elif media_type == "documents":
-                            filename += ".doc"
-                        elif media_type == "presentations":
-                            filename += ".ppt"
-                        elif media_type == "spreadsheets":
-                            filename += ".xls"
+                        if "." not in filename:
+                            ext = {
+                                "images": ".jpg",
+                                "videos": ".mp4",
+                                "audio": ".mp3",
+                                "pdfs": ".pdf",
+                                "documents": ".doc",
+                                "presentations": ".ppt",
+                                "spreadsheets": ".xls",
+                            }.get(media_type, "")
+                            filename += ext
 
-                    response = requests.get(url, stream=True)
-                    response.raise_for_status()
+                        file_path = media_dir / filename
 
-                    # Save the file
-                    file_path = media_dir / filename
-                    with open(file_path, "wb") as f:
-                        for chunk in response.iter_content(chunk_size=8192):
-                            if chunk:
-                                f.write(chunk)
+                        async with session.get(url) as response:
+                            response.raise_for_status()
+                            with open(file_path, "wb") as f:
+                                while True:
+                                    chunk = await response.content.read(8192)
+                                    if not chunk:
+                                        break
+                                    f.write(chunk)
 
-                    urls.append({"url": url, "local_path": str(file_path)})
-                    LOG.info(f"Downloaded {filename} to {file_path}")
+                        urls.append({"url": url, "local_path": str(file_path)})
+                        LOG.info(f"Downloaded {filename} to {file_path}")
 
-                except Exception as e:
-                    LOG.error(f"Error downloading {url}: {str(e)}")
-                    continue
+                    except Exception as e:
+                        LOG.error(f"Error downloading {url}: {str(e)}")
+                        continue
 
-        media_urls[media_type] = urls
+            media_urls[media_type] = urls
 
+    # Write summary
     with open(base_dir / "download_summary.txt", "w") as f:
         for media_type, downloads in media_urls.items():
             if downloads:

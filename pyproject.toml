@@ -40,6 +40,8 @@ dependencies = [
     "python-multipart>=0.0.1",
     "bcrypt==4.0.1",
     "apscheduler>=3.11.0",
+    "playwright>=1.52.0",
+    "camoufox>=0.4.11",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

@@ -1,42 +1,33 @@
-import time
-from typing import cast
-
-from seleniumwire import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+import asyncio
+from typing import Set, Tuple
+from playwright.async_api import Page
 
 from api.backend.utils import LOG
 
 from api.backend.job.scraping.collect_media import collect_media as collect_media_utils
 
 
-def scrape_content(
-    driver: webdriver.Chrome, pages: set[tuple[str, str]], collect_media: bool
-):
-    _ = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.TAG_NAME, "body"))
-    )
-
-    last_height = cast(str, driver.execute_script("return document.body.scrollHeight"))
+async def scrape_content(
+    page: Page, pages: Set[Tuple[str, str]], collect_media: bool
+) -> str:
+    last_height = await page.evaluate("document.body.scrollHeight")
 
     while True:
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-        time.sleep(3)  # Wait for the page to load
-        new_height = cast(
-            str, driver.execute_script("return document.body.scrollHeight")
-        )
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight);")
+        await asyncio.sleep(3)
+        new_height = await page.evaluate("document.body.scrollHeight")
 
         if new_height == last_height:
             break
 
         last_height = new_height
 
-    pages.add((driver.page_source, driver.current_url))
+    html = await page.content()
+    pages.add((html, page.url))
 
+    LOG.info(f"Collecting media was: {collect_media}")
     if collect_media:
         LOG.info("Collecting media")
-        collect_media_utils(driver)
+        await collect_media_utils(page)
 
-    return driver.page_source
+    return html

@@ -27,8 +27,8 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - "$PWD/data:/project/data"
-      - "$PWD/media:/project/media"
+      - "$PWD/data:/project/app/data"
+      - "$PWD/media:/project/app/media"
     networks:
       - web
 

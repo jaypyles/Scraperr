@@ -13,4 +13,4 @@ services:
     environment:
       - LOG_LEVEL=DEBUG
     volumes:
-      - "$PWD/api:/project/api"
+      - "$PWD/api:/project/app/api"
