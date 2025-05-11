@@ -1,8 +1,6 @@
 <div align="center">
   <img src="https://github.com/jaypyles/www-scrape/blob/master/docs/logo_picture.png" alt="Scraperr Logo" width="250px">
   
-  # Scraperr
-  
   **A powerful self-hosted web scraping solution**
   
   <div>
