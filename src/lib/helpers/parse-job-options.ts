@@ -28,7 +28,7 @@ export const parseJobOptions = (
 
     newJobOptions.multi_page_scrape = jsonOptions.multi_page_scrape;
 
-    if (jsonOptions.proxies) {
+    if (jsonOptions.proxies.length > 0) {
       setProxiesSelected(true);
       newJobOptions.proxies = jsonOptions.proxies.join(",");
     }

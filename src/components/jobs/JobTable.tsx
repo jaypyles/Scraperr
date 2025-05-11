@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import {
   IconButton,
   Box,
@@ -18,8 +18,8 @@ import StarIcon from "@mui/icons-material/Star";
 import { useRouter } from "next/router";
 import { Favorites, JobQueue } from ".";
 import { Job } from "../../types";
-import { Constants } from "../../lib";
 import Cookies from "js-cookie";
+import { useSearchParams } from "next/navigation";
 
 interface JobTableProps {
   jobs: Job[];
@@ -38,10 +38,14 @@ const COLOR_MAP: ColorMap = {
 };
 
 export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search");
+  const type = searchParams.get("type");
+
   const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set());
   const [allSelected, setAllSelected] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchMode, setSearchMode] = useState<string>("url");
+  const [searchQuery, setSearchQuery] = useState<string>(search || "");
+  const [searchMode, setSearchMode] = useState<string>(type || "url");
   const [favoriteView, setFavoriteView] = useState<boolean>(false);
 
   const token = Cookies.get("token");
