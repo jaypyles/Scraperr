@@ -133,7 +133,7 @@ const AuthForm: React.FC = () => {
           >
             {mode.charAt(0).toUpperCase() + mode.slice(1)}
           </Button>
-          {!registrationEnabled && (
+          {registrationEnabled && (
             <Button
               onClick={toggleMode}
               fullWidth
@@ -144,7 +144,7 @@ const AuthForm: React.FC = () => {
             </Button>
           )}
 
-          {registrationEnabled && (
+          {!registrationEnabled && (
             <div
               style={{
                 marginTop: 10,

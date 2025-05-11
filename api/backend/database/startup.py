@@ -15,8 +15,7 @@ def init_database():
             LOG.info(f"Executing query: {query}")
             _ = cursor.execute(query)
 
-    if not os.environ.get("REGISTRATION_ENABLED"):
-
+    if os.environ.get("REGISTRATION_ENABLED", "True") == "False":
         default_user_email = os.environ.get("DEFAULT_USER_EMAIL")
         default_user_password = os.environ.get("DEFAULT_USER_PASSWORD")
         default_user_full_name = os.environ.get("DEFAULT_USER_FULL_NAME")
@@ -27,7 +26,7 @@ def init_database():
             or not default_user_full_name
         ):
             LOG.error(
-                "DEFAULT_USER_EMAIL or DEFAULT_USER_PASSWORD or DEFAULT_USER_FULL_NAME is not set!"
+                "DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD, or DEFAULT_USER_FULL_NAME is not set!"
             )
             exit(1)
 
