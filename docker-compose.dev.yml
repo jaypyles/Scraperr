@@ -12,6 +12,10 @@ services:
   scraperr_api:
     environment:
       - LOG_LEVEL=INFO
+      - REGISTRATION_ENABLED=False
+      - DEFAULT_USER_EMAIL=admin@test.com
+      - DEFAULT_USER_PASSWORD=test
+      - DEFAULT_USER_FULL_NAME=test
     volumes:
       - "$PWD/api:/project/api"
       - "$PWD/scraping:/project/scraping"
