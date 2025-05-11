@@ -25,7 +25,6 @@ async def scrape_content(
     html = await page.content()
     pages.add((html, page.url))
 
-    LOG.info(f"Collecting media was: {collect_media}")
     if collect_media:
         LOG.info("Collecting media")
         await collect_media_utils(page)
