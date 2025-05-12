@@ -39,6 +39,8 @@ from api.backend.job.cron_scheduling.cron_scheduling import (
     insert_job_from_cron_job,
 )
 
+from api.backend.job.utils.clean_job_format import clean_job_format
+
 LOG = logging.getLogger(__name__)
 
 job_router = APIRouter()
@@ -139,6 +141,19 @@ async def download(download_job: DownloadJob):
         response.headers["Content-Disposition"] = "attachment; filename=export.csv"
         return response
 
+    except Exception as e:
+        LOG.error(f"Exception occurred: {e}")
+        traceback.print_exc()
+        return {"error": str(e)}
+
+
+@job_router.get("/job/{id}/convert-to-csv")
+async def convert_to_csv(id: str):
+    try:
+        job_query = f"SELECT * FROM jobs WHERE id = ?"
+        results = query(job_query, (id,))
+
+        return JSONResponse(content=clean_job_format(results))
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")
         traceback.print_exc()

@@ -43,6 +43,14 @@ async def llama_chat(chat_messages: list[Message]) -> AsyncGenerator[str, None]:
 async def openai_chat(
     chat_messages: Iterable[ChatCompletionMessageParam],
 ) -> AsyncGenerator[str, None]:
+    if openai_client and not open_ai_model:
+        LOG.error("OpenAI model is not set")
+        yield "An error occurred while processing your request."
+
+    if not openai_client:
+        LOG.error("OpenAI client is not set")
+        yield "An error occurred while processing your request."
+
     if openai_client and open_ai_model:
         try:
             response = openai_client.chat.completions.create(

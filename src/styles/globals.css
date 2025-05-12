@@ -5,6 +5,8 @@
 :root {
   --delete-red: #ef4444;
   --delete-red-hover: #ff6969;
+  --primary-blue: #007bff;
+  --primary-gray: #f8f9fa;
 }
 
 #__next {
@@ -19,4 +21,23 @@ body {
 
 .MuiPopover-paper {
   padding: 0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
 }

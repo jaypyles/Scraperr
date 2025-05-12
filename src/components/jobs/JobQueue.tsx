@@ -38,6 +38,7 @@ interface Props {
   onDownload: (job: string[]) => void;
   onNavigate: (elements: Object[], url: string, options: any) => void;
   onFavorite: (ids: string[], field: string, value: any) => void;
+  onJobClick: (job: Job) => void;
   stateProps: stateProps;
 }
 
@@ -48,6 +49,7 @@ export const JobQueue = ({
   onDownload,
   onNavigate,
   onFavorite,
+  onJobClick,
 }: Props) => {
   const { selectedJobs, filteredJobs } = stateProps;
   const router = useRouter();
@@ -106,7 +108,14 @@ export const JobQueue = ({
                 </Tooltip>
               </TableCell>
               <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
-                <Box sx={{ maxHeight: 100, overflow: "auto" }}>{row.id}</Box>
+                <Box
+                  sx={{
+                    maxHeight: 100,
+                    overflow: "auto",
+                  }}
+                >
+                  {row.id}
+                </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 200, overflow: "auto" }}>
                 <Box sx={{ maxHeight: 100, overflow: "auto" }}>{row.url}</Box>
@@ -117,41 +126,24 @@ export const JobQueue = ({
                 </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 150, overflow: "auto", padding: 0 }}>
-                <Accordion sx={{ margin: 0, padding: 0.5 }}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
+                <Box
+                  sx={{
+                    maxHeight: 100,
+                    overflow: "auto",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
                     sx={{
-                      minHeight: 0,
-                      "&.Mui-expanded": { minHeight: 0 },
+                      fontSize: "0.875rem",
                     }}
+                    onClick={() => onJobClick(row)}
                   >
-                    <Box
-                      sx={{
-                        maxHeight: 150,
-                        overflow: "auto",
-                        width: "100%",
-                      }}
-                    >
-                      <Typography sx={{ fontSize: "0.875rem" }}>
-                        Show Result
-                      </Typography>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ padding: 1 }}>
-                    <Box sx={{ maxHeight: 200, overflow: "auto" }}>
-                      <Typography
-                        sx={{
-                          fontSize: "0.875rem",
-                          whiteSpace: "pre-wrap",
-                        }}
-                      >
-                        {JSON.stringify(row.result, null, 2)}
-                      </Typography>
-                    </Box>
-                  </AccordionDetails>
-                </Accordion>
+                    Show Result
+                  </Button>
+                </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
                 <Box sx={{ maxHeight: 100, overflow: "auto" }}>
