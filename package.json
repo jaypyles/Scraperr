@@ -25,6 +25,7 @@
     "next": "^14.2.4",
     "next-auth": "^4.24.7",
     "nookies": "^2.5.2",
+    "papaparse": "^5.5.2",
     "react": "^18.3.1",
     "react-bootstrap": "^2.8.0",
     "react-dom": "^18.3.1",
@@ -65,6 +66,7 @@
   "devDependencies": {
     "@types/cypress": "^1.1.6",
     "@types/js-cookie": "^3.0.6",
+    "@types/papaparse": "^5.3.16",
     "autoprefixer": "^10.4.21",
     "cypress": "^13.17.0",
     "eslint": "^9.26.0",

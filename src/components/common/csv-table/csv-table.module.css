@@ -1,0 +1,110 @@
+.tableContainer {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  height: 100%;
+  overflow: hidden;
+}
+
+.tableWrapper {
+  overflow: auto;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex: 1;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 100%;
+  table-layout: auto;
+}
+
+.tableHeader {
+  position: sticky;
+  top: 0;
+  background-color: #f3f4f6;
+  color: #374151;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.tableHeader:hover {
+  background-color: #e5e7eb;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sortIcon {
+  display: inline-block;
+  margin-left: 0.25rem;
+}
+
+.tableCell {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20rem;
+}
+
+.rowEven {
+  background-color: #ffffff;
+}
+
+.rowOdd {
+  background-color: #f9fafb;
+}
+
+.noData {
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+  background-color: #f9fafb;
+  border-radius: 0.25rem;
+  border: 1px dashed #d1d5db;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .tableContainer {
+    padding: 0.25rem;
+  }
+
+  .tableCell {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .tableHeader {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .tableWrapper {
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    width: calc(100% + 0.5rem);
+  }
+
+  .tableCell,
+  .tableHeader {
+    padding: 0.25rem 0.5rem;
+  }
+}
