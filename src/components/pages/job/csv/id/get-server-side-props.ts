@@ -8,12 +8,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = parseCookies({ req });
   const token = cookies.token;
   let csv = null;
-  console.log(id);
 
   try {
     const csvResponse = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/job/${id}/convert-to-csv`,
       {
+        
         method: "GET",
         headers: {
           "content-type": "application/json",
@@ -23,9 +23,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
 
     csv = await csvResponse.json();
-    console.log(csv);
   } catch (error) {
-    console.error("Error fetching user or jobs:", error);
+    console.error("Error fetching job:", error);
   }
 
   return {

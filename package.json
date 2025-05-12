@@ -65,7 +65,6 @@
   "devDependencies": {
     "@types/cypress": "^1.1.6",
     "@types/js-cookie": "^3.0.6",
-    "@types/papaparse": "^5.3.16",
     "autoprefixer": "^10.4.21",
     "cypress": "^13.17.0",
     "eslint": "^9.26.0",
