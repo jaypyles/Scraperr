@@ -1,7 +1,7 @@
-import { CsvTable } from "@/components/common/csv-table/csv-table";
+import { CsvRow, CsvTable } from "@/components/common/csv-table/csv-table";
 
 export type Csv = {
-  rows: string[][];
+  rows: CsvRow[];
   headers: string[];
 };
 
