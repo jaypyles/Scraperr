@@ -5,8 +5,12 @@ scraperr:
     pullPolicy: IfNotPresent
   containerCommand: ["npm", "run","start"]
   containerPort: 3000
-  servicePort: 80
-  nodePort: 32300
+  serviceType: NodePort
+  ports:
+    - port: 80         
+      targetPort: 3000  
+      nodePort: 32300
+      protocol: TCP
   env:
     - name: NEXT_PUBLIC_API_URL
       value: "http://scraperr-api:8000"
@@ -14,14 +18,30 @@ scraperr:
       value: "http://scraperr-api:8000"
 
 scraperrApi:
-
   image:
     repository: jpyles0524/scraperr_api
     tag: latest
     pullPolicy: IfNotPresent
   containerPort: 8000
+  serviceType: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
   env:
     - name: LOG_LEVEL
       value: "INFO"
-
+  volumeMounts:
+    - name: data
+      mountPath: /project/app/data
+    - name: media
+      mountPath: /project/app/media
+  volumes:
+    - name: data
+      hostPath:
+        path: /data/scraperr/data
+        type: DirectoryOrCreate
+    - name: media
+      hostPath:
+        path: /data/scraperr/media
 replicaCount: 1

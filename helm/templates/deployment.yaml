@@ -15,7 +15,11 @@ spec:
     spec:
       containers:
         - name: scraperr
+          {{ if .Values.scraperr.image.repository }}
           image: "{{ .Values.scraperr.image.repository }}:{{ .Values.scraperr.image.tag }}"
+          {{ else }}
+          image: "{{ .Chart.Name }}:{{ .Chart.Version }}"
+          {{ end }}
           imagePullPolicy: {{ .Values.scraperr.image.pullPolicy }}
           command: {{ .Values.scraperr.containerCommand | toJson }}
           ports:
@@ -39,24 +43,14 @@ spec:
     spec:
       containers:
         - name: scraperr-api
+          {{ if .Values.scraperrApi.image.repository }}
           image: "{{ .Values.scraperrApi.image.repository }}:{{ .Values.scraperrApi.image.tag }}"
+          {{ else }}
+          image: "{{ .Chart.Name }}:{{ .Chart.Version }}"
+          {{ end }}
           imagePullPolicy: {{ .Values.scraperrApi.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.scraperrApi.containerPort }}
           env: {{ toYaml .Values.scraperrApi.env | nindent 12 }}
-          volumeMounts:
-            - name: data
-              mountPath: /project/app/data
-            - name: media
-              mountPath: /project/app/media
-
-      volumes:
-        - name: data
-          hostPath:
-            path: /data/scraperr/data
-            type: DirectoryOrCreate
-        - name: media
-          hostPath:
-            path: /data/scraperr/media
-            type: DirectoryOrCreate
-
+          volumeMounts: {{ toYaml .Values.scraperrApi.volumeMounts | nindent 12 }}
+      volumes: {{ toYaml .Values.scraperrApi.volumes | nindent 12 }}

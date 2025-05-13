@@ -1,0 +1,47 @@
+name: Publish Helm Chart
+description: Publish a Helm chart to a target repository
+
+inputs:
+  app-repo-token:
+    required: true
+    description: "The token for the target repository"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout app repo
+      uses: actions/checkout@v4
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v3
+
+    - name: Package Helm chart
+      run: |
+        mkdir -p packaged
+        helm package helm -d packaged
+      shell: bash
+
+    - name: Clone target Helm repo
+      run: |
+        git clone https://github.com/jaypyles/helm.git target-repo
+        cd target-repo
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+      shell: bash
+
+    - name: Copy package and update index
+      run: |
+        APP_NAME="scraperr"
+        mkdir -p target-repo/charts/$APP_NAME
+        cp packaged/*.tgz target-repo/charts/$APP_NAME/
+        cd target-repo/charts/$APP_NAME
+        helm repo index . --url https://jaypyles.github.io/helm/charts/$APP_NAME
+      shell: bash
+
+    - name: Commit and push to target repo
+      run: |
+        cd target-repo
+        git add charts/
+        git commit -m "Update $APP_NAME chart $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes"
+        git push https://x-access-token:${{ inputs.app-repo-token }}@github.com/jaypyles/helm.git main
+      shell: bash
