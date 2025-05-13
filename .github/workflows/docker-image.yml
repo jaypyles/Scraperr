@@ -29,7 +29,7 @@ jobs:
           context: .
           file: ./docker/frontend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:test-1
 
       - name: Build and push api
         uses: docker/build-push-action@v5
@@ -37,7 +37,7 @@ jobs:
           context: .
           file: ./docker/api/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:test-1
 
   success-message:
     runs-on: ubuntu-latest

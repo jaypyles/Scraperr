@@ -42,12 +42,12 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     params.append("username", email);
     params.append("password", password);
     const response = await axios.post(`/api/token`, params);
+    const isSecure = window.location.protocol === "https:";
 
     Cookies.set("token", response.data.access_token, {
       expires: 7,
       path: "/",
-      domain: "localhost",
-      secure: false,
+      secure: isSecure,
       sameSite: "Lax",
     });
 
