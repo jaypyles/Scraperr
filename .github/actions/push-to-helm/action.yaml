@@ -32,6 +32,7 @@ runs:
     - name: Copy package and update index
       run: |
         APP_NAME="scraperr"
+        git checkout gh-pages
         mkdir -p target-repo/charts/$APP_NAME
         cp packaged/*.tgz target-repo/charts/$APP_NAME/
         cd target-repo/charts/$APP_NAME
