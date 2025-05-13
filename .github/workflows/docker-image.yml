@@ -7,50 +7,52 @@ on:
   workflow_dispatch:
 
 jobs:
-  # build:
-  #   if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }} || github.event.workflow_dispatch.inputs.branch == 'feat/add-helm-chart'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }} || github.event.workflow_dispatch.inputs.branch == 'feat/add-helm-chart'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Get version from helm chart
-  #       run: |
-  #         VERSION=$(grep "version:" ./helm/Chart.yaml | cut -d: -f2 | tr -d ' ')
-  #         echo "VERSION=$VERSION" >> $GITHUB_ENV
-  #         echo "Version is $VERSION"
+      - name: Get version from helm chart
+        run: |
+          VERSION=$(grep "version:" ./helm/Chart.yaml | cut -d: -f2 | tr -d ' ')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Version is $VERSION"
 
-  #     - name: Login to Docker Hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  #     - name: Build and push frontend
-  #       uses: docker/build-push-action@v5
-  #       with:
-  #         context: .
-  #         file: ./docker/frontend/Dockerfile
-  #         push: true
-  #         tags: |
-  #           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
-  #           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.VERSION }}
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.VERSION }}
 
-  #     - name: Build and push api
-  #       uses: docker/build-push-action@v5
-  #       with:
-  #         context: .
-  #         file: ./docker/api/Dockerfile
-  #         push: true
-  #         tags: |
-  #           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
-  #           ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.VERSION }}
+      - name: Build and push api
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/api/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.VERSION }}
 
   push-helm-chart:
     runs-on: ubuntu-latest
+    needs:
+      - build
     steps:
       - uses: actions/checkout@v4
 
@@ -61,6 +63,9 @@ jobs:
 
   success-message:
     runs-on: ubuntu-latest
+    needs:
+      - build
+      - push-helm-chart
     steps:
       - name: Send Discord Message
         uses: jaypyles/discord-webhook-action@v1.0.0
