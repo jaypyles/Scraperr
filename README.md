@@ -34,9 +34,15 @@ Scraperr enables you to extract data from websites with precision using XPath se
 
 ## 🚀 Getting Started
 
+### Docker
+
 ```bash
 make up
 ```
+
+### Helm
+
+> Refer to the docs for helm deployment: https://scraperr-docs.pages.dev/guides/helm-deployment
 
 ## ⚖️ Legal and Ethical Guidelines
 
