@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraperr
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: scraperr
+  template:
+    metadata:
+      labels:
+        app: scraperr
+    spec:
+      containers:
+        - name: scraperr
+          {{ if .Values.scraperr.image.repository }}
+          image: "{{ .Values.scraperr.image.repository }}:{{ .Values.scraperr.image.tag }}"
+          {{ else }}
+          image: "{{ .Chart.Name }}:{{ .Chart.Version }}"
+          {{ end }}
+          imagePullPolicy: {{ .Values.scraperr.image.pullPolicy }}
+          command: {{ .Values.scraperr.containerCommand | toJson }}
+          ports:
+            - containerPort: {{ .Values.scraperr.containerPort }}
+          env: {{ toYaml .Values.scraperr.env | nindent 12 }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraperr-api
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: scraperr-api
+  template:
+    metadata:
+      labels:
+        app: scraperr-api
+    spec:
+      containers:
+        - name: scraperr-api
+          {{ if .Values.scraperrApi.image.repository }}
+          image: "{{ .Values.scraperrApi.image.repository }}:{{ .Values.scraperrApi.image.tag }}"
+          {{ else }}
+          image: "{{ .Chart.Name }}:{{ .Chart.Version }}"
+          {{ end }}
+          imagePullPolicy: {{ .Values.scraperrApi.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.scraperrApi.containerPort }}
+          env: {{ toYaml .Values.scraperrApi.env | nindent 12 }}
+          volumeMounts: {{ toYaml .Values.scraperrApi.volumeMounts | nindent 12 }}
+      volumes: {{ toYaml .Values.scraperrApi.volumes | nindent 12 }}

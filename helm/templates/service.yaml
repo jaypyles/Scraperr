@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scraperr
+spec:
+  type: {{ .Values.scraperr.serviceType }}
+  selector:
+    app: scraperr
+  ports:
+    {{- range .Values.scraperr.ports }}
+    - port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+      protocol: {{ .protocol | default "TCP" }}
+    {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scraperr-api
+spec:
+  type: {{ .Values.scraperrApi.serviceType }}
+  selector:
+    app: scraperr-api
+  ports:
+    {{- range .Values.scraperrApi.ports }}
+    - port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+      {{- end }}
+      protocol: {{ .protocol | default "TCP" }}
+    {{- end }}
