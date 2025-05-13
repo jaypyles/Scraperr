@@ -1,5 +1,5 @@
 # STL
-from typing import Any, Optional, Union
+from typing import Any, Literal, Optional, Union
 from datetime import datetime
 
 # LOCAL
@@ -27,6 +27,7 @@ class RetrieveScrapeJobs(pydantic.BaseModel):
 
 class DownloadJob(pydantic.BaseModel):
     ids: list[str]
+    job_format: Literal["csv", "md"]
 
 
 class DeleteScrapeJobs(pydantic.BaseModel):

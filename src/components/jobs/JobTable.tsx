@@ -20,6 +20,7 @@ import { Favorites, JobQueue } from ".";
 import { Job } from "../../types";
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
+import { JobDownloadDialog } from "../common/job-download-dialog";
 
 interface JobTableProps {
   jobs: Job[];
@@ -47,31 +48,15 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
   const [searchQuery, setSearchQuery] = useState<string>(search || "");
   const [searchMode, setSearchMode] = useState<string>(type || "url");
   const [favoriteView, setFavoriteView] = useState<boolean>(false);
+  const [jobDownloadDialogOpen, setJobDownloadDialogOpen] =
+    useState<boolean>(false);
 
   const token = Cookies.get("token");
   const router = useRouter();
 
-  const handleDownload = async (ids: string[]) => {
-    const response = await fetch("/api/download", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: { ids: ids } }),
-    });
-
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `job_${ids[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } else {
-      console.error("Failed to download the file.");
-    }
+  const handleDownload = (ids: string[]) => {
+    setSelectedJobs(new Set(ids));
+    setJobDownloadDialogOpen(true);
   };
 
   const handleNavigate = (elements: Object[], url: string, options: any) => {
@@ -259,17 +244,22 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
               onSelectJob={handleSelectJob}
               onFavorite={favoriteJob}
               onJobClick={handleJobClick}
-            ></JobQueue>
+            />
           ) : (
             <Favorites
               stateProps={{ selectedJobs, filteredJobs }}
               onNavigate={handleNavigate}
               onSelectJob={handleSelectJob}
               onFavorite={favoriteJob}
-            ></Favorites>
+            />
           )}
         </Box>
       </Box>
+      <JobDownloadDialog
+        open={jobDownloadDialogOpen}
+        onClose={() => setJobDownloadDialogOpen(false)}
+        ids={Array.from(selectedJobs)}
+      />
     </Box>
   );
 };
