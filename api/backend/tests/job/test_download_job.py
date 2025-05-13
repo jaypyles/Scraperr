@@ -21,7 +21,7 @@ async def test_download(mock_randint: AsyncMock, mock_query: AsyncMock):
     mock_randint.return_value = mocked_random_int
 
     # Create a DownloadJob instance
-    download_job = DownloadJob(ids=[mocked_job["id"]])
+    download_job = DownloadJob(ids=[mocked_job["id"]], job_format="csv")
 
     # Make a POST request to the /download endpoint
     response = client.post("/download", json=download_job.model_dump())
