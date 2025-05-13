@@ -27,12 +27,14 @@ runs:
         cd target-repo
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
+        git fetch origin gh-pages  # Fetch gh-pages explicitly
+        git checkout gh-pages      # Checkout gh-pages branch
+        git pull origin gh-pages    # Pull latest changes from gh-pages
       shell: bash
 
     - name: Copy package and update index
       run: |
         APP_NAME="scraperr"
-        git checkout gh-pages
         mkdir -p target-repo/charts/$APP_NAME
         cp packaged/*.tgz target-repo/charts/$APP_NAME/
         cd target-repo/charts/$APP_NAME
@@ -44,5 +46,5 @@ runs:
         cd target-repo
         git add charts/
         git commit -m "Update $APP_NAME chart $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes"
-        git push https://x-access-token:${{ inputs.app-repo-token }}@github.com/jaypyles/helm.git main
+        git push https://x-access-token:${{ inputs.app-repo-token }}@github.com/jaypyles/helm.git gh-pages
       shell: bash
