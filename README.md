@@ -54,6 +54,12 @@ When using Scraperr, please remember to:
 
 > **Disclaimer**: Scraperr is intended for use only on websites that explicitly permit scraping. The creator accepts no responsibility for misuse of this tool.
 
+## 💬 Join the Community
+
+Get support, report bugs, and chat with other users and contributors.
+
+👉 [Join the Scraperr Discord](https://discord.gg/89q7scsGEK)
+
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
