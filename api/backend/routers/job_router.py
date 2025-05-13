@@ -40,6 +40,7 @@ from api.backend.job.cron_scheduling.cron_scheduling import (
 )
 
 from api.backend.job.utils.clean_job_format import clean_job_format
+from api.backend.job.utils.stream_md_from_job_results import stream_md_from_job_results
 
 LOG = logging.getLogger(__name__)
 
@@ -106,40 +107,58 @@ async def download(download_job: DownloadJob):
         )
         results = query(job_query, tuple(download_job.ids))
 
-        csv_buffer = StringIO()
-        csv_writer = csv.writer(csv_buffer, quotechar='"', quoting=csv.QUOTE_ALL)
+        if download_job.job_format == "csv":
+            csv_buffer = StringIO()
+            csv_writer = csv.writer(csv_buffer, quotechar='"', quoting=csv.QUOTE_ALL)
 
-        headers = ["id", "url", "element_name", "xpath", "text", "user", "time_created"]
-        csv_writer.writerow(headers)
+            headers = [
+                "id",
+                "url",
+                "element_name",
+                "xpath",
+                "text",
+                "user",
+                "time_created",
+            ]
+            csv_writer.writerow(headers)
 
-        for result in results:
-            for res in result["result"]:
-                for url, elements in res.items():
-                    for element_name, values in elements.items():
-                        for value in values:
-                            text = clean_text(value.get("text", "")).strip()
-                            if text:
-                                csv_writer.writerow(
-                                    [
-                                        result.get("id", "")
-                                        + "-"
-                                        + str(random.randint(0, 1000000)),
-                                        url,
-                                        element_name,
-                                        value.get("xpath", ""),
-                                        text,
-                                        result.get("user", ""),
-                                        result.get("time_created", ""),
-                                    ]
-                                )
+            for result in results:
+                for res in result["result"]:
+                    for url, elements in res.items():
+                        for element_name, values in elements.items():
+                            for value in values:
+                                text = clean_text(value.get("text", "")).strip()
+                                if text:
+                                    csv_writer.writerow(
+                                        [
+                                            result.get("id", "")
+                                            + "-"
+                                            + str(random.randint(0, 1000000)),
+                                            url,
+                                            element_name,
+                                            value.get("xpath", ""),
+                                            text,
+                                            result.get("user", ""),
+                                            result.get("time_created", ""),
+                                        ]
+                                    )
 
-        _ = csv_buffer.seek(0)
-        response = StreamingResponse(
-            csv_buffer,
-            media_type="text/csv",
-        )
-        response.headers["Content-Disposition"] = "attachment; filename=export.csv"
-        return response
+            _ = csv_buffer.seek(0)
+            response = StreamingResponse(
+                csv_buffer,
+                media_type="text/csv",
+            )
+            response.headers["Content-Disposition"] = "attachment; filename=export.csv"
+            return response
+
+        elif download_job.job_format == "md":
+            response = StreamingResponse(
+                stream_md_from_job_results(results),
+                media_type="text/markdown",
+            )
+
+            response.headers["Content-Disposition"] = "attachment; filename=export.md"
+            return response
 
     except Exception as e:
         LOG.error(f"Exception occurred: {e}")

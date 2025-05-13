@@ -30,4 +30,7 @@ EXPOSE 8000
 
 WORKDIR /project/app
 
+RUN mkdir -p /project/app/data
+RUN touch /project/app/data/database.db
+
 CMD [ "supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf" ]
