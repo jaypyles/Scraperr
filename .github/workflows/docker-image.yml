@@ -36,8 +36,8 @@ jobs:
           file: ./docker/frontend/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/scraperr:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/scraperr:${{ env.VERSION }}
 
       - name: Build and push api
         uses: docker/build-push-action@v5
@@ -46,8 +46,8 @@ jobs:
           file: ./docker/api/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:${{ env.VERSION }}
 
   push-helm-chart:
     runs-on: ubuntu-latest

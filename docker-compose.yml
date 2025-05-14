@@ -2,7 +2,7 @@ services:
   scraperr:
     depends_on:
       - scraperr_api
-    image: jpyles0524/scraperr:latest
+    image: jpyles0524/scraperr:1.0.13
     build:
       context: .
       dockerfile: docker/frontend/Dockerfile
