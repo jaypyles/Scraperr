@@ -70,6 +70,16 @@ const commonThemeOptions = {
         },
       },
     },
+    MuiCheckbox: {
+      styleOverrides: {
+        colorPrimary: {
+          color: "#1976d2",
+          "&.Mui-checked": {
+            color: "#034efc",
+          },
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {

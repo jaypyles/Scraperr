@@ -1,4 +1,4 @@
-import { Box, Link } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import { SetStateAction, Dispatch, useState } from "react";
 import { AdvancedJobOptionsDialog } from "./dialog/advanced-job-options-dialog";
 import { RawJobOptions } from "@/types";
@@ -15,8 +15,24 @@ export const AdvancedJobOptions = ({
   const [open, setOpen] = useState(false);
   return (
     <Box sx={{ mb: 2 }}>
-      <Link className="cursor-pointer" onClick={() => setOpen(true)}>
-        Advanced Job Options
+      <Link
+        component="button"
+        variant="body2"
+        onClick={() => setOpen(true)}
+        sx={{
+          textDecoration: "none",
+          color: "primary.main",
+          "&:hover": {
+            color: "primary.dark",
+            textDecoration: "underline",
+          },
+          paddingLeft: 1,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 0.5,
+        }}
+      >
+        <Typography variant="body2">Advanced Job Options</Typography>
       </Link>
       <AdvancedJobOptionsDialog
         open={open}

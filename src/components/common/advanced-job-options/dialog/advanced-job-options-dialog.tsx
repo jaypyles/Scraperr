@@ -80,6 +80,7 @@ export const AdvancedJobOptionsDialog = ({
           borderBottom: `1px solid ${theme.palette.divider}`,
           backgroundColor: theme.palette.background.default,
           color: theme.palette.primary.contrastText,
+          borderRadius: 2,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -121,12 +122,6 @@ export const AdvancedJobOptionsDialog = ({
                   <Checkbox
                     checked={jobOptions.multi_page_scrape}
                     onChange={handleMultiPageScrapeChange}
-                    sx={{
-                      color: theme.palette.primary.main,
-                      "&.Mui-checked": {
-                        color: theme.palette.primary.main,
-                      },
-                    }}
                   />
                 }
                 label={
@@ -145,12 +140,6 @@ export const AdvancedJobOptionsDialog = ({
                   <Checkbox
                     checked={jobOptions.collect_media}
                     onChange={handleCollectMediaChange}
-                    sx={{
-                      color: theme.palette.primary.main,
-                      "&.Mui-checked": {
-                        color: theme.palette.primary.main,
-                      },
-                    }}
                   />
                 }
                 label={
