@@ -1,4 +1,5 @@
 import os
+import json
 
 from api.backend.job import get_queued_job, update_job
 from api.backend.scraping import scrape
@@ -34,14 +35,25 @@ async def process_job():
         LOG.info(f"Beginning processing job: {job}.")
         try:
             _ = await update_job([job["id"]], field="status", value="Scraping")
+
+            proxies = job["job_options"]["proxies"]
+
+            if proxies and isinstance(proxies[0], str) and proxies[0].startswith("{"):
+                try:
+                    proxies = [json.loads(p) for p in proxies]
+                except json.JSONDecodeError:
+                    LOG.error(f"Failed to parse proxy JSON: {proxies}")
+                    proxies = []
+
             scraped = await scrape(
                 job["url"],
                 [Element(**j) for j in job["elements"]],
                 job["job_options"]["custom_headers"],
                 job["job_options"]["multi_page_scrape"],
-                job["job_options"]["proxies"],
+                proxies,
                 job["job_options"]["site_map"],
                 job["job_options"]["collect_media"],
+                job["job_options"]["custom_cookies"],
             )
             LOG.info(
                 f"Scraped result for url: {job['url']}, with elements: {job['elements']}\n{scraped}"

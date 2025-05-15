@@ -12,6 +12,8 @@ from api.backend.models import Element, CapturedElement
 from api.backend.job.scraping.scraping_utils import scrape_content
 from api.backend.job.site_mapping.site_mapping import handle_site_mapping
 
+from api.backend.job.scraping.add_custom import add_custom_items
+
 LOG = logging.getLogger(__name__)
 
 
@@ -44,11 +46,13 @@ async def make_site_request(
     proxies: Optional[list[str]] = None,
     site_map: Optional[dict[str, Any]] = None,
     collect_media: bool = False,
+    custom_cookies: Optional[list[dict[str, Any]]] = None,
 ):
     if url in visited_urls:
         return
 
     proxy = None
+
     if proxies:
         proxy = random.choice(proxies)
         LOG.info(f"Using proxy: {proxy}")
@@ -56,8 +60,8 @@ async def make_site_request(
     async with AsyncCamoufox(headless=True, proxy=proxy) as browser:
         page: Page = await browser.new_page()
 
-        if headers:
-            await page.set_extra_http_headers(headers)
+        # Add cookies and headers
+        await add_custom_items(url, page, custom_cookies, headers)
 
         LOG.info(f"Visiting URL: {url}")
 
@@ -113,6 +117,7 @@ async def make_site_request(
                 proxies=proxies,
                 site_map=site_map,
                 collect_media=collect_media,
+                custom_cookies=custom_cookies,
             )
 
 
@@ -152,6 +157,7 @@ async def scrape(
     proxies: Optional[list[str]] = None,
     site_map: Optional[dict[str, Any]] = None,
     collect_media: bool = False,
+    custom_cookies: Optional[list[dict[str, Any]]] = None,
 ):
     visited_urls: set[str] = set()
     pages: set[tuple[str, str]] = set()
@@ -166,6 +172,7 @@ async def scrape(
         proxies=proxies,
         site_map=site_map,
         collect_media=collect_media,
+        custom_cookies=custom_cookies,
     )
 
     elements: list[dict[str, dict[str, list[CapturedElement]]]] = []
