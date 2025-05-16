@@ -24,6 +24,7 @@ export type RawJobOptions = {
   custom_headers: string | null;
   proxies: string | null;
   collect_media: boolean;
+  custom_cookies: string | null;
 };
 
 export type ActionOption = "click" | "input";

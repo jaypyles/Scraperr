@@ -6,6 +6,7 @@ export const submitJob = async (
   user: any,
   jobOptions: any,
   customHeaders: any,
+  customCookies: any,
   siteMap: SiteMap | null
 ) => {
   return await fetch(`/api/submit-scrape-job`, {
@@ -23,6 +24,7 @@ export const submitJob = async (
           custom_headers: customHeaders || {},
           proxies: jobOptions.proxies ? jobOptions.proxies.split(",") : [],
           site_map: siteMap,
+          custom_cookies: customCookies || [],
         },
       },
     }),

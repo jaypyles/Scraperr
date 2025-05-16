@@ -10,12 +10,14 @@ import { JobSubmitterInput } from "./job-submitter-input";
 import { JobSubmitterOptions } from "./job-submitter-options";
 import { ApiService } from "@/services";
 import { useJobSubmitterProvider } from "./provider";
+import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
 
 const initialJobOptions: RawJobOptions = {
   multi_page_scrape: false,
   custom_headers: null,
   proxies: null,
   collect_media: false,
+  custom_cookies: null,
 };
 
 export const JobSubmitter = () => {
@@ -38,12 +40,8 @@ export const JobSubmitter = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [jobOptions, setJobOptions] =
     useState<RawJobOptions>(initialJobOptions);
-  const [customJSONSelected, setCustomJSONSelected] = useState<boolean>(false);
-  const [proxiesSelected, setProxiesSelected] = useState<boolean>(false);
 
-  const handleSelectProxies = () => {
-    setProxiesSelected(!proxiesSelected);
-  };
+  console.log(jobOptions);
 
   const handleSubmit = async () => {
     if (!validateURL(submittedURL)) {
@@ -57,12 +55,13 @@ export const JobSubmitter = () => {
     setLoading(true);
 
     let customHeaders;
+    let customCookies;
 
     try {
-      customHeaders = jobOptions.custom_headers
-        ? JSON.parse(jobOptions.custom_headers)
-        : null;
-    } catch (error) {
+      customHeaders = jobOptions.custom_headers || null;
+      customCookies = jobOptions.custom_cookies || null;
+    } catch (error: any) {
+      console.error(error);
       setSnackbarMessage("Invalid JSON in custom headers.");
       setSnackbarOpen(true);
       setSnackbarSeverity("error");
@@ -76,6 +75,7 @@ export const JobSubmitter = () => {
       user,
       jobOptions,
       customHeaders,
+      customCookies,
       siteMap
     )
       .then(async (response) => {
@@ -102,16 +102,9 @@ export const JobSubmitter = () => {
       .finally(() => setLoading(false));
   };
 
-  // Parse the job options from the query string
   useEffect(() => {
     if (job_options) {
-      parseJobOptions(
-        job_options as string,
-        setCustomJSONSelected,
-        setProxiesSelected,
-        setJobOptions,
-        setSiteMap
-      );
+      parseJobOptions(job_options as string, setJobOptions, setSiteMap);
     }
   }, [job_options]);
 
@@ -123,13 +116,9 @@ export const JobSubmitter = () => {
         handleSubmit={handleSubmit}
         loading={loading}
       />
-      <JobSubmitterOptions
+      <AdvancedJobOptions
         jobOptions={jobOptions}
         setJobOptions={setJobOptions}
-        customJSONSelected={customJSONSelected}
-        setCustomJSONSelected={setCustomJSONSelected}
-        handleSelectProxies={handleSelectProxies}
-        proxiesSelected={proxiesSelected}
       />
     </div>
   );

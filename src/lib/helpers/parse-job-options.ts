@@ -4,10 +4,8 @@ import { RawJobOptions, SiteMap } from "@/types";
 
 export const parseJobOptions = (
   job_options: string,
-  setCustomJSONSelected: Dispatch<SetStateAction<boolean>>,
-  setProxiesSelected: Dispatch<SetStateAction<boolean>>,
   setJobOptions: Dispatch<SetStateAction<RawJobOptions>>,
-  setSiteMap: Dispatch<SetStateAction<any>>
+  setSiteMap: Dispatch<SetStateAction<SiteMap | null>>
 ) => {
   if (job_options) {
     const jsonOptions = JSON.parse(job_options as string);
@@ -16,20 +14,23 @@ export const parseJobOptions = (
       custom_headers: null,
       proxies: null,
       collect_media: false,
+      custom_cookies: null,
     };
 
     if (
       jsonOptions.custom_headers &&
       Object.keys(jsonOptions.custom_headers).length
     ) {
-      setCustomJSONSelected(true);
-      newJobOptions.custom_headers = JSON.stringify(jsonOptions.custom_headers);
+      newJobOptions.custom_headers = jsonOptions.custom_headers;
+    }
+
+    if (jsonOptions.custom_cookies && jsonOptions.custom_cookies.length > 0) {
+      newJobOptions.custom_cookies = jsonOptions.custom_cookies;
     }
 
     newJobOptions.multi_page_scrape = jsonOptions.multi_page_scrape;
 
     if (jsonOptions.proxies.length > 0) {
-      setProxiesSelected(true);
       newJobOptions.proxies = jsonOptions.proxies.join(",");
     }
 

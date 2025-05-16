@@ -13,3 +13,4 @@ class JobOptions(BaseModel):
     proxies: list[str] = []
     site_map: Optional[SiteMap] = None
     collect_media: bool = False
+    custom_cookies: list[dict[str, Any]] = []

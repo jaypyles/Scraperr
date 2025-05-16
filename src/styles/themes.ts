@@ -70,6 +70,16 @@ const commonThemeOptions = {
         },
       },
     },
+    MuiCheckbox: {
+      styleOverrides: {
+        colorPrimary: {
+          color: "#1976d2",
+          "&.Mui-checked": {
+            color: "#034efc",
+          },
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {
@@ -85,6 +95,7 @@ const lightTheme = createTheme({
     mode: "light",
     primary: {
       main: "#1976d2",
+      contrastText: "#000000",
     },
     secondary: {
       main: "#dc004e",
@@ -139,6 +150,7 @@ const darkTheme = createTheme({
     mode: "dark",
     primary: {
       main: "#90caf9",
+      contrastText: "#fff",
     },
     secondary: {
       main: "#f48fb1",
