@@ -33,8 +33,6 @@ export const CsvTable: React.FC<CsvTableProps> = ({ csv, className }) => {
     setExpandedRow((prevRow) => (prevRow === rowIndex ? null : rowIndex));
   };
 
-  console.log(csv.rows);
-
   return (
     <Box
       sx={{
