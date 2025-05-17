@@ -53,5 +53,8 @@ setup:
 deploy:
 	ansible-playbook -i ./ansible/inventory.yaml ./ansible/deploy_site.yaml -v
 
+build-ci:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml build
+
 cypress-start:
 	DISPLAY=:0 npx cypress open

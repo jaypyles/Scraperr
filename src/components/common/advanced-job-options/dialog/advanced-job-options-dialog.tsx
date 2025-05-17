@@ -140,6 +140,7 @@ export const AdvancedJobOptionsDialog = ({
                   <Checkbox
                     checked={jobOptions.collect_media}
                     onChange={handleCollectMediaChange}
+                    data-cy="collect-media-checkbox"
                   />
                 }
                 label={

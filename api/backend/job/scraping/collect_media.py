@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
-from urllib.parse import urlparse
+import re
+from urllib.parse import urljoin, urlparse
 from typing import Dict, List
 
 import aiohttp
@@ -47,6 +48,11 @@ async def collect_media(id: str, page: Page) -> dict[str, list[dict[str, str]]]:
                     root_url = urlparse(page.url)
                     root_domain = f"{root_url.scheme}://{root_url.netloc}"
                     url = f"{root_domain}{url}"
+
+                if url and re.match(r"^[\w\-]+/", url):
+                    root_url = urlparse(page.url)
+                    root_domain = f"{root_url.scheme}://{root_url.netloc}"
+                    url = urljoin(root_domain + "/", url)
 
                 if url and url.startswith(("http://", "https://")):
                     try:

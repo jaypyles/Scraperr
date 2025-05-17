@@ -28,7 +28,7 @@ export const TileGridView = ({
   const theme = useTheme();
 
   return (
-    <Grid container spacing={2} sx={{ p: 2 }}>
+    <Grid container spacing={2} sx={{ p: 2 }} data-testid="media-grid">
       {mediaFiles[activeTab].map((fileName: string) => (
         <Grid item xs={6} sm={4} md={3} lg={2} key={fileName}>
           <Card
