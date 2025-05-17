@@ -1,0 +1,18 @@
+version: "3"
+services:
+  scraperr:
+    command: ["npm", "run", "dev"]
+    volumes:
+      - "$PWD/src:/app/src"
+      - "$PWD/public:/app/public"
+      - "$PWD/next.config.mjs:/app/next.config.mjs"
+      - "$PWD/package.json:/app/package.json"
+      - "$PWD/package-lock.json:/app/package-lock.json"
+      - "$PWD/tsconfig.json:/app/tsconfig.json"
+  scraperr_api:
+    environment:
+      - LOG_LEVEL=INFO
+    volumes:
+      - "$PWD/api:/project/app/api"
+    ports:
+      - "5900:5900"
