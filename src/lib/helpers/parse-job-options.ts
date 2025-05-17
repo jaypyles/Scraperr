@@ -17,6 +17,10 @@ export const parseJobOptions = (
       custom_cookies: null,
     };
 
+    if (jsonOptions.collect_media) {
+      newJobOptions.collect_media = true;
+    }
+
     if (
       jsonOptions.custom_headers &&
       Object.keys(jsonOptions.custom_headers).length

@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.dev.yml
+COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.dev.local.yml
 COMPOSE_PROD = docker compose -f docker-compose.yml
 
 .PHONY: help deps build pull up up-dev down setup deploy
@@ -52,6 +52,12 @@ setup:
 
 deploy:
 	ansible-playbook -i ./ansible/inventory.yaml ./ansible/deploy_site.yaml -v
+
+build-ci:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml build
+
+up-ci:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --force-recreate
 
 cypress-start:
 	DISPLAY=:0 npx cypress open

@@ -76,6 +76,7 @@ async def process_job():
                     proxies = []
 
             scraped = await scrape(
+                job["id"],
                 job["url"],
                 [Element(**j) for j in job["elements"]],
                 job["job_options"]["custom_headers"],

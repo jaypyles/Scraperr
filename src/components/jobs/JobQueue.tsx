@@ -7,20 +7,15 @@ import {
   TableHead,
   TableRow,
   Box,
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Checkbox,
   Button,
   Tooltip,
   IconButton,
   TableContainer,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarIcon from "@mui/icons-material/Star";
 import { Job } from "../../types";
-import { AutoAwesome, VideoCameraBack } from "@mui/icons-material";
+import { AutoAwesome, Image, VideoCameraBack } from "@mui/icons-material";
 import { useRouter } from "next/router";
 
 interface stringMap {
@@ -59,7 +54,7 @@ export const JobQueue = ({
       <Table sx={{ tableLayout: "fixed", width: "100%" }}>
         <TableHead>
           <TableRow>
-            <TableCell>Select</TableCell>
+            <TableCell sx={{ width: "280px" }}>Select</TableCell>
             <TableCell>Id</TableCell>
             <TableCell>Url</TableCell>
             <TableCell>Elements</TableCell>
@@ -72,7 +67,7 @@ export const JobQueue = ({
         <TableBody sx={{ overflow: "auto" }}>
           {filteredJobs.map((row, index) => (
             <TableRow key={index}>
-              <TableCell padding="checkbox">
+              <TableCell padding="checkbox" sx={{ width: "280px" }}>
                 <Checkbox
                   checked={selectedJobs.has(row.id)}
                   onChange={() => onSelectJob(row.id)}
@@ -122,6 +117,19 @@ export const JobQueue = ({
                     </IconButton>
                   </span>
                 </Tooltip>
+                {row.job_options.collect_media && (
+                  <Tooltip title="View Media">
+                    <span>
+                      <IconButton
+                        onClick={() => {
+                          router.replace(`/media?id=${row.id}`);
+                        }}
+                      >
+                        <Image />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                )}
               </TableCell>
               <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
                 <Box
@@ -167,7 +175,7 @@ export const JobQueue = ({
                 </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 50, overflow: "auto" }}>
-                <Box sx={{ maxHeight: 100, overflow: "auto" }}>
+                <Box sx={{ maxWidth: 100, maxHeight: 100, overflow: "auto" }}>
                   <Box
                     className="rounded-md p-2 text-center"
                     sx={{ bgcolor: colors[row.status] }}

@@ -1,9 +1,6 @@
 services:
   scraperr:
     image: jpyles0524/scraperr:latest
-    build:
-      context: .
-      dockerfile: docker/frontend/Dockerfile
     container_name: scraperr
     command: ["npm", "run", "start"]
     environment:
@@ -16,9 +13,6 @@ services:
   scraperr_api:
     init: True
     image: jpyles0524/scraperr_api:latest
-    build:
-      context: .
-      dockerfile: docker/api/Dockerfile
     environment:
       - LOG_LEVEL=INFO
     container_name: scraperr_api

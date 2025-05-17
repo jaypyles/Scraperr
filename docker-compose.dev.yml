@@ -1,6 +1,9 @@
 version: "3"
 services:
   scraperr:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
     command: ["npm", "run", "dev"]
     volumes:
       - "$PWD/src:/app/src"
@@ -10,6 +13,9 @@ services:
       - "$PWD/package-lock.json:/app/package-lock.json"
       - "$PWD/tsconfig.json:/app/tsconfig.json"
   scraperr_api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
     environment:
       - LOG_LEVEL=INFO
     volumes:

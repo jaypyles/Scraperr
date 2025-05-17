@@ -13,7 +13,7 @@
 
 ## 📋 Overview
 
-Scraperr enables you to extract data from websites with precision using XPath selectors. This self-hosted application provides a clean interface to manage scraping jobs, view results, and export data.
+Scrape websites without writing a single line of code.
 
 > 📚 **[Check out the docs](https://scraperr-docs.pages.dev)** for a comprehensive quickstart guide and detailed information.
 
@@ -29,7 +29,7 @@ Scraperr enables you to extract data from websites with precision using XPath se
 - **Custom Headers**: Add JSON headers to your scraping requests
 - **Media Downloads**: Automatically download images, videos, and other media
 - **Results Visualization**: View scraped data in a structured table format
-- **Data Export**: Export your results in various formats
+- **Data Export**: Export your results in markdown and csv formats
 - **Notifcation Channels**: Send completion notifcations, through various channels
 
 ## 🚀 Getting Started
