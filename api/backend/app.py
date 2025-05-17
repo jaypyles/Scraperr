@@ -2,6 +2,7 @@
 import os
 import logging
 import apscheduler  # type: ignore
+from contextlib import asynccontextmanager
 
 # PDM
 import apscheduler.schedulers
@@ -33,7 +34,30 @@ logging.basicConfig(
 
 LOG = logging.getLogger(__name__)
 
-app = FastAPI(title="api", root_path="/api")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    LOG.info("Starting application...")
+
+    init_database()
+
+    LOG.info("Starting cron scheduler...")
+    start_cron_scheduler(scheduler)
+    scheduler.start()
+    LOG.info("Cron scheduler started successfully")
+
+    yield
+
+    # Shutdown
+    LOG.info("Shutting down application...")
+    LOG.info("Stopping cron scheduler...")
+    scheduler.shutdown(wait=False)  # Set wait=False to not block shutdown
+    LOG.info("Cron scheduler stopped")
+    LOG.info("Application shutdown complete")
+
+
+app = FastAPI(title="api", root_path="/api", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -43,26 +67,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.include_router(auth_router)
 app.include_router(ai_router)
 app.include_router(job_router)
 app.include_router(stats_router)
-
-
-@app.on_event("startup")
-async def startup_event():
-    start_cron_scheduler(scheduler)
-    scheduler.start()
-
-    if os.getenv("ENV") != "test":
-        init_database()
-        LOG.info("Starting up...")
-
-
-@app.on_event("shutdown")
-def shutdown_scheduler():
-    scheduler.shutdown(wait=False)  # Set wait=False to not block shutdown
 
 
 @app.exception_handler(RequestValidationError)
