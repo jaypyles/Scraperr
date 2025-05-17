@@ -71,6 +71,7 @@ async def make_site_request(
 
         try:
             await page.goto(url, timeout=60000)
+            await page.wait_for_load_state("networkidle")
 
             final_url = page.url
 
