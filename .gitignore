@@ -189,3 +189,5 @@ postgres_data
 ollama
 data
 media
+cypress/screenshots
+cypress/videos
