@@ -66,4 +66,8 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 
 @auth_router.get("/auth/check")
 async def check_auth():
-    return {"registration": os.environ.get("REGISTRATION_ENABLED", "True") == "True"}
+    return {
+        "registration": os.environ.get("REGISTRATION_ENABLED", "True") == "True",
+        "recordings_enabled": os.environ.get("RECORDINGS_ENABLED", "true").lower()
+        == "true",
+    }

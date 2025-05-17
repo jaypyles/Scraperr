@@ -20,7 +20,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarIcon from "@mui/icons-material/Star";
 import { Job } from "../../types";
-import { AutoAwesome } from "@mui/icons-material";
+import { AutoAwesome, VideoCameraBack } from "@mui/icons-material";
 import { useRouter } from "next/router";
 
 interface stringMap {
@@ -103,6 +103,22 @@ export const JobQueue = ({
                       }}
                     >
                       <StarIcon />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title="View Recording">
+                  <span>
+                    <IconButton
+                      onClick={() => {
+                        router.push({
+                          pathname: "/recordings",
+                          query: {
+                            id: row.id,
+                          },
+                        });
+                      }}
+                    >
+                      <VideoCameraBack />
                     </IconButton>
                   </span>
                 </Tooltip>

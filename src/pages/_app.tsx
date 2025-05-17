@@ -8,6 +8,9 @@ import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import { NavDrawer } from "../components/common";
 import { darkTheme, lightTheme } from "../styles/themes";
 import { AuthProvider } from "../contexts/AuthContext";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "@/store/store";
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -35,26 +38,30 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       <Head>
         <title>Scraperr</title>
       </Head>
-      <AuthProvider>
-        <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-          <CssBaseline />
-          <Box sx={{ height: "100%", display: "flex" }}>
-            <NavDrawer isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-            <Box
-              component="main"
-              sx={{
-                p: 3,
-                bgcolor: "background.default",
-                overflow: "hidden",
-                height: "100%",
-                width: "100%",
-              }}
-            >
-              <Component {...pageProps} />
-            </Box>
-          </Box>
-        </ThemeProvider>
-      </AuthProvider>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <AuthProvider>
+            <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+              <CssBaseline />
+              <Box sx={{ height: "100%", display: "flex" }}>
+                <NavDrawer isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+                <Box
+                  component="main"
+                  sx={{
+                    p: 3,
+                    bgcolor: "background.default",
+                    overflow: "hidden",
+                    height: "100%",
+                    width: "100%",
+                  }}
+                >
+                  <Component {...pageProps} />
+                </Box>
+              </Box>
+            </ThemeProvider>
+          </AuthProvider>
+        </PersistGate>
+      </Provider>
     </>
   );
 };

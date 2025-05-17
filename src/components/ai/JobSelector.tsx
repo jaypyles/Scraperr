@@ -11,7 +11,9 @@ import { SxProps } from "@mui/material";
 
 interface Props {
   sxProps: SxProps;
-  setSelectedJob: Dispatch<React.SetStateAction<Job | null>>;
+  setSelectedJob:
+    | Dispatch<React.SetStateAction<Job | null>>
+    | ((job: Job) => void);
   selectedJob: Job | null;
   setJobs: Dispatch<React.SetStateAction<Job[]>>;
   jobs: Job[];

@@ -57,8 +57,9 @@ async def make_site_request(
         proxy = random.choice(proxies)
         LOG.info(f"Using proxy: {proxy}")
 
-    async with AsyncCamoufox(headless=True, proxy=proxy) as browser:
+    async with AsyncCamoufox(headless=False, proxy=proxy) as browser:
         page: Page = await browser.new_page()
+        await page.set_viewport_size({"width": 1920, "height": 1080})
 
         # Add cookies and headers
         await add_custom_items(url, page, custom_cookies, headers)

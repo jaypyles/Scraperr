@@ -1,10 +1,12 @@
 import os
 import json
+from pathlib import Path
 
 from api.backend.job import get_queued_job, update_job
 from api.backend.scraping import scrape
 from api.backend.models import Element
 from fastapi.encoders import jsonable_encoder
+import subprocess
 
 import asyncio
 import traceback
@@ -26,14 +28,42 @@ SMTP_USER = os.getenv("SMTP_USER", "")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
 USE_TLS = os.getenv("USE_TLS", "false").lower() == "true"
 
+RECORDINGS_ENABLED = os.getenv("RECORDINGS_ENABLED", "true").lower() == "true"
+RECORDINGS_DIR = Path("/project/app/media/recordings")
+
 
 async def process_job():
     job = await get_queued_job()
+    ffmpeg_proc = None
     status = "Queued"
 
     if job:
         LOG.info(f"Beginning processing job: {job}.")
+
         try:
+            output_path = RECORDINGS_DIR / f"{job['id']}.mp4"
+
+            if RECORDINGS_ENABLED:
+                ffmpeg_proc = subprocess.Popen(
+                    [
+                        "ffmpeg",
+                        "-y",
+                        "-video_size",
+                        "1280x1024",
+                        "-framerate",
+                        "15",
+                        "-f",
+                        "x11grab",
+                        "-i",
+                        ":99",
+                        "-codec:v",
+                        "libx264",
+                        "-preset",
+                        "ultrafast",
+                        output_path,
+                    ]
+                )
+
             _ = await update_job([job["id"]], field="status", value="Scraping")
 
             proxies = job["job_options"]["proxies"]
@@ -87,11 +117,17 @@ async def process_job():
                 },
             )
 
+            if ffmpeg_proc:
+                ffmpeg_proc.terminate()
+                ffmpeg_proc.wait()
+
 
 async def main():
     LOG.info("Starting job worker...")
 
     init_database()
+
+    RECORDINGS_DIR.mkdir(parents=True, exist_ok=True)
 
     while True:
         await process_job()

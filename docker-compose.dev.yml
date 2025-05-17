@@ -14,3 +14,5 @@ services:
       - LOG_LEVEL=INFO
     volumes:
       - "$PWD/api:/project/app/api"
+    ports:
+      - "5900:5900"

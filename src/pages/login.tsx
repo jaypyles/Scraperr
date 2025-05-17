@@ -6,7 +6,8 @@ import { Button, TextField, Typography, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import { useAuth } from "../contexts/AuthContext";
-import { Constants } from "../lib";
+import { Constants, getUserSettings } from "../lib";
+import { useUserSettings } from "@/store/hooks";
 
 type Mode = "login" | "signup";
 
@@ -19,6 +20,7 @@ const AuthForm: React.FC = () => {
   const router = useRouter();
   const { login } = useAuth();
   const [registrationEnabled, setRegistrationEnabled] = useState<boolean>(true);
+  const { setUserSettings } = useUserSettings();
 
   const checkRegistrationEnabled = async () => {
     const response = await axios.get(`/api/check`);
@@ -28,12 +30,17 @@ const AuthForm: React.FC = () => {
   useEffect(() => {
     checkRegistrationEnabled();
   }, []);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
       if (mode === "login") {
         await login(email, password);
         alert("Login successful");
+
+        const userSettings = await getUserSettings();
+        setUserSettings(userSettings);
+
         router.push("/");
       } else {
         await axios.post(`/api/signup`, {
