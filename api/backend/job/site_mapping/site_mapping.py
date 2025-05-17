@@ -36,7 +36,7 @@ async def handle_input(action: Action, page: Page) -> bool:
 async def handle_click(action: Action, page: Page) -> bool:
     try:
         element = page.locator(f"xpath={action.xpath}")
-        await element.wait_for(state="visible", timeout=10000)
+        # await element.wait_for(state="visible", timeout=10000)
         LOG.info(f"Clicking element: {action.xpath}")
         await element.click()
         return True
@@ -52,6 +52,7 @@ ACTION_MAP = {
 
 
 async def handle_site_mapping(
+    id: str,
     site_map_dict: dict[str, Any],
     page: Page,
     pages: set[tuple[str, str]],
@@ -68,11 +69,11 @@ async def handle_site_mapping(
 
         await asyncio.sleep(2)
 
-    await scrape_content(page, pages, collect_media=collect_media)
+    await scrape_content(id, page, pages, collect_media=collect_media)
 
     cleared_site_map_dict = clear_done_actions(site_map_dict)
 
     if cleared_site_map_dict["actions"]:
         await handle_site_mapping(
-            cleared_site_map_dict, page, pages, collect_media=collect_media
+            id, cleared_site_map_dict, page, pages, collect_media=collect_media
         )

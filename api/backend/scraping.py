@@ -85,7 +85,7 @@ async def make_site_request(
 
             if site_map:
                 await handle_site_mapping(
-                    site_map, page, pages, collect_media=collect_media
+                    id, site_map, page, pages, collect_media=collect_media
                 )
 
         finally:
