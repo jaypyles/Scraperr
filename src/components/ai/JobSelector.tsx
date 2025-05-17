@@ -1,15 +1,20 @@
-import React, { useState, Dispatch } from "react";
+import React, { useState, Dispatch, useEffect } from "react";
 import { Job } from "../../types";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Popover from "@mui/material/Popover";
-import { Typography, MenuItem, useTheme } from "@mui/material";
+import {
+  Typography,
+  MenuItem,
+  useTheme,
+  ClickAwayListener,
+} from "@mui/material";
 import { SxProps } from "@mui/material";
 
 interface Props {
-  sxProps: SxProps;
+  sxProps?: SxProps;
   setSelectedJob:
     | Dispatch<React.SetStateAction<Job | null>>
     | ((job: Job) => void);
@@ -43,6 +48,12 @@ export const JobSelector = ({
   };
 
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    if (!open) {
+      setAnchorEl(null);
+    }
+  }, [open]);
 
   return (
     <Box sx={sxProps}>
@@ -80,57 +91,63 @@ export const JobSelector = ({
           </>
         ) : null}
       </FormControl>
-      <Popover
-        id="mouse-over-popover"
-        sx={{
-          pointerEvents: "none",
-          padding: 0,
-        }}
-        open={open}
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        onClose={handlePopoverClose}
-      >
-        {popoverJob && (
-          <Box
+
+      {open && (
+        <ClickAwayListener onClickAway={handlePopoverClose}>
+          <Popover
+            id="mouse-over-popover"
             sx={{
-              border:
-                theme.palette.mode === "light"
-                  ? "2px solid black"
-                  : "2px solid white",
+              pointerEvents: "none",
+              padding: 0,
             }}
+            open={open}
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            onClose={handlePopoverClose}
           >
-            <Typography
-              variant="body1"
-              sx={{ paddingLeft: 1, paddingRight: 1 }}
-            >
-              {popoverJob.url}
-            </Typography>
-            <div className="flex flex-row w-full justify-end mb-1">
-              <Typography
-                variant="body2"
+            {popoverJob && (
+              <Box
                 sx={{
-                  paddingLeft: 1,
-                  paddingRight: 1,
-                  color: theme.palette.mode === "dark" ? "#d3d7e6" : "#5b5d63",
-                  fontStyle: "italic",
+                  border:
+                    theme.palette.mode === "light"
+                      ? "2px solid black"
+                      : "2px solid white",
                 }}
               >
-                {popoverJob.time_created
-                  ? new Date(popoverJob.time_created).toLocaleString()
-                  : "Unknown"}
-              </Typography>
-            </div>
-          </Box>
-        )}
-      </Popover>
+                <Typography
+                  variant="body1"
+                  sx={{ paddingLeft: 1, paddingRight: 1 }}
+                >
+                  {popoverJob.url}
+                </Typography>
+                <div className="flex flex-row w-full justify-end mb-1">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      paddingLeft: 1,
+                      paddingRight: 1,
+                      color:
+                        theme.palette.mode === "dark" ? "#d3d7e6" : "#5b5d63",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {popoverJob.time_created
+                      ? new Date(popoverJob.time_created).toLocaleString()
+                      : "Unknown"}
+                  </Typography>
+                </div>
+              </Box>
+            )}
+          </Popover>
+        </ClickAwayListener>
+      )}
     </Box>
   );
 };

@@ -7,20 +7,15 @@ import {
   TableHead,
   TableRow,
   Box,
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Checkbox,
   Button,
   Tooltip,
   IconButton,
   TableContainer,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarIcon from "@mui/icons-material/Star";
 import { Job } from "../../types";
-import { AutoAwesome, VideoCameraBack } from "@mui/icons-material";
+import { AutoAwesome, Image, VideoCameraBack } from "@mui/icons-material";
 import { useRouter } from "next/router";
 
 interface stringMap {
@@ -122,6 +117,19 @@ export const JobQueue = ({
                     </IconButton>
                   </span>
                 </Tooltip>
+                {row.job_options.collect_media && (
+                  <Tooltip title="View Media">
+                    <span>
+                      <IconButton
+                        onClick={() => {
+                          router.replace(`/media?id=${row.id}`);
+                        }}
+                      >
+                        <Image />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                )}
               </TableCell>
               <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
                 <Box

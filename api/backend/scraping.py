@@ -1,5 +1,4 @@
 import logging
-from pickle import FALSE
 import random
 from typing import Any, Optional, cast
 
@@ -40,6 +39,7 @@ def sxpath(context: etree._Element, xpath: str):
 
 
 async def make_site_request(
+    id: str,
     url: str,
     headers: Optional[dict[str, Any]],
     multi_page_scrape: bool = False,
@@ -71,14 +71,13 @@ async def make_site_request(
 
         try:
             await page.goto(url, timeout=60000)
-            await page.wait_for_load_state("networkidle", timeout=10000)
 
             final_url = page.url
 
             visited_urls.add(url)
             visited_urls.add(final_url)
 
-            html_content = await scrape_content(page, pages, collect_media)
+            html_content = await scrape_content(id, page, pages, collect_media)
 
             html_content = await page.content()
             pages.add((html_content, final_url))
@@ -112,6 +111,7 @@ async def make_site_request(
 
         if link not in visited_urls and is_same_domain(link, original_url):
             await make_site_request(
+                id,
                 link,
                 headers=headers,
                 multi_page_scrape=multi_page_scrape,
@@ -136,10 +136,19 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
 
         for e in el:  # type: ignore
             text = (
-                "\t".join(str(t) for t in e.itertext())
+                " ".join(str(t) for t in e.itertext())
                 if isinstance(e, etree._Element)
                 else str(e)  # type: ignore
             )
+
+            text = text.strip()
+            text = text.replace("\n", " ")
+            text = text.replace("\t", " ")
+            text = text.replace("\r", " ")
+            text = text.replace("\f", " ")
+            text = text.replace("\v", " ")
+            text = text.replace("\b", " ")
+            text = text.replace("\a", " ")
 
             captured_element = CapturedElement(
                 xpath=elem.xpath, text=text, name=elem.name
@@ -154,6 +163,7 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
 
 
 async def scrape(
+    id: str,
     url: str,
     xpaths: list[Element],
     headers: Optional[dict[str, Any]] = None,
@@ -167,6 +177,7 @@ async def scrape(
     pages: set[tuple[str, str]] = set()
 
     await make_site_request(
+        id,
         url,
         headers=headers,
         multi_page_scrape=multi_page_scrape,

@@ -8,7 +8,7 @@ from api.backend.job.scraping.collect_media import collect_media as collect_medi
 
 
 async def scrape_content(
-    page: Page, pages: Set[Tuple[str, str]], collect_media: bool
+    id: str, page: Page, pages: Set[Tuple[str, str]], collect_media: bool
 ) -> str:
     last_height = await page.evaluate("document.body.scrollHeight")
 
@@ -27,6 +27,6 @@ async def scrape_content(
 
     if collect_media:
         LOG.info("Collecting media")
-        await collect_media_utils(page)
+        await collect_media_utils(id, page)
 
     return html
