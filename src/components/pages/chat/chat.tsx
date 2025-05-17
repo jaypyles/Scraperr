@@ -11,7 +11,7 @@ import {
 import { JobSelector } from "../../ai";
 import { Job, Message } from "../../../types";
 import { useSearchParams } from "next/navigation";
-import { checkAI, fetchJob, fetchJobs, updateJob } from "../../../lib";
+import { fetchJob, fetchJobs, updateJob, checkAI } from "../../../lib";
 import SendIcon from "@mui/icons-material/Send";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 

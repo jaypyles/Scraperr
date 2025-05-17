@@ -10,7 +10,7 @@ import random
 # PDM
 from fastapi import Depends, APIRouter
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from api.backend.scheduler import scheduler
 from apscheduler.triggers.cron import CronTrigger  # type: ignore
 
@@ -41,6 +41,8 @@ from api.backend.job.cron_scheduling.cron_scheduling import (
 
 from api.backend.job.utils.clean_job_format import clean_job_format
 from api.backend.job.utils.stream_md_from_job_results import stream_md_from_job_results
+
+from api.backend.constants import RECORDINGS_DIR
 
 LOG = logging.getLogger(__name__)
 
@@ -231,3 +233,14 @@ async def delete_cron_job_request(request: DeleteCronJob):
 async def get_cron_jobs_request(user: User = Depends(get_current_user)):
     cron_jobs = get_cron_jobs(user.email)
     return JSONResponse(content=jsonable_encoder(cron_jobs))
+
+
+@job_router.get("/recordings/{id}")
+async def get_recording(id: str):
+    path = RECORDINGS_DIR / f"{id}.mp4"
+    if not path.exists():
+        return JSONResponse(content={"error": "Recording not found."}, status_code=404)
+
+    return FileResponse(
+        path, headers={"Content-Type": "video/mp4", "Accept-Ranges": "bytes"}
+    )
