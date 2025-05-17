@@ -12,7 +12,6 @@ services:
   scraperr_api:
     environment:
       - LOG_LEVEL=INFO
-      - ENV=dev
     volumes:
       - "$PWD/api:/project/app/api"
     ports:
