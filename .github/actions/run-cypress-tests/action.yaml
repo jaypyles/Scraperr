@@ -15,7 +15,7 @@ runs:
 
     - name: Setup Docker project
       shell: bash
-      run: make build-ci up-dev
+      run: make build-ci up-ci
 
     - name: Install dependencies
       shell: bash

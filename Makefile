@@ -56,5 +56,8 @@ deploy:
 build-ci:
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml build
 
+up-ci:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --force-recreate
+
 cypress-start:
 	DISPLAY=:0 npx cypress open
