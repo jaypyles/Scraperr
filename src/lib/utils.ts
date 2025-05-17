@@ -83,7 +83,6 @@ export const updateJob = async (ids: string[], field: string, value: any) => {
 
 export const getUserSettings = async () => {
   const token = Cookies.get("token");
-  console.log("token", token);
 
   try {
     const response = await fetch("/api/check", {
@@ -94,7 +93,6 @@ export const getUserSettings = async () => {
     });
 
     const data = await response.json();
-    console.log("data", data);
     return data;
   } catch (error) {
     console.error("Error fetching jobs:", error);

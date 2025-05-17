@@ -1,4 +1,5 @@
 import logging
+from pickle import FALSE
 import random
 from typing import Any, Optional, cast
 
@@ -13,6 +14,8 @@ from api.backend.job.scraping.scraping_utils import scrape_content
 from api.backend.job.site_mapping.site_mapping import handle_site_mapping
 
 from api.backend.job.scraping.add_custom import add_custom_items
+
+from api.backend.constants import RECORDINGS_ENABLED
 
 LOG = logging.getLogger(__name__)
 
@@ -57,7 +60,7 @@ async def make_site_request(
         proxy = random.choice(proxies)
         LOG.info(f"Using proxy: {proxy}")
 
-    async with AsyncCamoufox(headless=False, proxy=proxy) as browser:
+    async with AsyncCamoufox(headless=not RECORDINGS_ENABLED, proxy=proxy) as browser:
         page: Page = await browser.new_page()
         await page.set_viewport_size({"width": 1920, "height": 1080})
 

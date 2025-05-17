@@ -17,6 +17,7 @@ help:
 	@echo "  make down    		- Stop and remove containers, networks, images, and volumes"
 	@echo "  make setup   		- Setup server with dependencies and clone repo"
 	@echo "  make deploy  		- Deploy site onto server"
+	@echo "  make cypress-start	- Start Cypress"
 	@echo ""
 
 logs:
@@ -51,3 +52,6 @@ setup:
 
 deploy:
 	ansible-playbook -i ./ansible/inventory.yaml ./ansible/deploy_site.yaml -v
+
+cypress-start:
+	DISPLAY=:0 npx cypress open
