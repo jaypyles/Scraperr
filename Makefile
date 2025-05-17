@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.dev.yml
+COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.dev.local.yml
 COMPOSE_PROD = docker compose -f docker-compose.yml
 
 .PHONY: help deps build pull up up-dev down setup deploy

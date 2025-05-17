@@ -9,12 +9,12 @@ from playwright.async_api import Page
 from api.backend.utils import LOG
 
 
-async def collect_media(page: Page) -> dict[str, list[dict[str, str]]]:
+async def collect_media(id: str, page: Page) -> dict[str, list[dict[str, str]]]:
     media_types = {
         "images": "img",
         "videos": "video",
         "audio": "audio",
-        "pdfs": 'a[href$=".pdf"]',
+        "pdfs": 'a[href$=".pdf"], a[href*=".pdf#page="]',
         "documents": 'a[href$=".doc"], a[href$=".docx"], a[href$=".txt"], a[href$=".rtf"]',
         "presentations": 'a[href$=".ppt"], a[href$=".pptx"]',
         "spreadsheets": 'a[href$=".xls"], a[href$=".xlsx"], a[href$=".csv"]',
@@ -67,15 +67,20 @@ async def collect_media(page: Page) -> dict[str, list[dict[str, str]]]:
                             }.get(media_type, "")
                             filename += ext
 
-                        file_path = media_dir / filename
+                        if not os.path.exists(media_dir / id):
+                            os.makedirs(media_dir / id, exist_ok=True)
+
+                        file_path = media_dir / id / f"{filename}"
 
                         async with session.get(url) as response:
                             response.raise_for_status()
+
                             with open(file_path, "wb") as f:
                                 while True:
                                     chunk = await response.content.read(8192)
                                     if not chunk:
                                         break
+
                                     f.write(chunk)
 
                         urls.append({"url": url, "local_path": str(file_path)})

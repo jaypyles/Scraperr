@@ -7,7 +7,7 @@ export interface Job {
   result: Object;
   time_created: Date;
   status: string;
-  job_options: Object;
+  job_options: RawJobOptions;
   favorite: boolean;
   chat?: Message[];
 }

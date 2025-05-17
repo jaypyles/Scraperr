@@ -131,8 +131,9 @@ export const CsvTable: React.FC<CsvTableProps> = ({ csv, className }) => {
                           <Typography variant="body2" color="text.secondary">
                             {row.text
                               ? row.text
-                                  .replace(/(\r\n|\n|\r)/g, " ")
-                                  .replace(/\t/g, " ")
+                                  .replace(/[\n\t\r]+/g, " ")
+                                  .replace(/\s+/g, " ")
+                                  .trim()
                               : "No text available"}
                           </Typography>
                         </Paper>

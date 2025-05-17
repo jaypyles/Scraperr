@@ -42,7 +42,7 @@ from api.backend.job.cron_scheduling.cron_scheduling import (
 from api.backend.job.utils.clean_job_format import clean_job_format
 from api.backend.job.utils.stream_md_from_job_results import stream_md_from_job_results
 
-from api.backend.constants import RECORDINGS_DIR
+from api.backend.constants import MEDIA_DIR, MEDIA_TYPES, RECORDINGS_DIR
 
 LOG = logging.getLogger(__name__)
 
@@ -244,3 +244,30 @@ async def get_recording(id: str):
     return FileResponse(
         path, headers={"Content-Type": "video/mp4", "Accept-Ranges": "bytes"}
     )
+
+
+@job_router.get("/get-media")
+async def get_media(id: str):
+    try:
+        files: dict[str, list[str]] = {}
+
+        for media_type in MEDIA_TYPES:
+            path = MEDIA_DIR / media_type / f"{id}"
+
+            files[media_type] = [file.name for file in path.glob("*")]
+
+        return JSONResponse(content={"files": files})
+    except Exception as e:
+        LOG.error(f"Exception occurred: {e}")
+        traceback.print_exc()
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
+
+@job_router.get("/media")
+async def get_media_file(id: str, type: str, file: str):
+    path = MEDIA_DIR / type / f"{id}" / file
+
+    if not path.exists():
+        return JSONResponse(content={"error": "Media file not found."}, status_code=404)
+
+    return FileResponse(path)
