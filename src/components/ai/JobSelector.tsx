@@ -1,6 +1,5 @@
-import React, { useState, useEffect, Dispatch, useRef } from "react";
+import React, { useState, Dispatch } from "react";
 import { Job } from "../../types";
-import { fetchJobs } from "../../lib";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
@@ -57,9 +56,11 @@ export const JobSelector = ({
               value={selectedJob?.id || ""}
               label="Job"
               onChange={(e) => {
-                setSelectedJob(
-                  jobs.find((job) => job.id === e.target.value) || null
-                );
+                const job = jobs.find((job) => job.id === e.target.value);
+
+                if (job) {
+                  setSelectedJob(job);
+                }
               }}
             >
               {jobs.map((job) => (

@@ -19,7 +19,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: npm install
+      run: yarn install
 
     - name: Wait for frontend to be ready
       shell: bash
