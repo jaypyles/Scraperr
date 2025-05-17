@@ -54,7 +54,7 @@ export const JobQueue = ({
       <Table sx={{ tableLayout: "fixed", width: "100%" }}>
         <TableHead>
           <TableRow>
-            <TableCell>Select</TableCell>
+            <TableCell sx={{ width: "280px" }}>Select</TableCell>
             <TableCell>Id</TableCell>
             <TableCell>Url</TableCell>
             <TableCell>Elements</TableCell>
@@ -67,7 +67,7 @@ export const JobQueue = ({
         <TableBody sx={{ overflow: "auto" }}>
           {filteredJobs.map((row, index) => (
             <TableRow key={index}>
-              <TableCell padding="checkbox">
+              <TableCell padding="checkbox" sx={{ width: "280px" }}>
                 <Checkbox
                   checked={selectedJobs.has(row.id)}
                   onChange={() => onSelectJob(row.id)}
@@ -175,7 +175,7 @@ export const JobQueue = ({
                 </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 50, overflow: "auto" }}>
-                <Box sx={{ maxHeight: 100, overflow: "auto" }}>
+                <Box sx={{ maxWidth: 100, maxHeight: 100, overflow: "auto" }}>
                   <Box
                     className="rounded-md p-2 text-center"
                     sx={{ bgcolor: colors[row.status] }}
