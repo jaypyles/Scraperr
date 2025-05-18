@@ -131,22 +131,30 @@ export const JobQueue = ({
                   </Tooltip>
                 )}
               </TableCell>
-              <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
+              <TableCell
+                sx={{
+                  maxWidth: 100,
+                  overflow: "auto",
+                }}
+              >
                 <Box
                   sx={{
                     maxHeight: 100,
                     overflow: "auto",
+                    paddingTop: 1,
                   }}
                 >
                   {row.id}
                 </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 200, overflow: "auto" }}>
-                <Box sx={{ maxHeight: 100, overflow: "auto" }}>{row.url}</Box>
+                <Box sx={{ maxHeight: 100, overflow: "auto", paddingTop: 1 }}>
+                  {row.url}
+                </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
                 <Box sx={{ maxHeight: 100, overflow: "auto" }}>
-                  {JSON.stringify(row.elements)}
+                  {row.agent_mode ? "Agent Mode" : JSON.stringify(row.elements)}
                 </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 150, overflow: "auto", padding: 0 }}>
@@ -200,9 +208,19 @@ export const JobQueue = ({
                     Download
                   </Button>
                   <Button
-                    onClick={() =>
-                      onNavigate(row.elements, row.url, row.job_options)
-                    }
+                    onClick={() => {
+                      if (row.agent_mode) {
+                        router.push({
+                          pathname: "/agent",
+                          query: {
+                            url: row.url,
+                            prompt: row.prompt,
+                          },
+                        });
+                      } else {
+                        onNavigate(row.elements, row.url, row.job_options);
+                      }
+                    }}
                     size="small"
                     sx={{
                       minWidth: 0,

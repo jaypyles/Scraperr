@@ -200,8 +200,22 @@ def parse_next_page(text: str) -> str | None:
     return next_page[0] if next_page else None
 
 
+def clean_text(text: str) -> str:
+    text = text.strip()
+    text = text.replace("\n", " ")
+    text = text.replace("\t", " ")
+    text = text.replace("\r", " ")
+    text = text.replace("\f", " ")
+    text = text.replace("\v", " ")
+    text = text.replace("\b", " ")
+    text = text.replace("\a", " ")
+
+    return text
+
+
 async def capture_elements(page: Page, xpaths: list[str]) -> list[CapturedElement]:
     captured_elements = []
+    seen_texts = set()
 
     for xpath in xpaths:
         try:
@@ -216,21 +230,33 @@ async def capture_elements(page: Page, xpaths: list[str]) -> list[CapturedElemen
                 if not element_handle:
                     continue
 
+                if await element_handle.get_attribute("href"):
+                    captured_elements.append(
+                        CapturedElement(
+                            name=xpath,
+                            text=await element_handle.get_attribute("href") or "",
+                            xpath=xpath,
+                        )
+                    )
+
+                    continue
+
                 text = await element_handle.text_content()
 
                 if text:
                     element_text += text
 
-                children = await element_handle.query_selector_all("*")
-                for child in children:
-                    child_text = await child.text_content()
-                    if child_text:
-                        element_text += child_text
+                cleaned = clean_text(element_text)
+
+                if cleaned in seen_texts:
+                    continue
+
+                seen_texts.add(cleaned)
 
                 captured_elements.append(
                     CapturedElement(
                         name=xpath,
-                        text=element_text,
+                        text=cleaned,
                         xpath=xpath,
                     )
                 )

@@ -41,8 +41,6 @@ export const JobSubmitter = () => {
   const [jobOptions, setJobOptions] =
     useState<RawJobOptions>(initialJobOptions);
 
-  console.log(jobOptions);
-
   const handleSubmit = async () => {
     if (!validateURL(submittedURL)) {
       setIsValidUrl(false);

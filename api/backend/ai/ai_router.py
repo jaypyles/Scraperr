@@ -1,7 +1,4 @@
 # STL
-import datetime
-import traceback
-import uuid
 import logging
 from collections.abc import Iterable, AsyncGenerator
 
@@ -21,11 +18,6 @@ from api.backend.ai.clients import (
     open_ai_model,
     open_ai_key,
 )
-from api.backend.ai.agent.agent import start_work
-
-from api.backend.ai.agent.actions import AgentJob
-
-from api.backend.job.job import insert
 
 
 LOG = logging.getLogger(__name__)
@@ -81,49 +73,3 @@ async def ai(c: AI):
 @ai_router.get("/ai/check")
 async def check():
     return JSONResponse(content={"ai_enabled": bool(open_ai_key or llama_model)})
-
-
-@ai_router.get("/ai/agent")
-async def agent():
-    agent_job: AgentJob = {
-        "id": "123",
-        "url": "https://books.toscrape.com",
-        "prompt": "I want the title and price of all the books on the page",
-    }
-
-    await start_work(agent_job)
-    return JSONResponse(content={"agent": "agent"})
-
-
-@ai_router.post("/ai/submit-agent-job")
-async def agent_job(job: AgentJob):
-    LOG.info(f"Recieved job: {job}")
-
-    try:
-        submitted_job = {
-            "id": uuid.uuid4().hex,
-            "url": job["url"],
-            "elements": [],
-            "user": "",
-            "time_created": datetime.datetime.now().isoformat(),
-            "result": [],
-            "status": "Queued",
-            "chat": [],
-            "job_options": {
-                "proxies": [],
-                "custom_headers": {},
-                "custom_cookies": [],
-                "multi_page_scrape": False,
-                "collect_media": False,
-                "site_map": {},
-            },
-            "agent_mode": True,
-            "prompt": job["prompt"],
-        }
-
-        insert(submitted_job)  # type: ignore
-
-        return JSONResponse(content={"agent": "agent"})
-    except Exception as e:
-        LOG.error(f"Exception occurred: {traceback.format_exc()}")
-        return JSONResponse(content={"error": str(e)}, status_code=500)

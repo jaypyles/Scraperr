@@ -32,6 +32,7 @@ export type AdvancedJobOptionsDialogProps = {
   onClose: () => void;
   jobOptions: RawJobOptions;
   setJobOptions: Dispatch<SetStateAction<RawJobOptions>>;
+  multiPageScrapeEnabled?: boolean;
 };
 
 export const AdvancedJobOptionsDialog = ({
@@ -39,6 +40,7 @@ export const AdvancedJobOptionsDialog = ({
   onClose,
   jobOptions,
   setJobOptions,
+  multiPageScrapeEnabled = true,
 }: AdvancedJobOptionsDialogProps) => {
   const theme = useTheme();
   const handleMultiPageScrapeChange = () => {
@@ -122,12 +124,19 @@ export const AdvancedJobOptionsDialog = ({
                   <Checkbox
                     checked={jobOptions.multi_page_scrape}
                     onChange={handleMultiPageScrapeChange}
+                    disabled={!multiPageScrapeEnabled}
                   />
                 }
                 label={
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography>Multi Page Scrape</Typography>
-                    <Tooltip title="Enable crawling through multiple pages">
+                    <Tooltip
+                      title={
+                        multiPageScrapeEnabled
+                          ? "Enable crawling through multiple pages"
+                          : "Multi page scrape is disabled"
+                      }
+                    >
                       <IconButton size="small">
                         <InfoOutlined fontSize="small" />
                       </IconButton>

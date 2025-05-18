@@ -7,7 +7,9 @@ export const submitJob = async (
   jobOptions: any,
   customHeaders: any,
   customCookies: any,
-  siteMap: SiteMap | null
+  siteMap: SiteMap | null,
+  agentMode: boolean = false,
+  prompt?: string
 ) => {
   return await fetch(`/api/submit-scrape-job`, {
     method: "POST",
@@ -26,6 +28,8 @@ export const submitJob = async (
           site_map: siteMap,
           custom_cookies: customCookies || [],
         },
+        agent_mode: agentMode,
+        prompt: prompt || "",
       },
     }),
   });
