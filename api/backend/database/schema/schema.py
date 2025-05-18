@@ -27,4 +27,7 @@ CREATE TABLE IF NOT EXISTS cron_jobs (
     time_updated DATETIME NOT NULL,
     FOREIGN KEY (job_id) REFERENCES jobs(id)
 );
+
+ALTER TABLE jobs ADD COLUMN agent_mode BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE jobs ADD COLUMN prompt STRING;
 """

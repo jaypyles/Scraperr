@@ -16,6 +16,8 @@ from api.backend.database.startup import init_database
 from api.backend.worker.post_job_complete.post_job_complete import post_job_complete
 from api.backend.worker.logger import LOG
 
+from api.backend.ai.agent.agent import start_work
+
 
 NOTIFICATION_CHANNEL = os.getenv("NOTIFICATION_CHANNEL", "")
 NOTIFICATION_WEBHOOK_URL = os.getenv("NOTIFICATION_WEBHOOK_URL", "")
@@ -75,17 +77,21 @@ async def process_job():
                     LOG.error(f"Failed to parse proxy JSON: {proxies}")
                     proxies = []
 
-            scraped = await scrape(
-                job["id"],
-                job["url"],
-                [Element(**j) for j in job["elements"]],
-                job["job_options"]["custom_headers"],
-                job["job_options"]["multi_page_scrape"],
-                proxies,
-                job["job_options"]["site_map"],
-                job["job_options"]["collect_media"],
-                job["job_options"]["custom_cookies"],
-            )
+            if job["agent_mode"]:
+                scraped = await start_work(job)
+            else:
+                scraped = await scrape(
+                    job["id"],
+                    job["url"],
+                    [Element(**j) for j in job["elements"]],
+                    job["job_options"]["custom_headers"],
+                    job["job_options"]["multi_page_scrape"],
+                    proxies,
+                    job["job_options"]["site_map"],
+                    job["job_options"]["collect_media"],
+                    job["job_options"]["custom_cookies"],
+                )
+
             LOG.info(
                 f"Scraped result for url: {job['url']}, with elements: {job['elements']}\n{scraped}"
             )

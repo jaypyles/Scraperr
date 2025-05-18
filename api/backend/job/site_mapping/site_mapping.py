@@ -24,7 +24,6 @@ def clear_done_actions(site_map: dict[str, Any]) -> dict[str, Any]:
 async def handle_input(action: Action, page: Page) -> bool:
     try:
         element = page.locator(f"xpath={action.xpath}")
-        await element.wait_for(state="visible", timeout=10000)
         LOG.info(f"Sending keys: {action.input} to element: {action.xpath}")
         await element.fill(action.input)
         return True
@@ -36,7 +35,6 @@ async def handle_input(action: Action, page: Page) -> bool:
 async def handle_click(action: Action, page: Page) -> bool:
     try:
         element = page.locator(f"xpath={action.xpath}")
-        # await element.wait_for(state="visible", timeout=10000)
         LOG.info(f"Clicking element: {action.xpath}")
         await element.click()
         return True
