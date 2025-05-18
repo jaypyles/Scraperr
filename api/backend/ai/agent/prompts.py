@@ -22,6 +22,7 @@ ELEMENT_EXTRACTION_PROMPT = """
 - Do not include any extra explanation or text.
 - One XPath is acceptable if that's all that's needed.
 - Try and limit it down to 1 - 3 xpaths.
+- Include a name for each xpath.
 
 <important>
 - USE THE MOST SIMPLE XPATHS POSSIBLE.
@@ -33,11 +34,11 @@ ELEMENT_EXTRACTION_PROMPT = """
 **Example Format:**
 ```xml
 <xpaths>
-- //div
-- //span
-- //span[contains(@text, 'example')]
-- //div[contains(@text, 'example')]
-- //a[@href]
+- <name: insert_name_here>: <xpath: //div>
+- <name: insert_name_here>: <xpath: //span>
+- <name: insert_name_here>: <xpath: //span[contains(@text, 'example')]>
+- <name: insert_name_here>: <xpath: //div[contains(@text, 'example')]>
+- <name: insert_name_here>: <xpath: //a[@href]>
 - etc
 </xpaths>
 

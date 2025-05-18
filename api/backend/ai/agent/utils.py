@@ -169,19 +169,19 @@ def convert_to_markdown(html_str: str):
     return "\n\n".join(normal_elements + special_elements)  # type: ignore
 
 
-def parse_response(text: str) -> list[str]:
+def parse_response(text: str) -> list[dict[str, str]]:
     xpaths = re.findall(r"<xpaths>(.*?)</xpaths>", text, re.DOTALL)
     results = []
 
     if xpaths:
         lines = xpaths[0].strip().splitlines()
-        results = [
-            line.strip().lstrip("-").strip()
-            for line in lines
-            if line.strip().startswith("-")
-        ]
-
-    print(results)
+        for line in lines:
+            if line.strip().startswith("-"):
+                name = re.findall(r"<name: (.*?)>", line)[0]
+                xpath = re.findall(r"<xpath: (.*?)>", line)[0]
+                results.append({"name": name, "xpath": xpath})
+            else:
+                results.append({"name": "", "xpath": line.strip()})
 
     return results
 
@@ -213,13 +213,15 @@ def clean_text(text: str) -> str:
     return text
 
 
-async def capture_elements(page: Page, xpaths: list[str]) -> list[CapturedElement]:
+async def capture_elements(
+    page: Page, xpaths: list[dict[str, str]]
+) -> list[CapturedElement]:
     captured_elements = []
     seen_texts = set()
 
     for xpath in xpaths:
         try:
-            locator = page.locator(f"xpath={xpath}")
+            locator = page.locator(f"xpath={xpath['xpath']}")
             count = await locator.count()
 
             for i in range(count):
@@ -230,21 +232,15 @@ async def capture_elements(page: Page, xpaths: list[str]) -> list[CapturedElemen
                 if not element_handle:
                     continue
 
-                if await element_handle.get_attribute("href"):
-                    captured_elements.append(
-                        CapturedElement(
-                            name=xpath,
-                            text=await element_handle.get_attribute("href") or "",
-                            xpath=xpath,
-                        )
-                    )
-
-                    continue
+                link = await element_handle.get_attribute("href") or ""
 
                 text = await element_handle.text_content()
 
                 if text:
                     element_text += text
+
+                if link:
+                    element_text += f" ({link})"
 
                 cleaned = clean_text(element_text)
 
@@ -255,9 +251,9 @@ async def capture_elements(page: Page, xpaths: list[str]) -> list[CapturedElemen
 
                 captured_elements.append(
                     CapturedElement(
-                        name=xpath,
+                        name=xpath["name"],
                         text=cleaned,
-                        xpath=xpath,
+                        xpath=xpath["xpath"],
                     )
                 )
 

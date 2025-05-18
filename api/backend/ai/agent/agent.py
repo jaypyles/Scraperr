@@ -41,7 +41,7 @@ async def start_work(agent_job: dict[str, Any]):
             agent_job["url"],
             page,
             agent_job["job_options"]["custom_cookies"],
-            agent_job["job_options"]["headers"],
+            agent_job["job_options"]["custom_headers"],
         )
 
         try:

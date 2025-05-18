@@ -148,9 +148,7 @@ export const JobQueue = ({
                 </Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 200, overflow: "auto" }}>
-                <Box sx={{ maxHeight: 100, overflow: "auto", paddingTop: 1 }}>
-                  {row.url}
-                </Box>
+                <Box sx={{ maxHeight: 100, overflow: "auto" }}>{row.url}</Box>
               </TableCell>
               <TableCell sx={{ maxWidth: 150, overflow: "auto" }}>
                 <Box sx={{ maxHeight: 100, overflow: "auto" }}>
