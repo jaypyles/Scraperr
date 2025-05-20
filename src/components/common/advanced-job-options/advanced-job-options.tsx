@@ -6,11 +6,13 @@ import { RawJobOptions } from "@/types";
 export type AdvancedJobOptionsProps = {
   jobOptions: RawJobOptions;
   setJobOptions: Dispatch<SetStateAction<RawJobOptions>>;
+  multiPageScrapeEnabled?: boolean;
 };
 
 export const AdvancedJobOptions = ({
   jobOptions,
   setJobOptions,
+  multiPageScrapeEnabled = true,
 }: AdvancedJobOptionsProps) => {
   const [open, setOpen] = useState(false);
   return (
@@ -39,6 +41,7 @@ export const AdvancedJobOptions = ({
         onClose={() => setOpen(false)}
         jobOptions={jobOptions}
         setJobOptions={setJobOptions}
+        multiPageScrapeEnabled={multiPageScrapeEnabled}
       />
     </Box>
   );

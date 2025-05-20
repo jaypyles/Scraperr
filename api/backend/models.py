@@ -58,6 +58,8 @@ class Job(pydantic.BaseModel):
     job_options: JobOptions
     status: str = "Queued"
     chat: Optional[str] = None
+    agent_mode: bool = False
+    prompt: Optional[str] = None
 
 
 class CronJob(pydantic.BaseModel):

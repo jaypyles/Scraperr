@@ -1,31 +1,28 @@
 # STL
-import os
 import logging
 from collections.abc import Iterable, AsyncGenerator
 
 # PDM
-from openai import OpenAI
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse
 from openai.types.chat import ChatCompletionMessageParam
 
 # LOCAL
-from ollama import Message, AsyncClient
+from ollama import Message
 from api.backend.models import AI
+
+from api.backend.ai.clients import (
+    llama_client,
+    llama_model,
+    openai_client,
+    open_ai_model,
+    open_ai_key,
+)
+
 
 LOG = logging.getLogger(__name__)
 
 ai_router = APIRouter()
-
-# Load environment variables
-open_ai_key = os.getenv("OPENAI_KEY")
-open_ai_model = os.getenv("OPENAI_MODEL")
-llama_url = os.getenv("OLLAMA_URL")
-llama_model = os.getenv("OLLAMA_MODEL")
-
-# Initialize clients
-openai_client = OpenAI(api_key=open_ai_key) if open_ai_key else None
-llama_client = AsyncClient(host=llama_url) if llama_url else None
 
 
 async def llama_chat(chat_messages: list[Message]) -> AsyncGenerator[str, None]:

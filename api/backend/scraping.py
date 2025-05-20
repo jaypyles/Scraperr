@@ -9,7 +9,10 @@ from playwright.async_api import Page
 from urllib.parse import urlparse, urljoin
 
 from api.backend.models import Element, CapturedElement
-from api.backend.job.scraping.scraping_utils import scrape_content
+from api.backend.job.scraping.scraping_utils import (
+    clean_format_characters,
+    scrape_content,
+)
 from api.backend.job.site_mapping.site_mapping import handle_site_mapping
 
 from api.backend.job.scraping.add_custom import add_custom_items
@@ -142,14 +145,7 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
                 else str(e)  # type: ignore
             )
 
-            text = text.strip()
-            text = text.replace("\n", " ")
-            text = text.replace("\t", " ")
-            text = text.replace("\r", " ")
-            text = text.replace("\f", " ")
-            text = text.replace("\v", " ")
-            text = text.replace("\b", " ")
-            text = text.replace("\a", " ")
+            text = clean_format_characters(text)
 
             captured_element = CapturedElement(
                 xpath=elem.xpath, text=text, name=elem.name

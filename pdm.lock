@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:cb37fedd6d022515dde14e475588a8da2144ba22e41dfdfacfe3f7a7d14486ca"
+content_hash = "sha256:5f4c90b42c3b35194a7c2af8b46b7c28127e25e836a779e85aae0df2bd0e69eb"
 
 [[metadata.targets]]
 requires_python = ">=3.10"
@@ -1172,6 +1172,17 @@ marker = "python_version >= \"3.6.0\""
 files = [
     {file = "hpack-4.1.0-py3-none-any.whl", hash = "sha256:157ac792668d995c657d93111f46b4535ed114f0c9c8d672271bbec7eae1b496"},
     {file = "hpack-4.1.0.tar.gz", hash = "sha256:ec5eca154f7056aa06f196a557655c5b009b382873ac8d1e66e79e87535f1dca"},
+]
+
+[[package]]
+name = "html2text"
+version = "2025.4.15"
+requires_python = ">=3.9"
+summary = "Turn HTML into equivalent Markdown-structured text."
+groups = ["default"]
+files = [
+    {file = "html2text-2025.4.15-py3-none-any.whl", hash = "sha256:00569167ffdab3d7767a4cdf589b7f57e777a5ed28d12907d8c58769ec734acc"},
+    {file = "html2text-2025.4.15.tar.gz", hash = "sha256:948a645f8f0bc3abe7fd587019a2197a12436cd73d0d4908af95bfc8da337588"},
 ]
 
 [[package]]
