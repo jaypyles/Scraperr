@@ -30,7 +30,7 @@ jobs:
         run: pdm run playwright install
 
       - name: Run tests
-        run: PYTHONPATH=. pdm run pytest api/backend/tests
+        run: PYTHONPATH=. pdm run pytest -v -ra api/backend/tests
 
   cypress-tests:
     runs-on: ubuntu-latest
