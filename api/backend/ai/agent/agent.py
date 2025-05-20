@@ -22,11 +22,13 @@ from api.backend.worker.logger import LOG
 
 from api.backend.job.scraping.add_custom import add_custom_items
 
+from api.backend.models import CapturedElement
+
 
 ask_ai = ask_open_ai if open_ai_key else ask_ollama
 
 
-async def start_work(agent_job: dict[str, Any]):
+async def scrape_with_agent(agent_job: dict[str, Any]):
     LOG.info(f"Starting work for agent job: {agent_job}")
     pages = set()
 
@@ -79,11 +81,14 @@ async def start_work(agent_job: dict[str, Any]):
         for element in captured_elements:
             if element.name not in name_to_elements:
                 name_to_elements[element.name] = []
+
             name_to_elements[element.name].append(element)
 
-    return [
+    scraped_elements: list[dict[str, dict[str, list[CapturedElement]]]] = [
         {
             page[1]: name_to_elements,
         }
         for page in pages
     ]
+
+    return scraped_elements

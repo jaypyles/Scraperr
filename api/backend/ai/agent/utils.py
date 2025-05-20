@@ -4,6 +4,8 @@ from playwright.async_api import Page
 
 from api.backend.models import CapturedElement
 
+from api.backend.job.scraping.scraping_utils import clean_format_characters
+
 
 def convert_to_markdown(html_str: str):
     parser = html.HTMLParser()
@@ -200,19 +202,6 @@ def parse_next_page(text: str) -> str | None:
     return next_page[0] if next_page else None
 
 
-def clean_text(text: str) -> str:
-    text = text.strip()
-    text = text.replace("\n", " ")
-    text = text.replace("\t", " ")
-    text = text.replace("\r", " ")
-    text = text.replace("\f", " ")
-    text = text.replace("\v", " ")
-    text = text.replace("\b", " ")
-    text = text.replace("\a", " ")
-
-    return text
-
-
 async def capture_elements(
     page: Page, xpaths: list[dict[str, str]]
 ) -> list[CapturedElement]:
@@ -242,7 +231,7 @@ async def capture_elements(
                 if link:
                     element_text += f" ({link})"
 
-                cleaned = clean_text(element_text)
+                cleaned = clean_format_characters(element_text)
 
                 if cleaned in seen_texts:
                     continue

@@ -16,7 +16,7 @@ from api.backend.database.startup import init_database
 from api.backend.worker.post_job_complete.post_job_complete import post_job_complete
 from api.backend.worker.logger import LOG
 
-from api.backend.ai.agent.agent import start_work
+from api.backend.ai.agent.agent import scrape_with_agent
 
 
 NOTIFICATION_CHANNEL = os.getenv("NOTIFICATION_CHANNEL", "")
@@ -78,7 +78,7 @@ async def process_job():
                     proxies = []
 
             if job["agent_mode"]:
-                scraped = await start_work(job)
+                scraped = await scrape_with_agent(job)
             else:
                 scraped = await scrape(
                     job["id"],
