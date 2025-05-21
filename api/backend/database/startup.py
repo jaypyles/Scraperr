@@ -1,9 +1,14 @@
 # STL
-import os
 import logging
 import sqlite3
 
 # LOCAL
+from api.backend.constants import (
+    DEFAULT_USER_EMAIL,
+    REGISTRATION_ENABLED,
+    DEFAULT_USER_PASSWORD,
+    DEFAULT_USER_FULL_NAME,
+)
 from api.backend.auth.auth_utils import get_password_hash
 from api.backend.database.common import insert, connect
 from api.backend.database.schema import INIT_QUERY
@@ -11,7 +16,7 @@ from api.backend.database.schema import INIT_QUERY
 LOG = logging.getLogger("Startup Scripts")
 
 
-def init_database():
+def execute_startup_query():
     cursor = connect()
 
     for query in INIT_QUERY.strip().split(";"):
@@ -32,10 +37,16 @@ def init_database():
                 LOG.error(f"Error executing query: {query}")
                 raise
 
-    if os.environ.get("REGISTRATION_ENABLED", "true").lower() == "false":
-        default_user_email = os.environ.get("DEFAULT_USER_EMAIL")
-        default_user_password = os.environ.get("DEFAULT_USER_PASSWORD")
-        default_user_full_name = os.environ.get("DEFAULT_USER_FULL_NAME")
+    cursor.close()
+
+
+def init_database():
+    execute_startup_query()
+
+    if not REGISTRATION_ENABLED:
+        default_user_email = DEFAULT_USER_EMAIL
+        default_user_password = DEFAULT_USER_PASSWORD
+        default_user_full_name = DEFAULT_USER_FULL_NAME
 
         if (
             not default_user_email
@@ -56,5 +67,3 @@ def init_database():
                 default_user_full_name,
             ),
         )
-
-    cursor.close()

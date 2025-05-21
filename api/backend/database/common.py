@@ -26,8 +26,10 @@ def insert(query: str, values: tuple[Any, ...]):
     try:
         _ = cursor.execute(query, copy)
         connection.commit()
+
     except sqlite3.Error as e:
         LOG.error(f"An error occurred: {e}")
+
     finally:
         cursor.close()
         connection.close()
@@ -79,6 +81,7 @@ def update(query: str, values: Optional[tuple[Any, ...]] = None):
         return res.rowcount
     except sqlite3.Error as e:
         LOG.error(f"An error occurred: {e}")
+
     finally:
         cursor.close()
         connection.close()

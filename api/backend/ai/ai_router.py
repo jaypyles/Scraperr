@@ -17,6 +17,7 @@ from api.backend.ai.clients import (
     openai_client,
 )
 from api.backend.ai.schemas import AI
+from api.backend.routers.handle_exceptions import handle_exceptions
 
 LOG = logging.getLogger("AI Router")
 
@@ -62,6 +63,7 @@ chat_function = llama_chat if llama_client else openai_chat
 
 
 @ai_router.post("/ai")
+@handle_exceptions(logger=LOG)
 async def ai(c: AI):
     return StreamingResponse(
         chat_function(chat_messages=c.messages), media_type="text/plain"
@@ -69,5 +71,6 @@ async def ai(c: AI):
 
 
 @ai_router.get("/ai/check")
+@handle_exceptions(logger=LOG)
 async def check():
     return JSONResponse(content={"ai_enabled": bool(open_ai_key or llama_model)})

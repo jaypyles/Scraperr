@@ -1,10 +1,8 @@
 # STL
-import os
 import json
 import asyncio
 import traceback
 import subprocess
-from pathlib import Path
 
 # PDM
 from fastapi.encoders import jsonable_encoder
@@ -15,22 +13,22 @@ from api.backend.job.models import Element
 from api.backend.worker.logger import LOG
 from api.backend.ai.agent.agent import scrape_with_agent
 from api.backend.database.startup import init_database
+from api.backend.worker.constants import (
+    TO,
+    EMAIL,
+    USE_TLS,
+    SMTP_HOST,
+    SMTP_PORT,
+    SMTP_USER,
+    SMTP_PASSWORD,
+    RECORDINGS_DIR,
+    RECORDINGS_ENABLED,
+    NOTIFICATION_CHANNEL,
+    SCRAPERR_FRONTEND_URL,
+    NOTIFICATION_WEBHOOK_URL,
+)
 from api.backend.job.scraping.scraping import scrape
 from api.backend.worker.post_job_complete.post_job_complete import post_job_complete
-
-NOTIFICATION_CHANNEL = os.getenv("NOTIFICATION_CHANNEL", "")
-NOTIFICATION_WEBHOOK_URL = os.getenv("NOTIFICATION_WEBHOOK_URL", "")
-SCRAPERR_FRONTEND_URL = os.getenv("SCRAPERR_FRONTEND_URL", "")
-EMAIL = os.getenv("EMAIL", "")
-TO = os.getenv("TO", "")
-SMTP_HOST = os.getenv("SMTP_HOST", "")
-SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
-SMTP_USER = os.getenv("SMTP_USER", "")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-USE_TLS = os.getenv("USE_TLS", "false").lower() == "true"
-
-RECORDINGS_ENABLED = os.getenv("RECORDINGS_ENABLED", "true").lower() == "true"
-RECORDINGS_DIR = Path("/project/app/media/recordings")
 
 
 async def process_job():
