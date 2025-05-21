@@ -1,23 +1,22 @@
+# STL
 import os
 import json
-from pathlib import Path
-
-from api.backend.job import get_queued_job, update_job
-from api.backend.scraping import scrape
-from api.backend.models import Element
-from fastapi.encoders import jsonable_encoder
-import subprocess
-
 import asyncio
 import traceback
+import subprocess
+from pathlib import Path
 
-from api.backend.database.startup import init_database
+# PDM
+from fastapi.encoders import jsonable_encoder
 
-from api.backend.worker.post_job_complete.post_job_complete import post_job_complete
+# LOCAL
+from api.backend.job import update_job, get_queued_job
+from api.backend.job.models import Element
 from api.backend.worker.logger import LOG
-
 from api.backend.ai.agent.agent import scrape_with_agent
-
+from api.backend.database.startup import init_database
+from api.backend.job.scraping.scraping import scrape
+from api.backend.worker.post_job_complete.post_job_complete import post_job_complete
 
 NOTIFICATION_CHANNEL = os.getenv("NOTIFICATION_CHANNEL", "")
 NOTIFICATION_WEBHOOK_URL = os.getenv("NOTIFICATION_WEBHOOK_URL", "")

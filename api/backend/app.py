@@ -24,7 +24,7 @@ LOG_LEVEL = get_log_level(log_level)
 
 logging.basicConfig(
     level=LOG_LEVEL,
-    format="%(levelname)s:     %(asctime)s - %(name)s - %(message)s",
+    format="%(levelname)s:     %(asctime)s - [%(name)s] - %(message)s",
     handlers=[logging.StreamHandler()],
 )
 

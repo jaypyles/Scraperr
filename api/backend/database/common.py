@@ -7,7 +7,7 @@ from typing import Any, Optional
 from api.backend.constants import DATABASE_PATH
 from api.backend.database.utils import format_json, format_sql_row_to_python
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("Common Database Queries")
 
 
 def connect():

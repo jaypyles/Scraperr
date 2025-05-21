@@ -20,7 +20,7 @@ from api.backend.database.common import update
 
 auth_router = APIRouter()
 
-LOG = logging.getLogger("auth_router")
+LOG = logging.getLogger("Auth Router")
 
 
 @auth_router.post("/auth/token", response_model=Token)

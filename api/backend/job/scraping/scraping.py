@@ -15,29 +15,14 @@ from api.backend.constants import RECORDINGS_ENABLED
 from api.backend.job.models import Element, CapturedElement
 from api.backend.job.utils.text_utils import clean_text
 from api.backend.job.scraping.add_custom import add_custom_items
-from api.backend.job.scraping.scraping_utils import scrape_content
+from api.backend.job.scraping.scraping_utils import (
+    sxpath,
+    is_same_domain,
+    scrape_content,
+)
 from api.backend.job.site_mapping.site_mapping import handle_site_mapping
 
-LOG = logging.getLogger(__name__)
-
-
-def is_same_domain(url: str, original_url: str) -> bool:
-    parsed_url = urlparse(url)
-    parsed_original_url = urlparse(original_url)
-    return parsed_url.netloc == parsed_original_url.netloc or parsed_url.netloc == ""
-
-
-def clean_xpath(xpath: str) -> str:
-    parts = xpath.split("/")
-    clean_parts = ["/" if part == "" else part for part in parts]
-    clean_xpath = "//".join(clean_parts).replace("////", "//").replace("'", "\\'")
-    LOG.info(f"Cleaned xpath: {clean_xpath}")
-
-    return clean_xpath
-
-
-def sxpath(context: etree._Element, xpath: str):
-    return context.xpath(xpath)
+LOG = logging.getLogger("Scraping")
 
 
 async def make_site_request(

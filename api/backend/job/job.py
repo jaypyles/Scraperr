@@ -9,7 +9,7 @@ from api.backend.database.common import insert as common_insert
 from api.backend.database.common import update as common_update
 from api.backend.database.queries.job.job_queries import JOB_INSERT_QUERY
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("Job Queries")
 
 
 def insert(item: dict[str, Any]) -> None:

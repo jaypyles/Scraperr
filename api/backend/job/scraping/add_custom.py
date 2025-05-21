@@ -1,11 +1,12 @@
+# STL
+import logging
 from typing import Any, Optional
 from urllib.parse import urlparse
 
+# PDM
 from playwright.async_api import Page, BrowserContext
 
-import logging
-
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("Custom Items")
 
 
 async def add_custom_cookies(

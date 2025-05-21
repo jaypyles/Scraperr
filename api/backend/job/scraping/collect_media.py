@@ -1,13 +1,16 @@
+# STL
 import os
-from pathlib import Path
 import re
-from urllib.parse import urljoin, urlparse
+import logging
 from typing import Dict, List
+from pathlib import Path
+from urllib.parse import urljoin, urlparse
 
+# PDM
 import aiohttp
 from playwright.async_api import Page
 
-from api.backend.utils import LOG
+LOG = logging.getLogger("Collect Media")
 
 
 async def collect_media(id: str, page: Page) -> dict[str, list[dict[str, str]]]:

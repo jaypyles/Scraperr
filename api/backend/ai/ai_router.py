@@ -18,7 +18,7 @@ from api.backend.ai.clients import (
 )
 from api.backend.ai.schemas import AI
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("AI Router")
 
 ai_router = APIRouter()
 

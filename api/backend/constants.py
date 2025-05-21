@@ -1,5 +1,6 @@
-from pathlib import Path
+# STL
 import os
+from pathlib import Path
 
 DATABASE_PATH = "data/database.db"
 RECORDINGS_DIR = Path("media/recordings")
@@ -14,3 +15,5 @@ MEDIA_TYPES = [
     "spreadsheets",
     "videos",
 ]
+
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
