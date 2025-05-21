@@ -1,10 +1,11 @@
+# STL
+import logging
 import sqlite3
 from typing import Any, Optional
+
+# LOCAL
 from api.backend.constants import DATABASE_PATH
-from api.backend.utils import format_json, format_sql_row_to_python
-from api.backend.database.schema import INIT_QUERY
-from api.backend.database.queries import JOB_INSERT_QUERY, DELETE_JOB_QUERY
-import logging
+from api.backend.database.utils import format_json, format_sql_row_to_python
 
 LOG = logging.getLogger(__name__)
 
@@ -83,10 +84,3 @@ def update(query: str, values: Optional[tuple[Any, ...]] = None):
         connection.close()
 
     return 0
-
-
-QUERIES = {
-    "init": INIT_QUERY,
-    "insert_job": JOB_INSERT_QUERY,
-    "delete_job": DELETE_JOB_QUERY,
-}

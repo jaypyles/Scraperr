@@ -1,9 +1,12 @@
+# STL
 import os
-from api.backend.database.common import connect, QUERIES, insert
 import logging
 import sqlite3
 
+# LOCAL
 from api.backend.auth.auth_utils import get_password_hash
+from api.backend.database.common import insert, connect
+from api.backend.database.schema import INIT_QUERY
 
 LOG = logging.getLogger(__name__)
 
@@ -11,14 +14,16 @@ LOG = logging.getLogger(__name__)
 def init_database():
     cursor = connect()
 
-    for query in QUERIES["init"].strip().split(";"):
+    for query in INIT_QUERY.strip().split(";"):
         query = query.strip()
+
         if not query:
             continue
 
         try:
             LOG.info(f"Executing query: {query}")
             _ = cursor.execute(query)
+
         except sqlite3.OperationalError as e:
             if "duplicate column name" in str(e).lower():
                 LOG.warning(f"Skipping duplicate column error: {e}")

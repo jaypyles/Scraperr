@@ -1,13 +1,17 @@
+# STL
+import uuid
+import logging
 import datetime
 from typing import Any
-import uuid
-from api.backend.database.common import insert, query
-from api.backend.models import CronJob
-from apscheduler.schedulers.background import BackgroundScheduler  # type: ignore
-from apscheduler.triggers.cron import CronTrigger  # type: ignore
 
+# PDM
+from apscheduler.triggers.cron import CronTrigger
+from apscheduler.schedulers.background import BackgroundScheduler
+
+# LOCAL
 from api.backend.job import insert as insert_job
-import logging
+from api.backend.schemas.cron import CronJob
+from api.backend.database.common import query, insert
 
 LOG = logging.getLogger("Cron Scheduler")
 

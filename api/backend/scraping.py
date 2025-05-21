@@ -1,23 +1,22 @@
-import logging
+# STL
 import random
+import logging
 from typing import Any, Optional, cast
+from urllib.parse import urljoin, urlparse
 
-from bs4 import BeautifulSoup, Tag
+# PDM
+from bs4 import Tag, BeautifulSoup
 from lxml import etree
 from camoufox import AsyncCamoufox
 from playwright.async_api import Page
-from urllib.parse import urlparse, urljoin
 
-from api.backend.models import Element, CapturedElement
-from api.backend.job.scraping.scraping_utils import (
-    clean_format_characters,
-    scrape_content,
-)
-from api.backend.job.site_mapping.site_mapping import handle_site_mapping
-
-from api.backend.job.scraping.add_custom import add_custom_items
-
+# LOCAL
 from api.backend.constants import RECORDINGS_ENABLED
+from api.backend.job.models import Element, CapturedElement
+from api.backend.job.utils.text_utils import clean_text
+from api.backend.job.scraping.add_custom import add_custom_items
+from api.backend.job.scraping.scraping_utils import scrape_content
+from api.backend.job.site_mapping.site_mapping import handle_site_mapping
 
 LOG = logging.getLogger(__name__)
 
@@ -145,7 +144,7 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
                 else str(e)  # type: ignore
             )
 
-            text = clean_format_characters(text)
+            text = clean_text(text)
 
             captured_element = CapturedElement(
                 xpath=elem.xpath, text=text, name=elem.name

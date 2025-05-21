@@ -1,13 +1,14 @@
 # STL
-from datetime import timedelta
 import os
+import logging
+from datetime import timedelta
 
 # PDM
 from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 # LOCAL
-from api.backend.schemas import User, Token, UserCreate
+from api.backend.auth.schemas import User, Token, UserCreate
 from api.backend.auth.auth_utils import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     get_current_user,
@@ -15,8 +16,6 @@ from api.backend.auth.auth_utils import (
     get_password_hash,
     create_access_token,
 )
-import logging
-
 from api.backend.database.common import update
 
 auth_router = APIRouter()

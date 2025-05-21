@@ -1,48 +1,39 @@
 # STL
-import datetime
+import csv
 import uuid
+import random
+import logging
+import datetime
 import traceback
 from io import StringIO
-import csv
-import logging
-import random
 
 # PDM
 from fastapi import Depends, APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
-from api.backend.scheduler import scheduler
 from apscheduler.triggers.cron import CronTrigger  # type: ignore
 
 # LOCAL
 from api.backend.job import insert, update_job, delete_jobs
-from api.backend.models import (
-    DeleteCronJob,
-    UpdateJobs,
-    DownloadJob,
-    DeleteScrapeJobs,
-    Job,
-    CronJob,
-)
-from api.backend.schemas import User
+from api.backend.constants import MEDIA_DIR, MEDIA_TYPES, RECORDINGS_DIR
+from api.backend.scheduler import scheduler
+from api.backend.schemas.job import Job, UpdateJobs, DownloadJob, DeleteScrapeJobs
+from api.backend.auth.schemas import User
+from api.backend.schemas.cron import CronJob, DeleteCronJob
+from api.backend.database.utils import format_list_for_query
 from api.backend.auth.auth_utils import get_current_user
-from api.backend.utils import clean_text, format_list_for_query
-from api.backend.job.models.job_options import FetchOptions
-
 from api.backend.database.common import query
-
+from api.backend.job.utils.text_utils import clean_text
+from api.backend.job.models.job_options import FetchOptions
+from api.backend.job.utils.clean_job_format import clean_job_format
 from api.backend.job.cron_scheduling.cron_scheduling import (
-    delete_cron_job,
-    get_cron_job_trigger,
-    insert_cron_job,
     get_cron_jobs,
+    delete_cron_job,
+    insert_cron_job,
+    get_cron_job_trigger,
     insert_job_from_cron_job,
 )
-
-from api.backend.job.utils.clean_job_format import clean_job_format
 from api.backend.job.utils.stream_md_from_job_results import stream_md_from_job_results
-
-from api.backend.constants import MEDIA_DIR, MEDIA_TYPES, RECORDINGS_DIR
 
 LOG = logging.getLogger(__name__)
 

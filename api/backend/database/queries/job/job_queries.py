@@ -1,19 +1,24 @@
 # STL
-import logging
 from typing import Any
 
 # LOCAL
+from api.backend.utils import LOG
 from api.backend.database.utils import format_list_for_query
-from api.backend.database.common import query as common_query
-from api.backend.database.common import insert as common_insert
-from api.backend.database.common import update as common_update
-from api.backend.database.queries.job.job_queries import JOB_INSERT_QUERY
+from api.backend.database.common import query, insert, update
 
-LOG = logging.getLogger(__name__)
+JOB_INSERT_QUERY = """
+INSERT INTO jobs 
+(id, url, elements, user, time_created, result, status, chat, job_options, agent_mode, prompt)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+"""
+
+DELETE_JOB_QUERY = """
+DELETE FROM jobs WHERE id IN ()
+"""
 
 
-def insert(item: dict[str, Any]) -> None:
-    common_insert(
+def insert_job(item: dict[str, Any]) -> None:
+    insert(
         JOB_INSERT_QUERY,
         (
             item["id"],
@@ -33,17 +38,18 @@ def insert(item: dict[str, Any]) -> None:
 
 
 async def get_queued_job():
-    query = (
+    queued_job_query = (
         "SELECT * FROM jobs WHERE status = 'Queued' ORDER BY time_created DESC LIMIT 1"
     )
-    res = common_query(query)
+
+    res = query(queued_job_query)
     LOG.info(f"Got queued job: {res}")
     return res[0] if res else None
 
 
 async def update_job(ids: list[str], field: str, value: Any):
     query = f"UPDATE jobs SET {field} = ? WHERE id IN {format_list_for_query(ids)}"
-    res = common_update(query, tuple([value] + ids))
+    res = update(query, tuple([value] + ids))
     LOG.info(f"Updated job: {res}")
 
 
@@ -53,6 +59,8 @@ async def delete_jobs(jobs: list[str]):
         return False
 
     query = f"DELETE FROM jobs WHERE id IN {format_list_for_query(jobs)}"
-    res = common_update(query, tuple(jobs))
+    res = update(query, tuple(jobs))
 
-    return res > 0
+    LOG.info(f"Deleted jobs: {res}")
+
+    return res

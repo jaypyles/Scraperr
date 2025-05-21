@@ -3,22 +3,20 @@ import logging
 from collections.abc import Iterable, AsyncGenerator
 
 # PDM
+from ollama import Message
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse
 from openai.types.chat import ChatCompletionMessageParam
 
 # LOCAL
-from ollama import Message
-from api.backend.models import AI
-
 from api.backend.ai.clients import (
-    llama_client,
     llama_model,
-    openai_client,
-    open_ai_model,
     open_ai_key,
+    llama_client,
+    open_ai_model,
+    openai_client,
 )
-
+from api.backend.ai.schemas import AI
 
 LOG = logging.getLogger(__name__)
 

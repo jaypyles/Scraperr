@@ -2,16 +2,15 @@
 import logging
 
 # PDM
-from fastapi import APIRouter, Depends
+from fastapi import Depends, APIRouter
 
 # LOCAL
-from api.backend.job import (
+from api.backend.auth.schemas import User
+from api.backend.auth.auth_utils import get_current_user
+from api.backend.database.queries.statistics.statistic_queries import (
     get_jobs_per_day,
     average_elements_per_link,
 )
-from api.backend.auth.auth_utils import get_current_user
-from api.backend.schemas import User
-
 
 LOG = logging.getLogger(__name__)
 

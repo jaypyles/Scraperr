@@ -1,27 +1,23 @@
 # STL
 import os
 import logging
-import apscheduler  # type: ignore
 from contextlib import asynccontextmanager
 
 # PDM
-import apscheduler.schedulers
-import apscheduler.schedulers.background
 from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
 # LOCAL
-from api.backend.ai.ai_router import ai_router
-from api.backend.auth.auth_router import auth_router
 from api.backend.utils import get_log_level
-from api.backend.routers.job_router import job_router
-from api.backend.routers.stats_router import stats_router
-from api.backend.database.startup import init_database
-from fastapi.responses import JSONResponse
-
-from api.backend.job.cron_scheduling.cron_scheduling import start_cron_scheduler
 from api.backend.scheduler import scheduler
+from api.backend.ai.ai_router import ai_router
+from api.backend.job.job_router import job_router
+from api.backend.auth.auth_router import auth_router
+from api.backend.database.startup import init_database
+from api.backend.stats.stats_router import stats_router
+from api.backend.job.cron_scheduling.cron_scheduling import start_cron_scheduler
 
 log_level = os.getenv("LOG_LEVEL")
 LOG_LEVEL = get_log_level(log_level)
@@ -45,6 +41,7 @@ async def lifespan(app: FastAPI):
     LOG.info("Starting cron scheduler...")
     start_cron_scheduler(scheduler)
     scheduler.start()
+
     LOG.info("Cron scheduler started successfully")
 
     yield

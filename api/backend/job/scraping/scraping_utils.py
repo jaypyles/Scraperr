@@ -1,9 +1,12 @@
+# STL
 import asyncio
 from typing import Set, Tuple
+
+# PDM
 from playwright.async_api import Page
 
+# LOCAL
 from api.backend.utils import LOG
-
 from api.backend.job.scraping.collect_media import collect_media as collect_media_utils
 
 
@@ -30,16 +33,3 @@ async def scrape_content(
         await collect_media_utils(id, page)
 
     return html
-
-
-def clean_format_characters(text: str) -> str:
-    text = text.strip()
-    text = text.replace("\n", " ")
-    text = text.replace("\t", " ")
-    text = text.replace("\r", " ")
-    text = text.replace("\f", " ")
-    text = text.replace("\v", " ")
-    text = text.replace("\b", " ")
-    text = text.replace("\a", " ")
-
-    return text
