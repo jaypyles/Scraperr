@@ -19,8 +19,8 @@ async def add_custom_cookies(
 
     for cookie in custom_cookies:
         cookie_dict = {
-            "name": cookie.get("name", "default_name"),
-            "value": cookie.get("value", "default_value"),
+            "name": cookie.get("name", ""),
+            "value": cookie.get("value", ""),
             "domain": domain,
             "path": "/",
         }

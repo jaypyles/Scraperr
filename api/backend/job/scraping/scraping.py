@@ -1,7 +1,7 @@
 # STL
 import random
 import logging
-from typing import Any, Optional, cast
+from typing import Any, cast
 from urllib.parse import urljoin, urlparse
 
 # PDM
@@ -28,16 +28,18 @@ LOG = logging.getLogger("Scraping")
 async def make_site_request(
     id: str,
     url: str,
-    headers: Optional[dict[str, Any]],
-    multi_page_scrape: bool = False,
+    job_options: dict[str, Any],
     visited_urls: set[str] = set(),
     pages: set[tuple[str, str]] = set(),
     original_url: str = "",
-    proxies: Optional[list[str]] = None,
-    site_map: Optional[dict[str, Any]] = None,
-    collect_media: bool = False,
-    custom_cookies: Optional[list[dict[str, Any]]] = None,
 ):
+    headers = job_options["custom_headers"]
+    multi_page_scrape = job_options["multi_page_scrape"]
+    proxies = job_options["proxies"]
+    site_map = job_options["site_map"]
+    collect_media = job_options["collect_media"]
+    custom_cookies = job_options["custom_cookies"]
+
     if url in visited_urls:
         return
 
@@ -101,15 +103,10 @@ async def make_site_request(
             await make_site_request(
                 id,
                 link,
-                headers=headers,
-                multi_page_scrape=multi_page_scrape,
+                job_options=job_options,
                 visited_urls=visited_urls,
                 pages=pages,
                 original_url=original_url,
-                proxies=proxies,
-                site_map=site_map,
-                collect_media=collect_media,
-                custom_cookies=custom_cookies,
             )
 
 
@@ -147,12 +144,7 @@ async def scrape(
     id: str,
     url: str,
     xpaths: list[Element],
-    headers: Optional[dict[str, Any]] = None,
-    multi_page_scrape: bool = False,
-    proxies: Optional[list[str]] = None,
-    site_map: Optional[dict[str, Any]] = None,
-    collect_media: bool = False,
-    custom_cookies: Optional[list[dict[str, Any]]] = None,
+    job_options: dict[str, Any],
 ):
     visited_urls: set[str] = set()
     pages: set[tuple[str, str]] = set()
@@ -160,15 +152,10 @@ async def scrape(
     await make_site_request(
         id,
         url,
-        headers=headers,
-        multi_page_scrape=multi_page_scrape,
+        job_options=job_options,
         visited_urls=visited_urls,
         pages=pages,
         original_url=url,
-        proxies=proxies,
-        site_map=site_map,
-        collect_media=collect_media,
-        custom_cookies=custom_cookies,
     )
 
     elements: list[dict[str, dict[str, list[CapturedElement]]]] = []

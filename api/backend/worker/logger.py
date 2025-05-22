@@ -1,12 +1,11 @@
 # STL
-import os
 import logging
 
 # LOCAL
-from api.backend.utils import get_log_level
+from api.backend.app import LOG_LEVEL
 
 logging.basicConfig(
-    level=get_log_level(os.getenv("LOG_LEVEL")),
+    level=LOG_LEVEL,
     format="%(levelname)s:     %(asctime)s - [%(name)s] - %(message)s",
     handlers=[logging.StreamHandler()],
 )

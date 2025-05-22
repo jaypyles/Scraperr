@@ -1,4 +1,5 @@
-from .job_options import JobOptions
-from .job import CapturedElement, Element
+# LOCAL
+from .job import Element, CapturedElement
+from .job_options import Proxy, JobOptions
 
-__all__ = ["JobOptions", "CapturedElement", "Element"]
+__all__ = ["JobOptions", "CapturedElement", "Element", "Proxy"]

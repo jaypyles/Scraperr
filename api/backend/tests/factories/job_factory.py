@@ -1,6 +1,12 @@
-from api.backend.models import Element, Job, JobOptions, CapturedElement
+# STL
 import uuid
+
+# PDM
 from faker import Faker
+
+# LOCAL
+from api.backend.job.models import Element, JobOptions, CapturedElement
+from api.backend.schemas.job import Job
 
 fake = Faker()
 

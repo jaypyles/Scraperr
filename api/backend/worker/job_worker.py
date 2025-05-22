@@ -81,12 +81,7 @@ async def process_job():
                     job["id"],
                     job["url"],
                     [Element(**j) for j in job["elements"]],
-                    job["job_options"]["custom_headers"],
-                    job["job_options"]["multi_page_scrape"],
-                    proxies,
-                    job["job_options"]["site_map"],
-                    job["job_options"]["collect_media"],
-                    job["job_options"]["custom_cookies"],
+                    {**job["job_options"], "proxies": proxies},
                 )
 
             LOG.info(

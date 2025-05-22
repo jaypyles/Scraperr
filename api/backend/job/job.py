@@ -29,7 +29,8 @@ def insert(item: dict[str, Any]) -> None:
             item["prompt"],
         ),
     )
-    LOG.info(f"Inserted item: {item}")
+
+    LOG.debug(f"Inserted item: {item}")
 
 
 async def get_queued_job():
@@ -37,19 +38,19 @@ async def get_queued_job():
         "SELECT * FROM jobs WHERE status = 'Queued' ORDER BY time_created DESC LIMIT 1"
     )
     res = common_query(query)
-    LOG.info(f"Got queued job: {res}")
+    LOG.debug(f"Got queued job: {res}")
     return res[0] if res else None
 
 
 async def update_job(ids: list[str], field: str, value: Any):
     query = f"UPDATE jobs SET {field} = ? WHERE id IN {format_list_for_query(ids)}"
     res = common_update(query, tuple([value] + ids))
-    LOG.info(f"Updated job: {res}")
+    LOG.debug(f"Updated job: {res}")
 
 
 async def delete_jobs(jobs: list[str]):
     if not jobs:
-        LOG.info("No jobs to delete.")
+        LOG.debug("No jobs to delete.")
         return False
 
     query = f"DELETE FROM jobs WHERE id IN {format_list_for_query(jobs)}"

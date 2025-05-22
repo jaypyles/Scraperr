@@ -21,6 +21,7 @@ def insert_cron_job(cron_job: CronJob):
     INSERT INTO cron_jobs (id, user_email, job_id, cron_expression, time_created, time_updated)
     VALUES (?, ?, ?, ?, ?, ?)
     """
+
     values = (
         cron_job.id,
         cron_job.user_email,
@@ -40,6 +41,7 @@ def delete_cron_job(id: str, user_email: str):
     DELETE FROM cron_jobs
     WHERE id = ? AND user_email = ?
     """
+
     values = (id, user_email)
     insert(query, values)
 

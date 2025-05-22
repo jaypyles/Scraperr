@@ -46,6 +46,8 @@ async def update(update_jobs: UpdateJobs, _: User = Depends(get_current_user)):
     """Used to update jobs"""
     await update_job(update_jobs.ids, update_jobs.field, update_jobs.value)
 
+    return JSONResponse(content={"message": "Jobs updated successfully."})
+
 
 @job_router.post("/submit-scrape-job")
 @handle_exceptions(logger=LOG)
@@ -56,7 +58,9 @@ async def submit_scrape_job(job: Job):
     job_dict = job.model_dump()
     insert(job_dict)
 
-    return JSONResponse(content={"id": job.id})
+    return JSONResponse(
+        content={"id": job.id, "message": "Job submitted successfully."}
+    )
 
 
 @job_router.post("/retrieve-scrape-jobs")
@@ -158,7 +162,7 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
     return (
         JSONResponse(content={"message": "Jobs successfully deleted."})
         if result
-        else JSONResponse({"error": "Jobs not deleted."})
+        else JSONResponse(content={"error": "Jobs not deleted."})
     )
 
 

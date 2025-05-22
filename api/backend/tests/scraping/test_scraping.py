@@ -1,11 +1,25 @@
-import pytest
+# STL
 import logging
 from typing import Dict
-from playwright.async_api import async_playwright, Cookie, Route
+from datetime import datetime
+
+# PDM
+import pytest
+from fastapi.testclient import TestClient
+from playwright.async_api import Route, Cookie, async_playwright
+
+# LOCAL
+from api.backend.app import app
+from api.backend.job.models import Proxy, Element, JobOptions
+from api.backend.schemas.job import Job
+from api.backend.database.common import query
+from api.backend.job.scraping.scraping import scrape
 from api.backend.job.scraping.add_custom import add_custom_items
 
 logging.basicConfig(level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
+
+client = TestClient(app)
 
 
 @pytest.mark.asyncio
@@ -51,3 +65,46 @@ async def test_add_custom_items():
         assert captured_headers.get("user-agent") == "test-agent"
 
         await browser.close()
+
+
+@pytest.mark.asyncio
+async def test_proxies():
+    job = Job(
+        url="https://example.com",
+        elements=[Element(xpath="//div", name="test")],
+        job_options=JobOptions(
+            proxies=[
+                Proxy(
+                    server="127.0.0.1:8080",
+                    username="user",
+                    password="pass",
+                )
+            ],
+        ),
+        time_created=datetime.now().isoformat(),
+    )
+
+    response = client.post("/submit-scrape-job", json=job.model_dump())
+    assert response.status_code == 200
+
+    jobs = query("SELECT * FROM jobs")
+    job = jobs[0]
+
+    assert job is not None
+    assert job["job_options"]["proxies"] == [
+        {
+            "server": "127.0.0.1:8080",
+            "username": "user",
+            "password": "pass",
+        }
+    ]
+
+    response = await scrape(
+        id=job["id"],
+        url=job["url"],
+        xpaths=[Element(**e) for e in job["elements"]],
+        job_options=job["job_options"],
+    )
+
+    example_response = response[0]["https://example.com/"]
+    assert example_response is not {}
