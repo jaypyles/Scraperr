@@ -21,7 +21,7 @@ from api.backend.routers.handle_exceptions import handle_exceptions
 
 auth_router = APIRouter()
 
-LOG = logging.getLogger("Auth Router")
+LOG = logging.getLogger("Auth")
 
 
 @auth_router.post("/auth/token", response_model=Token)

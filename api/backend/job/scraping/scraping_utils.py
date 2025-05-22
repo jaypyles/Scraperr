@@ -11,7 +11,7 @@ from playwright.async_api import Page
 # LOCAL
 from api.backend.job.scraping.collect_media import collect_media as collect_media_utils
 
-LOG = logging.getLogger("Scraping Utils")
+LOG = logging.getLogger("Job")
 
 
 async def scrape_content(

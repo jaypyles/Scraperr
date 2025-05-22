@@ -35,7 +35,7 @@ from api.backend.job.cron_scheduling.cron_scheduling import (
 )
 from api.backend.job.utils.stream_md_from_job_results import stream_md_from_job_results
 
-LOG = logging.getLogger("Job Router")
+LOG = logging.getLogger("Job")
 
 job_router = APIRouter()
 

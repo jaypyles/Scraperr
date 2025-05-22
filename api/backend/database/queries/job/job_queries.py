@@ -1,8 +1,8 @@
 # STL
+import logging
 from typing import Any
 
 # LOCAL
-from api.backend.utils import LOG
 from api.backend.database.utils import format_list_for_query
 from api.backend.database.common import query, insert, update
 
@@ -15,6 +15,8 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 DELETE_JOB_QUERY = """
 DELETE FROM jobs WHERE id IN ()
 """
+
+LOG = logging.getLogger("Database")
 
 
 def insert_job(item: dict[str, Any]) -> None:

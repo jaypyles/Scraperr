@@ -15,7 +15,7 @@ from fastapi.security import OAuth2PasswordBearer
 from api.backend.auth.schemas import User, UserInDB, TokenData
 from api.backend.database.common import query
 
-LOG = logging.getLogger("Auth Utilities")
+LOG = logging.getLogger("Auth")
 
 _ = load_dotenv()
 

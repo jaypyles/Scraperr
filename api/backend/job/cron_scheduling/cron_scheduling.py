@@ -13,7 +13,7 @@ from api.backend.job import insert as insert_job
 from api.backend.schemas.cron import CronJob
 from api.backend.database.common import query, insert
 
-LOG = logging.getLogger("Cron Scheduler")
+LOG = logging.getLogger("Cron")
 
 
 def insert_cron_job(cron_job: CronJob):

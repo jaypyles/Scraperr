@@ -10,7 +10,7 @@ from urllib.parse import urljoin, urlparse
 import aiohttp
 from playwright.async_api import Page
 
-LOG = logging.getLogger("Collect Media")
+LOG = logging.getLogger("Job")
 
 
 async def collect_media(id: str, page: Page) -> dict[str, list[dict[str, str]]]:

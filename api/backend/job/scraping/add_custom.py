@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 # PDM
 from playwright.async_api import Page, BrowserContext
 
-LOG = logging.getLogger("Custom Items")
+LOG = logging.getLogger("Job")
 
 
 async def add_custom_cookies(

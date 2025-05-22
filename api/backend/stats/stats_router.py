@@ -13,7 +13,7 @@ from api.backend.database.queries.statistics.statistic_queries import (
     average_elements_per_link,
 )
 
-LOG = logging.getLogger("Stats Router")
+LOG = logging.getLogger("Statistics")
 
 stats_router = APIRouter()
 

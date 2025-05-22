@@ -13,7 +13,7 @@ from api.backend.auth.auth_utils import get_password_hash
 from api.backend.database.common import insert, connect
 from api.backend.database.schema import INIT_QUERY
 
-LOG = logging.getLogger("Startup Scripts")
+LOG = logging.getLogger("Database")
 
 
 def execute_startup_query():

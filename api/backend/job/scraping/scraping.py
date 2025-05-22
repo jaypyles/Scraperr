@@ -22,7 +22,7 @@ from api.backend.job.scraping.scraping_utils import (
 )
 from api.backend.job.site_mapping.site_mapping import handle_site_mapping
 
-LOG = logging.getLogger("Scraping")
+LOG = logging.getLogger("Job")
 
 
 async def make_site_request(

@@ -19,7 +19,7 @@ from api.backend.ai.clients import (
 from api.backend.ai.schemas import AI
 from api.backend.routers.handle_exceptions import handle_exceptions
 
-LOG = logging.getLogger("AI Router")
+LOG = logging.getLogger("AI")
 
 ai_router = APIRouter()
 
