@@ -1,17 +1,18 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { combineReducers } from "@reduxjs/toolkit";
 import settingsReducer from "./slices/settingsSlice";
+import userReducer from "./slices/user-slice";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["settings"], // only settings will be persisted
+  whitelist: ["settings", "user"],
 };
 
 const rootReducer = combineReducers({
   settings: settingsReducer,
+  user: userReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

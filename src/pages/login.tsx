@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Button, TextField, Typography, Box } from "@mui/material";
+import { useUser, useUserSettings } from "@/store/hooks";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import axios from "axios";
 import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { Constants, getUserSettings } from "../lib";
-import { useUserSettings } from "@/store/hooks";
+import { getUserSettings } from "../lib";
 
 type Mode = "login" | "signup";
 
@@ -21,6 +21,7 @@ const AuthForm: React.FC = () => {
   const { login } = useAuth();
   const [registrationEnabled, setRegistrationEnabled] = useState<boolean>(true);
   const { setUserSettings } = useUserSettings();
+  const { setUserState } = useUser();
 
   const checkRegistrationEnabled = async () => {
     const response = await axios.get(`/api/check`);
@@ -35,11 +36,20 @@ const AuthForm: React.FC = () => {
     event.preventDefault();
     try {
       if (mode === "login") {
-        await login(email, password);
+        const user = await login(email, password);
+        console.log(user);
         alert("Login successful");
 
         const userSettings = await getUserSettings();
         setUserSettings(userSettings);
+
+        setUserState({
+          isAuthenticated: true,
+          email: user.email,
+          username: user.username,
+          loading: false,
+          error: null,
+        });
 
         router.push("/");
       } else {

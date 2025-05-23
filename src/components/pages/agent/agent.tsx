@@ -1,21 +1,22 @@
+import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
+import { Disabled } from "@/components/common/disabled/disabled";
+import { checkAI } from "@/lib";
 import { validateURL } from "@/lib/helpers/validate-url";
+import { useAdvancedJobOptions } from "@/lib/hooks/use-advanced-job-options/use-advanced-job-options";
 import { ApiService } from "@/services";
+import { useUser } from "@/store/hooks";
 import {
+  Alert,
   Box,
   Button,
   Divider,
   Snackbar,
-  Alert,
   TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
-import { useAdvancedJobOptions } from "@/lib/hooks/use-advanced-job-options/use-advanced-job-options";
-import { checkAI } from "@/lib";
-import { Disabled } from "@/components/common/disabled/disabled";
+import { useEffect, useState } from "react";
 
 export const Agent = () => {
   const [url, setUrl] = useState("");
@@ -29,7 +30,10 @@ export const Agent = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const router = useRouter();
   const { jobOptions, setJobOptions } = useAdvancedJobOptions();
+  const { user } = useUser();
   const theme = useTheme();
+
+  console.log(user);
 
   useEffect(() => {
     if (router.query.url) {
@@ -95,10 +99,12 @@ export const Agent = () => {
 
     setUrlError(null);
 
+    console.log(user);
+
     await ApiService.submitJob(
       url,
       [],
-      "",
+      user,
       {
         collect_media: jobOptions.collect_media,
         multi_page_scrape: jobOptions.multi_page_scrape,

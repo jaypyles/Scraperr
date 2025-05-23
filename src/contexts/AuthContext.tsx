@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextProps {
   user: any;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<any>;
   logout: () => void;
   setUser: (user: any) => void;
 }
@@ -57,6 +57,8 @@ export const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
     setUser(userResponse.data);
     setIsAuthenticated(true);
+
+    return userResponse.data;
   };
 
   const logout = () => {

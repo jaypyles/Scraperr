@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/router";
-import { RawJobOptions } from "@/types/job";
 import { parseJobOptions, validateURL } from "@/lib";
+import { ApiService } from "@/services";
+import { RawJobOptions } from "@/types/job";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { JobSubmitterHeader } from "./job-submitter-header";
 import { JobSubmitterInput } from "./job-submitter-input";
-import { JobSubmitterOptions } from "./job-submitter-options";
-import { ApiService } from "@/services";
 import { useJobSubmitterProvider } from "./provider";
-import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
 
 const initialJobOptions: RawJobOptions = {
   multi_page_scrape: false,
