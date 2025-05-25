@@ -1,9 +1,8 @@
 "use client";
 
 import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
-import { parseJobOptions, validateURL } from "@/lib";
-import { ApiService } from "@/services";
-import { RawJobOptions } from "@/types/job";
+import { parseJobOptions } from "@/lib";
+import { initialJobOptions, RawJobOptions } from "@/types/job";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { JobSubmitterHeader } from "./job-submitter-header";
@@ -11,14 +10,6 @@ import { JobSubmitterInput } from "./job-submitter-input";
 import { useJobSubmitterProvider } from "./provider";
 import { useUser } from "@/store/hooks";
 import { useSubmitJob } from "@/hooks/use-submit-job";
-
-const initialJobOptions: RawJobOptions = {
-  multi_page_scrape: false,
-  custom_headers: null,
-  proxies: null,
-  collect_media: false,
-  custom_cookies: null,
-};
 
 export const JobSubmitter = () => {
   const router = useRouter();

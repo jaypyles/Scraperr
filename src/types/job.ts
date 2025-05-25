@@ -51,3 +51,11 @@ export type CronJob = {
   time_created: Date;
   time_updated: Date;
 };
+
+export const initialJobOptions: RawJobOptions = {
+  multi_page_scrape: false,
+  custom_headers: null,
+  proxies: null,
+  collect_media: false,
+  custom_cookies: null,
+};
