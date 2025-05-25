@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { Button, Container, Box, Snackbar, Alert } from "@mui/material";
+import React, { useEffect, useRef } from "react";
+import { Container, Box } from "@mui/material";
 import { useRouter } from "next/router";
-import { Element, Result } from "@/types";
 import { ElementTable, JobSubmitter } from "@/components/submit/job-submitter";
 import { useJobSubmitterProvider } from "@/components/submit/job-submitter/provider";
+import {
+  ErrorSnackbar,
+  JobNotifySnackbar,
+} from "@/components/common/snackbars";
 
 export const Home = () => {
   const {
@@ -28,6 +31,7 @@ export const Home = () => {
     if (elements) {
       setRows(JSON.parse(elements as string));
     }
+
     if (url) {
       setSubmittedURL(url as string);
     }
@@ -43,44 +47,6 @@ export const Home = () => {
     setSnackbarOpen(false);
   };
 
-  const ErrorSnackbar = () => {
-    return (
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="error">
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    );
-  };
-
-  const NotifySnackbar = () => {
-    const goTo = () => {
-      router.push("/jobs");
-    };
-
-    const action = (
-      <Button color="inherit" size="small" onClick={goTo}>
-        Go To Job
-      </Button>
-    );
-
-    return (
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="info" action={action}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    );
-  };
-
   return (
     <Box
       bgcolor="background.default"
@@ -93,6 +59,7 @@ export const Home = () => {
     >
       <Container maxWidth="lg" className="overflow-y-auto max-h-full">
         <JobSubmitter />
+
         {submittedURL.length ? (
           <ElementTable
             rows={rows}
@@ -101,7 +68,20 @@ export const Home = () => {
           />
         ) : null}
       </Container>
-      {snackbarSeverity === "info" ? <NotifySnackbar /> : <ErrorSnackbar />}
+
+      {snackbarSeverity === "info" ? (
+        <JobNotifySnackbar
+          open={snackbarOpen}
+          onClose={handleCloseSnackbar}
+          message={snackbarMessage}
+        />
+      ) : (
+        <ErrorSnackbar
+          open={snackbarOpen}
+          onClose={handleCloseSnackbar}
+          message={snackbarMessage}
+        />
+      )}
     </Box>
   );
 };
