@@ -1,5 +1,5 @@
 import { JobSelector } from "@/components/ai";
-import { fetchJobs } from "@/lib";
+import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
 import { useUserSettings } from "@/store/hooks";
 import { Job } from "@/types";
 import {
@@ -17,12 +17,12 @@ export const RecordingId = () => {
   const searchParams = useSearchParams();
   const theme = useTheme();
   const { userSettings } = useUserSettings();
+  const { jobs, setJobs } = useGetCurrentJobs();
   const router = useRouter();
 
   const [error, setError] = useState<string | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const currentId = searchParams.get("id");
@@ -32,10 +32,6 @@ export const RecordingId = () => {
       router.push(`/recordings?id=${job.id}`);
     }
   };
-
-  useEffect(() => {
-    fetchJobs(setJobs);
-  }, []);
 
   useEffect(() => {
     if (!userSettings.recordingsEnabled) {

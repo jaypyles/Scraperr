@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -8,12 +8,13 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { JobSelector } from "../../ai";
-import { Job, Message } from "../../../types";
+import { Job, Message } from "@/types";
 import { useSearchParams } from "next/navigation";
-import { fetchJob, fetchJobs, updateJob, checkAI } from "../../../lib";
+import { fetchJob, updateJob, checkAI } from "@/lib";
 import SendIcon from "@mui/icons-material/Send";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import { JobSelector } from "@/components/ai";
+import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
 
 export const AI: React.FC = () => {
   const theme = useTheme();
@@ -21,8 +22,9 @@ export const AI: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [aiEnabled, setAiEnabled] = useState<boolean>(false);
-  const [jobs, setJobs] = useState<Job[]>([]);
   const [thinking, setThinking] = useState<boolean>(false);
+
+  const { jobs, setJobs } = useGetCurrentJobs();
 
   const searchParams = useSearchParams();
 
@@ -133,10 +135,6 @@ export const AI: React.FC = () => {
     updateJob([selectedJob.id], "chat", []);
     setMessages([]);
   };
-
-  useEffect(() => {
-    fetchJobs(setJobs);
-  }, []);
 
   return (
     <Box
