@@ -29,7 +29,7 @@ export const JobSubmitter = () => {
   }, [job_options]);
 
   const handleSubmit = async () => {
-    await submitJob(submittedURL, rows, user, jobOptions, siteMap);
+    await submitJob(submittedURL, rows, user, jobOptions, siteMap, false, null);
   };
 
   return (

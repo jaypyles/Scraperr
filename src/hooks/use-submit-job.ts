@@ -24,7 +24,9 @@ export const useSubmitJob = () => {
     rows: Element[],
     user: User,
     jobOptions: RawJobOptions,
-    siteMap: SiteMap | null
+    siteMap: SiteMap | null,
+    agentMode: boolean,
+    prompt: string | null
   ) => {
     if (!validateURL(submittedURL)) {
       setIsValidUrl(false);
@@ -58,7 +60,9 @@ export const useSubmitJob = () => {
       jobOptions,
       customHeaders,
       customCookies,
-      siteMap
+      siteMap,
+      agentMode,
+      prompt || undefined
     )
       .then(async (response) => {
         if (!response.ok) {

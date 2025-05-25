@@ -88,6 +88,6 @@ export const Provider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const useJobSubmitterProvider = () => {
+export const useJobSubmitterProvider = (): JobSubmitterProviderType => {
   return useContext(JobSubmitterProvider);
 };
