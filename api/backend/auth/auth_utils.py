@@ -136,6 +136,7 @@ async def require_user(token: str = Depends(oauth2_scheme)):
         payload: Optional[dict[str, Any]] = jwt.decode(
             token, SECRET_KEY, algorithms=[ALGORITHM]
         )
+
         if not payload:
             raise credentials_exception
 

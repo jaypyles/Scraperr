@@ -1,7 +1,6 @@
 "use client";
 
 import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
-import { useAuth } from "@/contexts/AuthContext";
 import { parseJobOptions, validateURL } from "@/lib";
 import { ApiService } from "@/services";
 import { RawJobOptions } from "@/types/job";
@@ -10,6 +9,7 @@ import { useEffect, useState } from "react";
 import { JobSubmitterHeader } from "./job-submitter-header";
 import { JobSubmitterInput } from "./job-submitter-input";
 import { useJobSubmitterProvider } from "./provider";
+import { useUser } from "@/store/hooks";
 
 const initialJobOptions: RawJobOptions = {
   multi_page_scrape: false,
@@ -20,9 +20,9 @@ const initialJobOptions: RawJobOptions = {
 };
 
 export const JobSubmitter = () => {
-  const { user } = useAuth();
   const router = useRouter();
   const { job_options } = router.query;
+  const { user } = useUser();
 
   const {
     submittedURL,

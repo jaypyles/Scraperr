@@ -1,29 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { User } from "@/types/user.type";
 
-interface UserState {
-  isAuthenticated: boolean;
-  email?: string;
-  username?: string;
-  loading: boolean;
-  error: string | null;
-}
-
-const initialState: UserState = {
+const initialState: User = {
   isAuthenticated: false,
   loading: false,
   error: null,
   email: undefined,
   username: undefined,
+  full_name: undefined,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserState>) => {
+    setUser: (state, action: PayloadAction<User>) => {
       state.email = action.payload.email;
       state.username = action.payload.username;
-      state.isAuthenticated = !!action.payload;
+      state.full_name = action.payload.full_name;
+      state.isAuthenticated = action.payload.isAuthenticated;
       state.error = null;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -35,6 +30,7 @@ const userSlice = createSlice({
     logout: (state) => {
       state.email = undefined;
       state.username = undefined;
+      state.full_name = undefined;
       state.isAuthenticated = false;
       state.error = null;
     },

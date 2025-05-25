@@ -27,5 +27,18 @@ export const useUser = () => {
     dispatch(setUser(user));
   };
 
-  return { user, setUserState };
+  const clearUserState = () => {
+    dispatch(
+      setUser({
+        isAuthenticated: false,
+        loading: false,
+        error: null,
+        email: undefined,
+        username: undefined,
+        full_name: undefined,
+      })
+    );
+  };
+
+  return { user, setUserState, clearUserState };
 };

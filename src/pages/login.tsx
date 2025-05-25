@@ -6,8 +6,8 @@ import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
 import { getUserSettings } from "../lib";
+import { ApiService } from "@/services";
 
 type Mode = "login" | "signup";
 
@@ -18,7 +18,6 @@ const AuthForm: React.FC = () => {
   const [fullName, setFullName] = useState<string>("");
   const theme = useTheme();
   const router = useRouter();
-  const { login } = useAuth();
   const [registrationEnabled, setRegistrationEnabled] = useState<boolean>(true);
   const { setUserSettings } = useUserSettings();
   const { setUserState } = useUser();
@@ -36,7 +35,8 @@ const AuthForm: React.FC = () => {
     event.preventDefault();
     try {
       if (mode === "login") {
-        const user = await login(email, password);
+        const user = await ApiService.login(email, password);
+
         console.log(user);
         alert("Login successful");
 
@@ -47,19 +47,14 @@ const AuthForm: React.FC = () => {
           isAuthenticated: true,
           email: user.email,
           username: user.username,
+          full_name: user.full_name,
           loading: false,
           error: null,
         });
 
         router.push("/");
       } else {
-        await axios.post(`/api/signup`, {
-          data: {
-            email: email,
-            password: password,
-            full_name: fullName,
-          },
-        });
+        await ApiService.register(email, password, fullName);
         alert("Signup successful");
         router.push("/login");
       }

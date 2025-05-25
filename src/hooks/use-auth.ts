@@ -3,7 +3,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 export const useAuth = () => {
-  const { setUserState } = useUser();
+  const { setUserState, clearUserState } = useUser();
+
   const login = async (email: string, password: string) => {
     const params = new URLSearchParams();
     params.append("username", email);
@@ -28,13 +29,7 @@ export const useAuth = () => {
 
   const logout = () => {
     Cookies.remove("token");
-    setUserState({
-      isAuthenticated: false,
-      email: undefined,
-      username: undefined,
-      loading: false,
-      error: null,
-    });
+    clearUserState();
   };
 
   return { login, logout };

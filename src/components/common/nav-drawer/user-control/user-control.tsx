@@ -5,30 +5,25 @@ import clsx from "clsx";
 import classes from "./user-control.module.css";
 import { LoggedInControl } from "./logged-in-control";
 import { LoggedOutControl } from "./logged-out-control";
+import { useUser } from "@/store/hooks";
 
 export type UserControlProps = {
-  isAuthenticated: boolean;
-  user: any;
-  logout: () => void;
   loggedInChildren?: React.ReactNode;
   loggedOutChildren?: React.ReactNode;
   className?: string;
 };
 
 export const UserControl = ({
-  isAuthenticated,
-  user,
-  logout,
   loggedInChildren,
   loggedOutChildren,
   className,
 }: UserControlProps) => {
+  const { user } = useUser();
+
   return (
     <Box className={clsx(classes.userControl, className)}>
-      {isAuthenticated ? (
-        <LoggedInControl user={user} logout={logout}>
-          {loggedInChildren}
-        </LoggedInControl>
+      {user.isAuthenticated ? (
+        <LoggedInControl>{loggedInChildren}</LoggedInControl>
       ) : (
         <LoggedOutControl>{loggedOutChildren}</LoggedOutControl>
       )}
