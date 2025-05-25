@@ -1,2 +1,2 @@
-export * from "./Chat";
-export * from "./JobSelector";
+export * from "./chat";
+export * from "./job-selector";

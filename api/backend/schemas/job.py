@@ -18,6 +18,7 @@ class Job(pydantic.BaseModel):
     chat: Optional[str] = None
     agent_mode: bool = False
     prompt: Optional[str] = None
+    favorite: bool = False
 
 
 class RetrieveScrapeJobs(pydantic.BaseModel):
