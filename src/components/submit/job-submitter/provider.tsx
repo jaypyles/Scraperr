@@ -25,6 +25,7 @@ type JobSubmitterProviderType = {
   setIsValidUrl: Dispatch<React.SetStateAction<boolean>>;
   siteMap: SiteMap | null;
   setSiteMap: Dispatch<React.SetStateAction<SiteMap | null>>;
+  closeSnackbar: () => void;
 };
 
 const JobSubmitterProvider = createContext<JobSubmitterProviderType>(
@@ -40,6 +41,12 @@ export const Provider = ({ children }: PropsWithChildren) => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<string>("error");
   const [isValidURL, setIsValidUrl] = useState<boolean>(true);
   const [siteMap, setSiteMap] = useState<SiteMap | null>(null);
+
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+    setSnackbarMessage("");
+    setSnackbarSeverity("error");
+  };
 
   const value: JobSubmitterProviderType = useMemo(
     () => ({
@@ -59,6 +66,7 @@ export const Provider = ({ children }: PropsWithChildren) => {
       setIsValidUrl,
       siteMap,
       setSiteMap,
+      closeSnackbar,
     }),
     [
       submittedURL,
@@ -69,6 +77,7 @@ export const Provider = ({ children }: PropsWithChildren) => {
       snackbarSeverity,
       isValidURL,
       siteMap,
+      closeSnackbar,
     ]
   );
 

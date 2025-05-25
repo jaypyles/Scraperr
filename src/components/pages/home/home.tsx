@@ -18,9 +18,9 @@ export const Home = () => {
     setRows,
     results,
     snackbarOpen,
-    setSnackbarOpen,
     snackbarMessage,
     snackbarSeverity,
+    closeSnackbar,
   } = useJobSubmitterProvider();
   const router = useRouter();
   const { elements, url } = router.query;
@@ -43,10 +43,6 @@ export const Home = () => {
     }
   }, [results]);
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
-
   return (
     <Box
       bgcolor="background.default"
@@ -60,7 +56,7 @@ export const Home = () => {
       <Container maxWidth="lg" className="overflow-y-auto max-h-full">
         <JobSubmitter />
 
-        {submittedURL.length ? (
+        {submittedURL.length > 0 ? (
           <ElementTable
             rows={rows}
             setRows={setRows}
@@ -72,13 +68,13 @@ export const Home = () => {
       {snackbarSeverity === "info" ? (
         <JobNotifySnackbar
           open={snackbarOpen}
-          onClose={handleCloseSnackbar}
+          onClose={closeSnackbar}
           message={snackbarMessage}
         />
       ) : (
         <ErrorSnackbar
           open={snackbarOpen}
-          onClose={handleCloseSnackbar}
+          onClose={closeSnackbar}
           message={snackbarMessage}
         />
       )}
