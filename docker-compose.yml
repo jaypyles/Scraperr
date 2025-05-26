@@ -2,27 +2,40 @@ services:
   scraperr:
     image: jpyles0524/scraperr:latest
     container_name: scraperr
-    command: ["npm", "run", "start"]
+    command: ["npm", "run", "start", "--", "-H", "0.0.0.0"]  # Важно для Next.js
     environment:
-      - NEXT_PUBLIC_API_URL=http://scraperr_api:8000 # your API URL
-      - SERVER_URL=http://scraperr_api:8000 # your docker container API URL
+      - NEXT_PUBLIC_API_URL=http://scraperr_api:8000
+      - SERVER_URL=http://scraperr_api:8000
     ports:
-      - 80:3000
+      - "80:3000"
     networks:
       - web
+    depends_on:
+      - scraperr_api  # Запускать после API
+
   scraperr_api:
-    init: True
+    init: true  # Исправлено на нижний регистр
     image: jpyles0524/scraperr_api:latest
     environment:
       - LOG_LEVEL=INFO
     container_name: scraperr_api
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
       - "$PWD/data:/project/app/data"
       - "$PWD/media:/project/app/media"
     networks:
       - web
+    healthcheck:  # Проверка работоспособности API
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:  # Ограничение памяти
+      resources:
+        limits:
+          memory: 2G
 
 networks:
   web:
+    driver: bridge  # Явное создание сети
