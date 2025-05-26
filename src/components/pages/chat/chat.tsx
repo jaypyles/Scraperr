@@ -18,15 +18,14 @@ import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
 
 export const AI: React.FC = () => {
   const theme = useTheme();
+  const searchParams = useSearchParams();
+  const { jobs, setJobs } = useGetCurrentJobs();
+
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [aiEnabled, setAiEnabled] = useState<boolean>(false);
   const [thinking, setThinking] = useState<boolean>(false);
-
-  const { jobs, setJobs } = useGetCurrentJobs();
-
-  const searchParams = useSearchParams();
 
   const getJobFromParam = async () => {
     const jobId = searchParams.get("job");
