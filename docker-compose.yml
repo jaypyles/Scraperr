@@ -1,28 +1,31 @@
 services:
   scraperr:
     image: jpyles0524/scraperr:latest
-    container_name: scraperr
-    command: ["npm", "run", "start"]
+    command: ["npm", "run", "start", "--", "-H", "0.0.0.0"]
     environment:
-      - NEXT_PUBLIC_API_URL=http://scraperr_api:8000 # your API URL
-      - SERVER_URL=http://scraperr_api:8000 # your docker container API URL
+      - NEXT_PUBLIC_API_URL=http://scraperr_api:8000
+      - DISPLAY=:99  # Добавлено!
     ports:
-      - 80:3000
+      - "80:3000"
     networks:
       - web
+    depends_on:
+      - scraperr_api
+
   scraperr_api:
-    init: True
     image: jpyles0524/scraperr_api:latest
     environment:
       - LOG_LEVEL=INFO
-    container_name: scraperr_api
-    ports:
-      - 8000:8000
+      - DISPLAY=:99  # Добавлено!
     volumes:
       - "$PWD/data:/project/app/data"
-      - "$PWD/media:/project/app/media"
     networks:
       - web
-
-networks:
-  web:
+    # Добавьте эти строки для Xvfb и x11vnc:
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        Xvfb :99 -screen 0 1280x1024x24 &
+        x11vnc -forever -shared -localhost no -rfbport 5900 &
+        pdm run uvicorn api.backend.app:app --host 0.0.0.0 --port 8000
