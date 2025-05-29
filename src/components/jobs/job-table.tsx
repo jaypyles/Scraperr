@@ -1,42 +1,31 @@
-import React, { SetStateAction, useState } from "react";
-import {
-  IconButton,
-  Box,
-  Typography,
-  Tooltip,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-} from "@mui/material";
+import { JobDownloadDialog } from "@/components/common/job-download-dialog";
+import { ApiService } from "@/services";
+import { COLOR_MAP, Job } from "@/types";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SelectAllIcon from "@mui/icons-material/SelectAll";
 import DownloadIcon from "@mui/icons-material/Download";
+import SelectAllIcon from "@mui/icons-material/SelectAll";
 import StarIcon from "@mui/icons-material/Star";
-import { useRouter } from "next/router";
-import { Favorites, JobQueue } from ".";
-import { Job } from "../../types";
-import Cookies from "js-cookie";
+import {
+  Box,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useSearchParams } from "next/navigation";
-import { JobDownloadDialog } from "../common/job-download-dialog";
+import { useRouter } from "next/router";
+import React, { SetStateAction, useState } from "react";
+import { Favorites, JobQueue } from ".";
 
 interface JobTableProps {
   jobs: Job[];
   setJobs: React.Dispatch<SetStateAction<Job[]>>;
 }
-
-interface ColorMap {
-  [key: string]: string;
-}
-
-const COLOR_MAP: ColorMap = {
-  Queued: "rgba(255,201,5,0.25)",
-  Scraping: "rgba(3,104,255,0.25)",
-  Completed: "rgba(5,255,51,0.25)",
-  Failed: "rgba(214,0,25,0.25)",
-};
 
 export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
   const searchParams = useSearchParams();
@@ -51,7 +40,6 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
   const [jobDownloadDialogOpen, setJobDownloadDialogOpen] =
     useState<boolean>(false);
 
-  const token = Cookies.get("token");
   const router = useRouter();
 
   const handleDownload = (ids: string[]) => {
@@ -78,6 +66,7 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
       } else {
         newSelected.add(id);
       }
+
       return newSelected;
     });
   };
@@ -89,14 +78,13 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
       const allJobIds = new Set(jobs.map((job) => job.id));
       setSelectedJobs(allJobIds);
     }
+
     setAllSelected(!allSelected);
   };
 
   const handleDeleteSelected = async () => {
-    const response = await fetch("/api/delete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: { ids: Array.from(selectedJobs) } }),
+    const response = await ApiService.deleteJob({
+      ids: Array.from(selectedJobs),
     });
 
     if (response.ok) {
@@ -115,6 +103,7 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
     } else if (searchMode === "status") {
       return job.status.toLowerCase().includes(searchQuery.toLowerCase());
     }
+
     return true;
   });
 
@@ -125,19 +114,10 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
       )
     );
 
-    const postBody = {
+    await ApiService.updateJob({
       ids: ids,
       field: field,
       value: value,
-    };
-
-    await fetch("/api/update", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ data: postBody }),
     });
   };
 

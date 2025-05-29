@@ -59,3 +59,10 @@ export const initialJobOptions: RawJobOptions = {
   collect_media: false,
   custom_cookies: null,
 };
+
+export const COLOR_MAP: Record<string, string> = {
+  Queued: "rgba(255,201,5,0.25)",
+  Scraping: "rgba(3,104,255,0.25)",
+  Completed: "rgba(5,255,51,0.25)",
+  Failed: "rgba(214,0,25,0.25)",
+};

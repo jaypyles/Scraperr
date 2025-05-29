@@ -1,17 +1,17 @@
-import { JobSelector } from "@/components/ai";
+import { JobSelector } from "@/components/common/job-selector";
 import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
 import { useUserSettings } from "@/store/hooks";
 import { Job } from "@/types";
 import {
-  Box,
-  useTheme,
-  Typography,
-  CircularProgress,
   Alert,
+  Box,
+  CircularProgress,
   Paper,
+  Typography,
+  useTheme,
 } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const RecordingId = () => {
   const searchParams = useSearchParams();
@@ -106,7 +106,6 @@ export const RecordingId = () => {
           <JobSelector
             setSelectedJob={handleSelectJob}
             selectedJob={selectedJob}
-            setJobs={setJobs}
             jobs={jobs}
             sxProps={{}}
           />

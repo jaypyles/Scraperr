@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { JobSelector } from "@/components/common/job-selector";
+import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
+import { checkAI, fetchJob, updateJob } from "@/lib";
+import { Job, Message } from "@/types";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import SendIcon from "@mui/icons-material/Send";
 import {
   Box,
-  TextField,
-  Typography,
-  Paper,
-  useTheme,
   IconButton,
+  Paper,
+  TextField,
   Tooltip,
+  Typography,
+  useTheme,
 } from "@mui/material";
-import { Job, Message } from "@/types";
 import { useSearchParams } from "next/navigation";
-import { fetchJob, updateJob, checkAI } from "@/lib";
-import SendIcon from "@mui/icons-material/Send";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import { JobSelector } from "@/components/ai";
-import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
+import React, { useEffect, useState } from "react";
 
 export const AI: React.FC = () => {
   const theme = useTheme();
@@ -184,7 +184,6 @@ export const AI: React.FC = () => {
               <JobSelector
                 selectedJob={selectedJob}
                 setSelectedJob={setSelectedJob}
-                setJobs={setJobs}
                 jobs={jobs}
                 sxProps={{
                   position: "absolute",

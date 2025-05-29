@@ -1,20 +1,20 @@
-import { JobSelector } from "@/components/ai";
+import { JobSelector } from "@/components/common/job-selector";
+import { MediaViewer } from "@/components/common/media-viewer";
+import { TileGridView } from "@/components/common/media-viewer/tile-grid-view";
+import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
 import { Job } from "@/types";
 import {
-  Box,
-  useTheme,
-  Typography,
-  CircularProgress,
   Alert,
+  Box,
+  CircularProgress,
   Paper,
-  Tabs,
   Tab,
+  Tabs,
+  Typography,
+  useTheme,
 } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { TileGridView } from "@/components/common/media-viewer/tile-grid-view";
-import { MediaViewer } from "@/components/common/media-viewer";
-import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
+import { useEffect, useState } from "react";
 
 export interface MediaFiles {
   audio: string[];
@@ -196,7 +196,6 @@ export const MediaId = () => {
           <JobSelector
             setSelectedJob={handleSelectJob}
             selectedJob={selectedJob}
-            setJobs={setJobs}
             jobs={jobs}
           />
         </Box>

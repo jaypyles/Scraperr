@@ -1,17 +1,17 @@
-import React, { useState, Dispatch, useEffect } from "react";
-import { Job } from "../../types";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Popover from "@mui/material/Popover";
+import { Job } from "@/types";
 import {
-  Typography,
-  MenuItem,
-  useTheme,
   ClickAwayListener,
+  MenuItem,
+  SxProps,
+  Typography,
+  useTheme,
 } from "@mui/material";
-import { SxProps } from "@mui/material";
+import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Popover from "@mui/material/Popover";
+import Select from "@mui/material/Select";
+import React, { Dispatch, useEffect, useState } from "react";
 
 interface Props {
   sxProps?: SxProps;
@@ -19,7 +19,6 @@ interface Props {
     | Dispatch<React.SetStateAction<Job | null>>
     | ((job: Job) => void);
   selectedJob: Job | null;
-  setJobs: Dispatch<React.SetStateAction<Job[]>>;
   jobs: Job[];
 }
 
@@ -27,7 +26,6 @@ export const JobSelector = ({
   sxProps,
   selectedJob,
   setSelectedJob,
-  setJobs,
   jobs,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
