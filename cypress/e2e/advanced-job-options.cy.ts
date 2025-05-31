@@ -3,12 +3,14 @@ import {
   addCustomHeaders,
   addSiteMapAction,
   cleanUpJobs,
+  mockSubmitJob,
   submitBasicJob,
   waitForJobCompletion,
 } from "../utilities/job.utilities";
 
 describe.only("Advanced Job Options", () => {
   beforeEach(() => {
+    mockSubmitJob();
     login();
     cy.visit("/");
   });
@@ -18,8 +20,6 @@ describe.only("Advanced Job Options", () => {
   });
 
   it.only("should handle custom headers", () => {
-    cy.intercept("POST", "/api/submit-scrape-job").as("submitScrapeJob");
-
     const customHeaders = {
       "User-Agent": "Test Agent",
       "Accept-Language": "en-US",
@@ -40,8 +40,6 @@ describe.only("Advanced Job Options", () => {
   });
 
   it("should handle site map actions", () => {
-    cy.intercept("POST", "/api/submit-scrape-job").as("submitScrapeJob");
-
     addSiteMapAction("click", "//button[contains(text(), 'Load More')]");
     addSiteMapAction("input", "//input[@type='search']", "test search");
 
@@ -60,8 +58,6 @@ describe.only("Advanced Job Options", () => {
   });
 
   it("should handle multiple elements", () => {
-    cy.intercept("POST", "/api/submit-scrape-job").as("submitScrapeJob");
-
     cy.get('[data-cy="url-input"]').type("https://books.toscrape.com");
     cy.get('[data-cy="name-field"]').type("titles");
     cy.get('[data-cy="xpath-field"]').type("//h3");

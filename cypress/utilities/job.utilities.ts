@@ -54,3 +54,7 @@ export const addSiteMapAction = (
   }
   cy.get('[data-cy="add-site-map-action"]').click();
 };
+
+export const mockSubmitJob = () => {
+  cy.intercept("POST", "/api/submit-scrape-job").as("submitScrapeJob");
+};
