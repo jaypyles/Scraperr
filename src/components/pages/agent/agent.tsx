@@ -4,10 +4,13 @@ import {
   ErrorSnackbar,
   JobNotifySnackbar,
 } from "@/components/common/snackbars";
-import { useJobSubmitterProvider } from "@/components/submit/job-submitter/provider";
+import {
+  Provider as JobSubmitterProvider,
+  useJobSubmitterProvider,
+} from "@/components/submit/job-submitter/provider";
+import { useAdvancedJobOptions } from "@/hooks/use-advanced-job-options";
 import { useSubmitJob } from "@/hooks/use-submit-job";
 import { checkAI } from "@/lib";
-import { useAdvancedJobOptions } from "@/lib/hooks/use-advanced-job-options/use-advanced-job-options";
 import { useUser } from "@/store/hooks";
 import {
   Box,
@@ -19,7 +22,6 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Provider as JobSubmitterProvider } from "@/components/submit/job-submitter/provider";
 
 export const Agent = () => {
   const router = useRouter();
@@ -106,6 +108,7 @@ export const Agent = () => {
           placeholder="https://www.example.com"
           variant="outlined"
           size="small"
+          data-cy="url-input"
         />
         <Typography variant="body1" sx={{ fontWeight: 500, marginBottom: 0 }}>
           Prompt
@@ -118,6 +121,7 @@ export const Agent = () => {
           placeholder="Collect all the links on the page"
           variant="outlined"
           size="small"
+          data-cy="prompt-input"
         />
         <Box
           sx={{

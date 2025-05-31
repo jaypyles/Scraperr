@@ -31,7 +31,7 @@ export const MediaId = () => {
   const searchParams = useSearchParams();
   const theme = useTheme();
   const router = useRouter();
-  const { jobs, setJobs } = useGetCurrentJobs();
+  const { jobs } = useGetCurrentJobs();
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

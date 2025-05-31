@@ -1,3 +1,11 @@
+import { ExpandedTableInput } from "@/components/common/expanded-table-input";
+import { RawJobOptions } from "@/types";
+import {
+  Code as CodeIcon,
+  ExpandMore as ExpandMoreIcon,
+  InfoOutlined,
+  Settings,
+} from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
@@ -17,15 +25,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  ExpandMore as ExpandMoreIcon,
-  InfoOutlined,
-  Code as CodeIcon,
-  Settings,
-} from "@mui/icons-material";
 import { Dispatch, SetStateAction } from "react";
-import { RawJobOptions } from "@/types";
-import { ExpandedTableInput } from "../../expanded-table-input";
 
 export type AdvancedJobOptionsDialogProps = {
   open: boolean;

@@ -1,11 +1,10 @@
 import { useJobSubmitterProvider } from "@/components/submit/job-submitter/provider";
 import { validateURL } from "@/lib/helpers";
 import { ApiService } from "@/services/api-service";
-import { RawJobOptions } from "@/types/job";
-import { SiteMap } from "@/types/job";
+import { Element } from "@/types";
+import { RawJobOptions, SiteMap } from "@/types/job";
 import { User } from "@/types/user.type";
 import { useState } from "react";
-import { Element } from "@/types";
 
 export const useSubmitJob = () => {
   const [loading, setLoading] = useState(false);

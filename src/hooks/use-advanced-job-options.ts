@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { RawJobOptions } from "@/types";
 import { parseJobOptions } from "@/lib/helpers/parse-job-options";
+import { RawJobOptions } from "@/types";
 import { useRouter } from "next/router";
 
 export const useAdvancedJobOptions = () => {

@@ -1,16 +1,16 @@
+import { useDownloadJob } from "@/hooks/use-download-job";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormLabel,
-  Typography,
   Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Typography,
 } from "@mui/material";
 import { useState } from "react";
 
@@ -26,27 +26,10 @@ export const JobDownloadDialog = ({
   ids,
 }: JobDownloadDialogProps) => {
   const [jobFormat, setJobFormat] = useState<string>("csv");
-  const handleDownload = async () => {
-    const response = await fetch("/api/download", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: { ids: ids, job_format: jobFormat } }),
-    });
+  const { downloadJob } = useDownloadJob();
 
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `job_${ids[0]}.${jobFormat}`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } else {
-      console.error("Failed to download the file.");
-    }
+  const handleDownload = () => {
+    downloadJob(ids, jobFormat);
   };
 
   return (
