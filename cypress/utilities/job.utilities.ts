@@ -1,4 +1,5 @@
 export const cleanUpJobs = () => {
+  cy.visit("/jobs");
   cy.get("tbody tr")
     .first()
     .within(() => {
@@ -17,6 +18,7 @@ export const submitBasicJob = (url: string, name: string, xpath: string) => {
 };
 
 export const waitForJobCompletion = (url: string) => {
+  cy.visit("/jobs");
   cy.contains("div", url, { timeout: 10000 }).should("exist");
   cy.contains("div", "Completed", { timeout: 20000 }).should("exist");
 };
@@ -41,6 +43,25 @@ export const addCustomCookies = (cookies: Record<string, string>) => {
   cy.get("body").type("{esc}");
 };
 
+export const openAdvancedJobOptions = () => {
+  cy.get("button").contains("Advanced Job Options").click();
+};
+
+export const selectJobFromSelector = () => {
+  cy.get("div[id='select-job']").click();
+  cy.get("li[role='option']").click();
+};
+
+export const addMedia = () => {
+  cy.get('[data-cy="collect-media-checkbox"]').click();
+};
+
+export const checkForMedia = () => {
+  cy.visit("/media");
+  selectJobFromSelector();
+  cy.get("[data-testid='media-grid']", { timeout: 10000 }).should("exist");
+};
+
 export const addSiteMapAction = (
   type: "click" | "input",
   xpath: string,
@@ -55,6 +76,21 @@ export const addSiteMapAction = (
   cy.get('[data-cy="add-site-map-action"]').click();
 };
 
-export const mockSubmitJob = () => {
-  cy.intercept("POST", "/api/submit-scrape-job").as("submitScrapeJob");
+export const addElement = (name: string, xpath: string) => {
+  cy.get('[data-cy="name-field"]').type(name);
+  cy.get('[data-cy="xpath-field"]').type(xpath);
+  cy.get('[data-cy="add-button"]').click();
+};
+
+export const buildAgentJob = (url: string, prompt: string) => {
+  enterJobUrl(url);
+  cy.get("[data-cy='prompt-input']").type(prompt);
+};
+
+export const submitJob = () => {
+  cy.get("button").contains("Submit").click();
+};
+
+export const enterJobUrl = (url: string) => {
+  cy.get('[data-cy="url-input"]').type(url);
 };

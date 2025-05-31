@@ -1,12 +1,18 @@
 import { login } from "../utilities/authentication.utils";
 import {
   addCustomHeaders,
+  addElement,
+  addMedia,
   addSiteMapAction,
+  checkForMedia,
   cleanUpJobs,
-  mockSubmitJob,
+  enterJobUrl,
+  openAdvancedJobOptions,
   submitBasicJob,
+  submitJob,
   waitForJobCompletion,
 } from "../utilities/job.utilities";
+import { mockSubmitJob } from "../utilities/mocks";
 
 describe.only("Advanced Job Options", () => {
   beforeEach(() => {
@@ -35,7 +41,6 @@ describe.only("Advanced Job Options", () => {
       ).to.deep.equal(customHeaders);
     });
 
-    cy.get("li").contains("Jobs").click();
     waitForJobCompletion("https://httpbin.org/headers");
   });
 
@@ -53,28 +58,44 @@ describe.only("Advanced Job Options", () => {
       expect(siteMap.actions[1].type).to.equal("input");
     });
 
-    cy.get("li").contains("Jobs").click();
     waitForJobCompletion("https://example.com");
   });
 
   it("should handle multiple elements", () => {
-    cy.get('[data-cy="url-input"]').type("https://books.toscrape.com");
-    cy.get('[data-cy="name-field"]').type("titles");
-    cy.get('[data-cy="xpath-field"]').type("//h3");
-    cy.get('[data-cy="add-button"]').click();
+    enterJobUrl("https://books.toscrape.com");
 
-    cy.get('[data-cy="name-field"]').type("prices");
-    cy.get('[data-cy="xpath-field"]').type("//p[@class='price_color']");
-    cy.get('[data-cy="add-button"]').click();
+    addElement("titles", "//h3");
+    addElement("prices", "//p[@class='price_color']");
 
-    cy.contains("Submit").click();
+    submitJob();
 
     cy.wait("@submitScrapeJob").then((interception) => {
       expect(interception.response?.statusCode).to.eq(200);
       expect(interception.request?.body.data.elements).to.have.length(2);
     });
 
-    cy.get("li").contains("Jobs").click();
     waitForJobCompletion("https://books.toscrape.com");
+  });
+
+  it.only("should handle collecting media", () => {
+    enterJobUrl("https://books.toscrape.com");
+
+    openAdvancedJobOptions();
+    addMedia();
+
+    cy.get("body").type("{esc}");
+
+    addElement("images", "//img");
+
+    submitJob();
+
+    cy.wait("@submitScrapeJob").then((interception) => {
+      expect(interception.response?.statusCode).to.eq(200);
+      expect(interception.request?.body.data.job_options.collect_media).to.be
+        .true;
+    });
+
+    waitForJobCompletion("https://books.toscrape.com");
+    checkForMedia();
   });
 });

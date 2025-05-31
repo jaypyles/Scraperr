@@ -68,11 +68,14 @@
     ]
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@types/cypress": "^1.1.6",
+    "@types/faker": "^6.6.11",
     "@types/js-cookie": "^3.0.6",
     "autoprefixer": "^10.4.21",
     "cypress": "^13.17.0",
     "eslint": "^9.26.0",
+    "faker": "^6.6.6",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.3.5"
   },

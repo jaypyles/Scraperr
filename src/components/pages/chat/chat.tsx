@@ -238,6 +238,9 @@ export const AI: React.FC = () => {
                         marginLeft: message.role === "user" ? "auto" : "",
                         maxWidth: "40%",
                       }}
+                      data-cy={
+                        message.role === "user" ? "user-message" : "ai-message"
+                      }
                     >
                       <Typography variant="body1" sx={{ color: "white" }}>
                         {message.content}
@@ -305,6 +308,7 @@ export const AI: React.FC = () => {
                 }
               }}
               sx={{ borderRadius: "8px" }}
+              data-cy="message-input"
             />
 
             <Tooltip title="Send" placement="top">
@@ -315,6 +319,7 @@ export const AI: React.FC = () => {
                 onClick={() => {
                   handleMessageSend(currentMessage);
                 }}
+                data-cy="send-message"
               >
                 <SendIcon />
               </IconButton>
