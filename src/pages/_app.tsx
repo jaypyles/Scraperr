@@ -1,15 +1,16 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import "@/styles/globals.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import React, { useState, useEffect } from "react";
+import { NavDrawer } from "@/components/common";
+import { persistor, store } from "@/store/store";
+import { darkTheme, lightTheme } from "@/styles/themes";
+import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { ThemeProvider, CssBaseline, Box } from "@mui/material";
-import { NavDrawer } from "@/components/common";
-import { darkTheme, lightTheme } from "@/styles/themes";
+import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
+import { ToastContainer } from "react-toastify";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "@/store/store";
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -56,6 +57,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
                 <Component {...pageProps} />
               </Box>
             </Box>
+            <ToastContainer theme={isDarkMode ? "dark" : "light"} />
           </ThemeProvider>
         </PersistGate>
       </Provider>

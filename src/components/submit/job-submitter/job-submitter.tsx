@@ -1,15 +1,14 @@
 "use client";
 
 import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
+import { useSubmitJob } from "@/hooks/use-submit-job";
 import { parseJobOptions } from "@/lib";
-import { initialJobOptions, RawJobOptions } from "@/types/job";
+import { useUser } from "@/store/hooks";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { JobSubmitterHeader } from "./job-submitter-header";
 import { JobSubmitterInput } from "./job-submitter-input";
 import { useJobSubmitterProvider } from "./provider";
-import { useUser } from "@/store/hooks";
-import { useSubmitJob } from "@/hooks/use-submit-job";
 
 export const JobSubmitter = () => {
   const router = useRouter();
@@ -17,10 +16,8 @@ export const JobSubmitter = () => {
   const { user } = useUser();
 
   const { submitJob, loading, error } = useSubmitJob();
-  const { submittedURL, rows, siteMap, setSiteMap } = useJobSubmitterProvider();
-
-  const [jobOptions, setJobOptions] =
-    useState<RawJobOptions>(initialJobOptions);
+  const { submittedURL, rows, siteMap, setSiteMap, jobOptions, setJobOptions } =
+    useJobSubmitterProvider();
 
   useEffect(() => {
     if (job_options) {
@@ -31,6 +28,11 @@ export const JobSubmitter = () => {
   const handleSubmit = async () => {
     await submitJob(submittedURL, rows, user, jobOptions, siteMap, false, null);
   };
+
+  console.log(jobOptions);
+  useEffect(() => {
+    console.log(jobOptions);
+  }, [jobOptions]);
 
   return (
     <div>

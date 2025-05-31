@@ -1,13 +1,14 @@
 "use client";
 
+import { ApiService } from "@/services";
 import { useUser, useUserSettings } from "@/store/hooks";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { getUserSettings } from "../lib";
-import { ApiService } from "@/services";
 
 type Mode = "login" | "signup";
 
@@ -37,9 +38,6 @@ const AuthForm: React.FC = () => {
       if (mode === "login") {
         const user = await ApiService.login(email, password);
 
-        console.log(user);
-        alert("Login successful");
-
         const userSettings = await getUserSettings();
         setUserSettings(userSettings);
 
@@ -52,15 +50,16 @@ const AuthForm: React.FC = () => {
           error: null,
         });
 
+        toast.success("Login successful");
         router.push("/");
       } else {
         await ApiService.register(email, password, fullName);
-        alert("Signup successful");
-        router.push("/login");
+        setMode("login");
+        toast.success("Registration successful");
       }
     } catch (error) {
       console.error(error);
-      alert(`${mode.charAt(0).toUpperCase() + mode.slice(1)} failed`);
+      toast.error("There was an error logging or registering");
     }
   };
 

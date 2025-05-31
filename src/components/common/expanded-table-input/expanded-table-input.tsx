@@ -23,6 +23,7 @@ export type ExpandedTableInputProps = {
   onChange: (value: any) => void;
   placeholder: string;
   urlParam: string;
+  name: string;
 };
 
 export const ExpandedTableInput = ({
@@ -30,6 +31,7 @@ export const ExpandedTableInput = ({
   onChange,
   placeholder,
   urlParam,
+  name,
 }: ExpandedTableInputProps) => {
   const theme = useTheme();
   const [value, setValue] = useState("");
@@ -150,6 +152,7 @@ export const ExpandedTableInput = ({
           size="small"
           error={jsonError !== null}
           helperText={jsonError ?? ""}
+          name={name}
         />
 
         {parsedHeaders && parsedHeaders.length > 0 && (

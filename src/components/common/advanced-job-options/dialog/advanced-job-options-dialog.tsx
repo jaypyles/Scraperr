@@ -25,7 +25,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 export type AdvancedJobOptionsDialogProps = {
   open: boolean;
@@ -43,31 +43,45 @@ export const AdvancedJobOptionsDialog = ({
   multiPageScrapeEnabled = true,
 }: AdvancedJobOptionsDialogProps) => {
   const theme = useTheme();
+  const [localJobOptions, setLocalJobOptions] =
+    useState<RawJobOptions>(jobOptions);
+
+  // Update local state when prop changes
+  useEffect(() => {
+    setLocalJobOptions(jobOptions);
+  }, [jobOptions]);
+
   const handleMultiPageScrapeChange = () => {
-    setJobOptions((prevJobOptions) => ({
+    setLocalJobOptions((prevJobOptions) => ({
       ...prevJobOptions,
       multi_page_scrape: !prevJobOptions.multi_page_scrape,
     }));
   };
 
   const handleProxiesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setJobOptions((prevJobOptions) => ({
+    setLocalJobOptions((prevJobOptions) => ({
       ...prevJobOptions,
       proxies: e.target.value,
     }));
   };
 
   const handleCollectMediaChange = () => {
-    setJobOptions((prevJobOptions) => ({
+    setLocalJobOptions((prevJobOptions) => ({
       ...prevJobOptions,
       collect_media: !prevJobOptions.collect_media,
     }));
   };
 
+  const handleClose = () => {
+    // Save the local state back to the parent before closing
+    setJobOptions(localJobOptions);
+    onClose();
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       maxWidth="md"
       fullWidth
       PaperProps={{
@@ -122,7 +136,7 @@ export const AdvancedJobOptionsDialog = ({
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={jobOptions.multi_page_scrape}
+                    checked={localJobOptions.multi_page_scrape}
                     onChange={handleMultiPageScrapeChange}
                     disabled={!multiPageScrapeEnabled}
                   />
@@ -147,7 +161,7 @@ export const AdvancedJobOptionsDialog = ({
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={jobOptions.collect_media}
+                    checked={localJobOptions.collect_media}
                     onChange={handleCollectMediaChange}
                     data-cy="collect-media-checkbox"
                   />
@@ -233,7 +247,7 @@ export const AdvancedJobOptionsDialog = ({
                   fullWidth
                   variant="outlined"
                   size="small"
-                  value={jobOptions.proxies}
+                  value={localJobOptions.proxies}
                   onChange={handleProxiesChange}
                   InputProps={{
                     startAdornment: (
@@ -251,8 +265,9 @@ export const AdvancedJobOptionsDialog = ({
               label="Custom Headers"
               placeholder='{"User-Agent": "CustomAgent", "Accept": "*/*"}'
               urlParam="custom_headers"
+              name="custom_headers"
               onChange={(value) => {
-                setJobOptions((prevJobOptions) => ({
+                setLocalJobOptions((prevJobOptions) => ({
                   ...prevJobOptions,
                   custom_headers: value,
                 }));
@@ -264,8 +279,9 @@ export const AdvancedJobOptionsDialog = ({
               label="Custom Cookies"
               placeholder='[{"name": "value", "name2": "value2"}]'
               urlParam="custom_cookies"
+              name="custom_cookies"
               onChange={(value) => {
-                setJobOptions((prevJobOptions) => ({
+                setLocalJobOptions((prevJobOptions) => ({
                   ...prevJobOptions,
                   custom_cookies: value,
                 }));
