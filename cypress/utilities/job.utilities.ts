@@ -78,8 +78,8 @@ export const waitForJobCompletion = (url: string) => {
   cy.contains("div", url, { timeout: 10000 }).should("exist");
   try {
     cy.get("[data-testid='job-status']", { timeout: 120000 }).should(
-      "have.text",
-      "Completed"
+      "include.text",
+      "completed"
     );
   } catch (error) {
     cy.log(`Job status was: ${error}`);
