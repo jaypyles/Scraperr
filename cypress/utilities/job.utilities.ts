@@ -1,40 +1,41 @@
 export const cleanUpJobs = () => {
-  const maxRetries = 10;
-  let retryCount = 0;
+  cy.intercept("POST", "/api/retrieve").as("retrieve");
+  cy.visit("/jobs");
 
-  const attemptCleanup = () => {
-    cy.intercept("POST", "/api/retrieve").as("retrieve");
+  cy.wait("@retrieve", { timeout: 10000 });
 
-    cy.visit("/jobs");
+  cy.get("tbody tr").should("have.length.at.least", 1);
 
-    cy.wait("@retrieve", { timeout: 10000 }).then((interception) => {
-      if (!interception.response) {
-        cy.log("No response received!");
-        throw new Error("retrieve request did not return a response");
-      }
-    });
+  // Retry clicking "Select All" button up to 5 times
+  const tryClickSelectAll = (attempt = 1, maxAttempts = 5) => {
+    cy.log(`Attempt ${attempt} to click Select All`);
 
-    cy.get("tbody tr").should("have.length", 1);
-
-    cy.get('[data-testid="select-all"]').click();
-    cy.get("[data-testid='DeleteIcon']", { timeout: 10000 }).click();
+    cy.get('[data-testid="select-all"]')
+      .closest("button")
+      .then(($btn) => {
+        if ($btn.is(":disabled") || $btn.css("pointer-events") === "none") {
+          if (attempt < maxAttempts) {
+            cy.wait(1000).then(() =>
+              tryClickSelectAll(attempt + 1, maxAttempts)
+            );
+          } else {
+            throw new Error(
+              "Select All button is still disabled or not clickable after max retries"
+            );
+          }
+        } else {
+          cy.wrap($btn).click();
+        }
+      });
   };
 
-  const retry = () => {
-    if (retryCount < maxRetries) {
-      retryCount++;
-      cy.log(`Retry attempt ${retryCount} of ${maxRetries}`);
-      attemptCleanup();
-    } else {
-      cy.log("Max retries reached. Cleanup failed.");
-    }
-  };
+  tryClickSelectAll();
 
-  attemptCleanup();
-  cy.on("fail", () => {
-    retry();
-    return false;
-  });
+  // After clicking Select All, delete the selected jobs
+  cy.get('[data-testid="DeleteIcon"]')
+    .closest("button")
+    .should("not.be.disabled")
+    .click();
 };
 
 export const submitBasicJob = (url: string, name: string, xpath: string) => {
