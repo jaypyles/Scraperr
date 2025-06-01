@@ -73,7 +73,11 @@ export const submitBasicJob = (url: string, name: string, xpath: string) => {
 };
 
 export const waitForJobCompletion = (url: string) => {
+  cy.intercept("POST", "/api/retrieve").as("retrieve");
+
   cy.visit("/jobs");
+
+  cy.wait("@retrieve", { timeout: 30000 });
 
   cy.contains("div", url, { timeout: 30000 }).should("exist");
 
