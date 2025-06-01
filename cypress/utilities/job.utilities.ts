@@ -13,7 +13,7 @@ export const cleanUpJobs = () => {
     cy.get('[data-testid="select-all"]')
       .closest("button")
       .then(($btn) => {
-        if ($btn.is(":disabled") || $btn.css("pointer-events") === "none") {
+        if ($btn.is(":disabled")) {
           if (attempt < maxAttempts) {
             cy.wait(1000).then(() =>
               tryClickSelectAll(attempt + 1, maxAttempts)
@@ -24,7 +24,7 @@ export const cleanUpJobs = () => {
             );
           }
         } else {
-          cy.wrap($btn).click();
+          cy.wrap($btn).click({ multiple: true });
         }
       });
   };
