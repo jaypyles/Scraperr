@@ -15,6 +15,7 @@ services:
     image: jpyles0524/scraperr_api:latest
     environment:
       - LOG_LEVEL=INFO
+      - OPENAI_KEY=${OPENAI_KEY}
     container_name: scraperr_api
     ports:
       - 8000:8000

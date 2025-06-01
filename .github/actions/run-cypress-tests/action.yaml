@@ -2,6 +2,12 @@ name: Run Cypress Tests
 
 description: Run Cypress tests
 
+inputs:
+  openai_key:
+    description: "OpenAI API key"
+    required: true
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -15,6 +21,8 @@ runs:
 
     - name: Setup Docker project
       shell: bash
+      env:
+        OPENAI_KEY: ${{ inputs.openai_key }}
       run: make build-ci up-ci
 
     - name: Install dependencies

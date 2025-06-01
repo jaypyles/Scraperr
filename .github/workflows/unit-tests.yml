@@ -37,6 +37,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/run-cypress-tests
+        with:
+          openai_key: ${{ secrets.OPENAI_KEY }}
 
   success-message:
     runs-on: ubuntu-latest
