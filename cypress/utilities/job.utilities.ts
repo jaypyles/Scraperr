@@ -1,5 +1,5 @@
 export const cleanUpJobs = () => {
-  const maxRetries = 3;
+  const maxRetries = 10;
   let retryCount = 0;
 
   const attemptCleanup = () => {
