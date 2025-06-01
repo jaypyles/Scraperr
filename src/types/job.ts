@@ -10,6 +10,8 @@ export interface Job {
   job_options: RawJobOptions;
   favorite: boolean;
   chat?: Message[];
+  agent_mode?: boolean;
+  prompt?: string;
 }
 
 export type JobOptions = {

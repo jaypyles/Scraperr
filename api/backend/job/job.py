@@ -27,6 +27,8 @@ def insert(item: dict[str, Any]) -> None:
             item["status"],
             item["chat"],
             item["job_options"],
+            item["agent_mode"],
+            item["prompt"],
         ),
     )
     LOG.info(f"Inserted item: {item}")

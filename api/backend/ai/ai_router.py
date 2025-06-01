@@ -23,7 +23,6 @@ from api.backend.ai.clients import (
 LOG = logging.getLogger(__name__)
 ai_router = APIRouter()
 
-
 async def langchain_chat(messages: List[BaseMessage]) -> AsyncGenerator[str, None]:
     if not llm_instance:
         LOG.error("LLM instance not available")

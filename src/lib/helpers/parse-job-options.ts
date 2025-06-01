@@ -5,7 +5,7 @@ import { RawJobOptions, SiteMap } from "@/types";
 export const parseJobOptions = (
   job_options: string,
   setJobOptions: Dispatch<SetStateAction<RawJobOptions>>,
-  setSiteMap: Dispatch<SetStateAction<SiteMap | null>>
+  setSiteMap?: Dispatch<SetStateAction<SiteMap | null>>
 ) => {
   if (job_options) {
     const jsonOptions = JSON.parse(job_options as string);
@@ -38,7 +38,7 @@ export const parseJobOptions = (
       newJobOptions.proxies = jsonOptions.proxies.join(",");
     }
 
-    if (jsonOptions.site_map) {
+    if (jsonOptions.site_map && setSiteMap) {
       setSiteMap(jsonOptions.site_map);
     }
 

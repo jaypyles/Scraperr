@@ -44,6 +44,7 @@ dependencies = [
     "langchain>=0.3.25",
     "langchain-openai>=0.3.17",
     "langchain-community>=0.3.24",
+    "html2text>=2025.4.15",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

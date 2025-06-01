@@ -3,11 +3,10 @@ import { NavItem } from "../nav-item";
 
 import HomeIcon from "@mui/icons-material/Home";
 import HttpIcon from "@mui/icons-material/Http";
-import TerminalIcon from "@mui/icons-material/Terminal";
 import BarChart from "@mui/icons-material/BarChart";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { List } from "@mui/material";
-import { Folder, Schedule, VideoFile } from "@mui/icons-material";
+import { Folder, Person, Schedule, VideoFile } from "@mui/icons-material";
 
 const items = [
   {
@@ -19,6 +18,11 @@ const items = [
     icon: <HttpIcon />,
     text: "Jobs",
     href: "/jobs",
+  },
+  {
+    icon: <Person />,
+    text: "Agent",
+    href: "/agent",
   },
   {
     icon: <AutoAwesomeIcon />,
