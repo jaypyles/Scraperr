@@ -24,6 +24,7 @@ describe.only("Agent", () => {
     buildAgentJob(url, prompt);
 
     submitJob();
+
     cy.wait("@submitScrapeJob").then((interception) => {
       expect(interception.response?.statusCode).to.eq(200);
       expect(interception.request?.body.data.url).to.eq(url);

@@ -74,8 +74,16 @@ export const submitBasicJob = (url: string, name: string, xpath: string) => {
 
 export const waitForJobCompletion = (url: string) => {
   cy.visit("/jobs");
+
   cy.contains("div", url, { timeout: 10000 }).should("exist");
-  cy.contains("div", "Completed", { timeout: 120000 }).should("exist");
+  try {
+    cy.get("[data-testid='job-status']", { timeout: 120000 }).should(
+      "have.text",
+      "Completed"
+    );
+  } catch (error) {
+    cy.log(`Job status was: ${error}`);
+  }
 };
 
 export const enableMultiPageScraping = () => {

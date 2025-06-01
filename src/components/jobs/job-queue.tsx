@@ -1,22 +1,21 @@
 "use client";
-import React from "react";
+import { AutoAwesome, Image, VideoCameraBack } from "@mui/icons-material";
+import StarIcon from "@mui/icons-material/Star";
 import {
+  Box,
+  Button,
+  Checkbox,
+  IconButton,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  Box,
-  Checkbox,
-  Button,
   Tooltip,
-  IconButton,
-  TableContainer,
 } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
-import { Job } from "../../types";
-import { AutoAwesome, Image, VideoCameraBack } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { Job } from "../../types";
 
 interface stringMap {
   [key: string]: string;
@@ -185,6 +184,7 @@ export const JobQueue = ({
                   <Box
                     className="rounded-md p-2 text-center"
                     sx={{ bgcolor: colors[row.status] }}
+                    data-testid="job-status"
                   >
                     {row.status}
                   </Box>
