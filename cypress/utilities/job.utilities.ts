@@ -76,14 +76,23 @@ export const waitForJobCompletion = (url: string) => {
   cy.visit("/jobs");
 
   cy.contains("div", url, { timeout: 10000 }).should("exist");
-  try {
-    cy.get("[data-testid='job-status']", { timeout: 120000 }).should(
-      "match",
-      /completed/i
-    );
-  } catch (error) {
-    cy.log(`Job status was: ${error}`);
-  }
+
+  const checkJobStatus = () => {
+    cy.get("[data-testid='job-status']", { timeout: 120000 }).then(($el) => {
+      const status = $el.text().toLowerCase().trim();
+
+      if (status.includes("completed")) {
+        return true;
+      } else if (status.includes("scraping") || status.includes("queued")) {
+        cy.wait(5000);
+        checkJobStatus();
+      } else {
+        throw new Error(`Unexpected job status: ${status}`);
+      }
+    });
+  };
+
+  checkJobStatus();
 };
 
 export const enableMultiPageScraping = () => {
