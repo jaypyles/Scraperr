@@ -112,12 +112,12 @@ export const addMedia = () => {
 };
 
 export const checkForMedia = () => {
-  cy.intercept("GET", "/api/media?id=**").as("getMedia");
+  cy.intercept("GET", "/api/media/get-media?id=**").as("getMedia");
 
   cy.visit("/media");
   selectJobFromSelector();
 
-  cy.wait("@getMedia", { timeout: 60000 });
+  cy.wait("@getMedia", { timeout: 30000 });
   cy.get("[data-testid='media-grid']", { timeout: 10000 }).should("exist");
 };
 
