@@ -1,8 +1,13 @@
+# STL
+from unittest.mock import AsyncMock, patch
+
+# PDM
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import AsyncMock, patch
+
+# LOCAL
 from api.backend.app import app
-from api.backend.models import DownloadJob
+from api.backend.schemas.job import DownloadJob
 from api.backend.tests.factories.job_factory import create_completed_job
 
 client = TestClient(app)
@@ -13,8 +18,8 @@ mocked_random_int = 123456
 
 
 @pytest.mark.asyncio
-@patch("api.backend.routers.job_router.query")
-@patch("api.backend.routers.job_router.random.randint")
+@patch("api.backend.job.job_router.query")
+@patch("api.backend.job.job_router.random.randint")
 async def test_download(mock_randint: AsyncMock, mock_query: AsyncMock):
     # Ensure the mock returns immediately
     mock_query.return_value = mock_results

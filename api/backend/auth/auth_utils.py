@@ -1,8 +1,8 @@
 # STL
 import os
+import logging
 from typing import Any, Optional
 from datetime import datetime, timedelta
-import logging
 
 # PDM
 from jose import JWTError, jwt
@@ -12,11 +12,10 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 
 # LOCAL
-from api.backend.schemas import User, UserInDB, TokenData
-
+from api.backend.auth.schemas import User, UserInDB, TokenData
 from api.backend.database.common import query
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("Auth")
 
 _ = load_dotenv()
 
@@ -118,7 +117,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         LOG.error(f"Exception occurred: {e}")
         return EMPTY_USER
 
-    user = await get_user(email=token_data.email)
+    user = await get_user(email=token_data.email or "")
+
     if user is None:
         return EMPTY_USER
 
@@ -136,6 +136,7 @@ async def require_user(token: str = Depends(oauth2_scheme)):
         payload: Optional[dict[str, Any]] = jwt.decode(
             token, SECRET_KEY, algorithms=[ALGORITHM]
         )
+
         if not payload:
             raise credentials_exception
 
@@ -149,7 +150,7 @@ async def require_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credentials_exception
 
-    user = await get_user(email=token_data.email)
+    user = await get_user(email=token_data.email or "")
 
     if user is None:
         raise credentials_exception

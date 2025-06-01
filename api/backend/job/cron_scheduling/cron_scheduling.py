@@ -1,15 +1,19 @@
+# STL
+import uuid
+import logging
 import datetime
 from typing import Any
-import uuid
-from api.backend.database.common import insert, query
-from api.backend.models import CronJob
-from apscheduler.schedulers.background import BackgroundScheduler  # type: ignore
-from apscheduler.triggers.cron import CronTrigger  # type: ignore
 
+# PDM
+from apscheduler.triggers.cron import CronTrigger
+from apscheduler.schedulers.background import BackgroundScheduler
+
+# LOCAL
 from api.backend.job import insert as insert_job
-import logging
+from api.backend.schemas.cron import CronJob
+from api.backend.database.common import query, insert
 
-LOG = logging.getLogger("Cron Scheduler")
+LOG = logging.getLogger("Cron")
 
 
 def insert_cron_job(cron_job: CronJob):
@@ -17,6 +21,7 @@ def insert_cron_job(cron_job: CronJob):
     INSERT INTO cron_jobs (id, user_email, job_id, cron_expression, time_created, time_updated)
     VALUES (?, ?, ?, ?, ?, ?)
     """
+
     values = (
         cron_job.id,
         cron_job.user_email,
@@ -36,6 +41,7 @@ def delete_cron_job(id: str, user_email: str):
     DELETE FROM cron_jobs
     WHERE id = ? AND user_email = ?
     """
+
     values = (id, user_email)
     insert(query, values)
 

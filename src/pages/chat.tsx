@@ -1,1 +1,1 @@
-export { AI as default } from "../components/pages/chat/chat";
+export { AI as default } from "@/components/pages/chat";

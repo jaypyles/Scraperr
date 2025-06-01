@@ -1,3 +1,5 @@
-from .common import insert, QUERIES, update
+# LOCAL
+from .common import insert, update, connect
+from .schema import INIT_QUERY
 
-__all__ = ["insert", "QUERIES", "update"]
+__all__ = ["insert", "update", "INIT_QUERY", "connect"]

@@ -15,6 +15,7 @@ export const JobSubmitterInput = ({
 }: JobSubmitterInputProps) => {
   const { submittedURL, setSubmittedURL, isValidURL, rows } =
     useJobSubmitterProvider();
+
   return (
     <div className="flex flex-row space-x-4 items-center mb-2">
       <TextField

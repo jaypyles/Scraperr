@@ -1,1 +1,1 @@
-export { Agent as default } from "@/components/pages/agent";
+export { AgentPage as default } from "@/components/pages/agent";

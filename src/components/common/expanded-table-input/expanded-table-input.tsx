@@ -1,28 +1,29 @@
+import { parseJsonToEntries } from "@/lib/helpers/parse-json-to-entries";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
-  AccordionSummary,
-  TableCell,
-  TableRow,
-  Paper,
-  TableBody,
-  useTheme,
-  TextField,
-  Box,
-  Typography,
   AccordionDetails,
-  TableHead,
-  TableContainer,
+  AccordionSummary,
+  Box,
+  Paper,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { parseJsonToEntries } from "@/lib/helpers/parse-json-to-entries";
 
 export type ExpandedTableInputProps = {
   label: string;
   onChange: (value: any) => void;
   placeholder: string;
   urlParam: string;
+  name: string;
 };
 
 export const ExpandedTableInput = ({
@@ -30,6 +31,7 @@ export const ExpandedTableInput = ({
   onChange,
   placeholder,
   urlParam,
+  name,
 }: ExpandedTableInputProps) => {
   const theme = useTheme();
   const [value, setValue] = useState("");
@@ -150,6 +152,7 @@ export const ExpandedTableInput = ({
           size="small"
           error={jsonError !== null}
           helperText={jsonError ?? ""}
+          name={name}
         />
 
         {parsedHeaders && parsedHeaders.length > 0 && (

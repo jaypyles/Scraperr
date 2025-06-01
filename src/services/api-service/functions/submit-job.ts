@@ -11,6 +11,7 @@ export const submitJob = async (
   agentMode: boolean = false,
   prompt?: string
 ) => {
+  console.log(user);
   return await fetch(`/api/submit-scrape-job`, {
     method: "POST",
     headers: { "content-type": "application/json" },

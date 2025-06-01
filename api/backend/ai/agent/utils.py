@@ -1,10 +1,13 @@
-from lxml import html, etree
+# STL
 import re
+
+# PDM
+from lxml import html, etree
 from playwright.async_api import Page
 
-from api.backend.models import CapturedElement
-
-from api.backend.job.scraping.scraping_utils import clean_format_characters
+# LOCAL
+from api.backend.job.models import CapturedElement
+from api.backend.job.utils.text_utils import clean_text
 
 
 def convert_to_markdown(html_str: str):
@@ -231,7 +234,7 @@ async def capture_elements(
                 if link:
                     element_text += f" ({link})"
 
-                cleaned = clean_format_characters(element_text)
+                cleaned = clean_text(element_text)
 
                 if cleaned in seen_texts:
                     continue

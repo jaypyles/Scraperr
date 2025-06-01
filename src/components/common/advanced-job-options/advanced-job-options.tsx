@@ -15,6 +15,7 @@ export const AdvancedJobOptions = ({
   multiPageScrapeEnabled = true,
 }: AdvancedJobOptionsProps) => {
   const [open, setOpen] = useState(false);
+
   return (
     <Box sx={{ mb: 2 }}>
       <Link
@@ -36,6 +37,7 @@ export const AdvancedJobOptions = ({
       >
         <Typography variant="body2">Advanced Job Options</Typography>
       </Link>
+
       <AdvancedJobOptionsDialog
         open={open}
         onClose={() => setOpen(false)}

@@ -1,12 +1,13 @@
+# STL
+import logging
 import sqlite3
 from typing import Any, Optional
-from api.backend.constants import DATABASE_PATH
-from api.backend.utils import format_json, format_sql_row_to_python
-from api.backend.database.schema import INIT_QUERY
-from api.backend.database.queries import JOB_INSERT_QUERY, DELETE_JOB_QUERY
-import logging
 
-LOG = logging.getLogger(__name__)
+# LOCAL
+from api.backend.constants import DATABASE_PATH
+from api.backend.database.utils import format_json, format_sql_row_to_python
+
+LOG = logging.getLogger("Database")
 
 
 def connect():
@@ -25,8 +26,10 @@ def insert(query: str, values: tuple[Any, ...]):
     try:
         _ = cursor.execute(query, copy)
         connection.commit()
+
     except sqlite3.Error as e:
         LOG.error(f"An error occurred: {e}")
+
     finally:
         cursor.close()
         connection.close()
@@ -78,15 +81,9 @@ def update(query: str, values: Optional[tuple[Any, ...]] = None):
         return res.rowcount
     except sqlite3.Error as e:
         LOG.error(f"An error occurred: {e}")
+
     finally:
         cursor.close()
         connection.close()
 
     return 0
-
-
-QUERIES = {
-    "init": INIT_QUERY,
-    "insert_job": JOB_INSERT_QUERY,
-    "delete_job": DELETE_JOB_QUERY,
-}

@@ -3,24 +3,23 @@ import logging
 from collections.abc import Iterable, AsyncGenerator
 
 # PDM
+from ollama import Message
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse, StreamingResponse
 from openai.types.chat import ChatCompletionMessageParam
 
 # LOCAL
-from ollama import Message
-from api.backend.models import AI
-
 from api.backend.ai.clients import (
-    llama_client,
     llama_model,
-    openai_client,
-    open_ai_model,
     open_ai_key,
+    llama_client,
+    open_ai_model,
+    openai_client,
 )
+from api.backend.ai.schemas import AI
+from api.backend.routers.handle_exceptions import handle_exceptions
 
-
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("AI")
 
 ai_router = APIRouter()
 
@@ -64,6 +63,7 @@ chat_function = llama_chat if llama_client else openai_chat
 
 
 @ai_router.post("/ai")
+@handle_exceptions(logger=LOG)
 async def ai(c: AI):
     return StreamingResponse(
         chat_function(chat_messages=c.messages), media_type="text/plain"
@@ -71,5 +71,6 @@ async def ai(c: AI):
 
 
 @ai_router.get("/ai/check")
+@handle_exceptions(logger=LOG)
 async def check():
     return JSONResponse(content={"ai_enabled": bool(open_ai_key or llama_model)})

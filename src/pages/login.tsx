@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Button, TextField, Typography, Box } from "@mui/material";
+import { ApiService } from "@/services";
+import { useUser, useUserSettings } from "@/store/hooks";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import axios from "axios";
 import { useRouter } from "next/router";
-import { useAuth } from "../contexts/AuthContext";
-import { Constants, getUserSettings } from "../lib";
-import { useUserSettings } from "@/store/hooks";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { getUserSettings } from "../lib";
 
 type Mode = "login" | "signup";
 
@@ -18,9 +19,9 @@ const AuthForm: React.FC = () => {
   const [fullName, setFullName] = useState<string>("");
   const theme = useTheme();
   const router = useRouter();
-  const { login } = useAuth();
   const [registrationEnabled, setRegistrationEnabled] = useState<boolean>(true);
   const { setUserSettings } = useUserSettings();
+  const { setUserState } = useUser();
 
   const checkRegistrationEnabled = async () => {
     const response = await axios.get(`/api/check`);
@@ -35,27 +36,30 @@ const AuthForm: React.FC = () => {
     event.preventDefault();
     try {
       if (mode === "login") {
-        await login(email, password);
-        alert("Login successful");
+        const user = await ApiService.login(email, password);
 
         const userSettings = await getUserSettings();
         setUserSettings(userSettings);
 
+        setUserState({
+          isAuthenticated: true,
+          email: user.email,
+          username: user.username,
+          full_name: user.full_name,
+          loading: false,
+          error: null,
+        });
+
+        toast.success("Login successful");
         router.push("/");
       } else {
-        await axios.post(`/api/signup`, {
-          data: {
-            email: email,
-            password: password,
-            full_name: fullName,
-          },
-        });
-        alert("Signup successful");
-        router.push("/login");
+        await ApiService.register(email, password, fullName);
+        setMode("login");
+        toast.success("Registration successful");
       }
     } catch (error) {
       console.error(error);
-      alert(`${mode.charAt(0).toUpperCase() + mode.slice(1)} failed`);
+      toast.error("There was an error logging or registering");
     }
   };
 

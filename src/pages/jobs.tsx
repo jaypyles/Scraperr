@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { JobTable } from "../components/jobs";
-import { useAuth } from "../contexts/AuthContext";
 import { Job } from "../types";
 import { GetServerSideProps } from "next/types";
 import axios from "axios";
 import { parseCookies } from "nookies";
 import { fetchJobs } from "../lib";
-
+import { useUser } from "@/store/hooks";
 interface JobsProps {
   initialJobs: Job[];
   initialUser: any;
@@ -50,14 +49,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Jobs: React.FC<JobsProps> = ({ initialJobs, initialUser }) => {
-  const { user, setUser } = useAuth();
+  const { user, setUserState } = useUser();
   const [jobs, setJobs] = useState<Job[]>(initialJobs || []);
 
   useEffect(() => {
     if (!user && initialUser) {
-      setUser(initialUser);
+      setUserState(initialUser);
     }
-  }, [user, initialUser, setUser]);
+  }, [user, initialUser, setUserState]);
 
   useEffect(() => {
     fetchJobs(setJobs);

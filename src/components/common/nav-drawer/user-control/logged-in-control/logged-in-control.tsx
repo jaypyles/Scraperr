@@ -1,18 +1,23 @@
 import React from "react";
 import { Typography, Button } from "@mui/material";
 import classes from "./logged-in-control.module.css";
+import { useUser } from "@/store/hooks";
+import router from "next/router";
+import { useAuth } from "@/hooks/use-auth";
 
 type LoggedInControlProps = {
-  user: any;
-  logout: () => void;
   children?: React.ReactNode;
 };
 
-export const LoggedInControl = ({
-  user,
-  logout,
-  children,
-}: LoggedInControlProps) => {
+export const LoggedInControl = ({ children }: LoggedInControlProps) => {
+  const { user } = useUser();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
+
   if (children) {
     return <>{children}</>;
   }
@@ -24,7 +29,7 @@ export const LoggedInControl = ({
       </Typography>
       <Button
         variant="contained"
-        onClick={logout}
+        onClick={handleLogout}
         className={classes.userControlButton}
       >
         Logout

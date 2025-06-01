@@ -1,12 +1,13 @@
+import { Element, RawJobOptions, Result, SiteMap } from "@/types";
+import { initialJobOptions } from "@/types/job";
 import React, {
   createContext,
+  Dispatch,
   PropsWithChildren,
   useContext,
-  useState,
-  Dispatch,
   useMemo,
+  useState,
 } from "react";
-import { Element, Result, SiteMap } from "@/types";
 
 type JobSubmitterProviderType = {
   submittedURL: string;
@@ -25,6 +26,9 @@ type JobSubmitterProviderType = {
   setIsValidUrl: Dispatch<React.SetStateAction<boolean>>;
   siteMap: SiteMap | null;
   setSiteMap: Dispatch<React.SetStateAction<SiteMap | null>>;
+  jobOptions: RawJobOptions;
+  setJobOptions: Dispatch<React.SetStateAction<RawJobOptions>>;
+  closeSnackbar: () => void;
 };
 
 const JobSubmitterProvider = createContext<JobSubmitterProviderType>(
@@ -40,6 +44,14 @@ export const Provider = ({ children }: PropsWithChildren) => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<string>("error");
   const [isValidURL, setIsValidUrl] = useState<boolean>(true);
   const [siteMap, setSiteMap] = useState<SiteMap | null>(null);
+  const [jobOptions, setJobOptions] =
+    useState<RawJobOptions>(initialJobOptions);
+
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+    setSnackbarMessage("");
+    setSnackbarSeverity("error");
+  };
 
   const value: JobSubmitterProviderType = useMemo(
     () => ({
@@ -59,6 +71,9 @@ export const Provider = ({ children }: PropsWithChildren) => {
       setIsValidUrl,
       siteMap,
       setSiteMap,
+      jobOptions,
+      setJobOptions,
+      closeSnackbar,
     }),
     [
       submittedURL,
@@ -69,6 +84,8 @@ export const Provider = ({ children }: PropsWithChildren) => {
       snackbarSeverity,
       isValidURL,
       siteMap,
+      jobOptions,
+      closeSnackbar,
     ]
   );
 
@@ -79,6 +96,6 @@ export const Provider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const useJobSubmitterProvider = () => {
+export const useJobSubmitterProvider = (): JobSubmitterProviderType => {
   return useContext(JobSubmitterProvider);
 };

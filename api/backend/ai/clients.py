@@ -1,8 +1,9 @@
+# STL
 import os
 
-from openai import OpenAI
+# PDM
 from ollama import AsyncClient
-
+from openai import OpenAI
 
 # Load environment variables
 open_ai_key = os.getenv("OPENAI_KEY")

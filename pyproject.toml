@@ -42,6 +42,7 @@ dependencies = [
     "playwright>=1.52.0",
     "camoufox>=0.4.11",
     "html2text>=2025.4.15",
+    "proxy-py>=2.4.10",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -98,9 +99,9 @@ strictSetInference = true
 
 
 [tool.isort]
-length_sort = "1"
+length_sort = true
 profile = "black"
-sections = "STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+sections = ["STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 import_heading_stdlib = "STL"
 import_heading_thirdparty = "PDM"
 import_heading_firstparty = "LOCAL"

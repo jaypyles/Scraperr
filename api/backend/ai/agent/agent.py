@@ -1,29 +1,26 @@
+# STL
 import random
 from typing import Any
 
+# PDM
 from camoufox import AsyncCamoufox
 from playwright.async_api import Page
 
+# LOCAL
+from api.backend.ai.clients import ask_ollama, ask_open_ai, open_ai_key
+from api.backend.job.models import CapturedElement
+from api.backend.worker.logger import LOG
 from api.backend.ai.agent.utils import (
+    parse_response,
     capture_elements,
     convert_to_markdown,
-    parse_response,
 )
-
-from api.backend.ai.clients import ask_open_ai, ask_ollama, open_ai_key
-
 from api.backend.ai.agent.prompts import (
-    ELEMENT_EXTRACTION_PROMPT,
     EXTRACT_ELEMENTS_PROMPT,
+    ELEMENT_EXTRACTION_PROMPT,
 )
-
-from api.backend.job.scraping.collect_media import collect_media
-from api.backend.worker.logger import LOG
-
 from api.backend.job.scraping.add_custom import add_custom_items
-
-from api.backend.models import CapturedElement
-
+from api.backend.job.scraping.collect_media import collect_media
 
 ask_ai = ask_open_ai if open_ai_key else ask_ollama
 

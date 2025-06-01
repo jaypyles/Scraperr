@@ -1,5 +1,7 @@
+# STL
 from typing import Any
 
+# LOCAL
 from api.backend.worker.post_job_complete.models import PostJobCompleteOptions
 from api.backend.worker.post_job_complete.email_notifcation import (
     send_job_complete_email,
@@ -16,9 +18,10 @@ async def post_job_complete(job: dict[str, Any], options: PostJobCompleteOptions
     if not options.values():
         return
 
-    if options["channel"] == "discord":
-        discord_notification(job, options)
-    elif options["channel"] == "email":
-        send_job_complete_email(job, options)
-    else:
-        raise ValueError(f"Invalid channel: {options['channel']}")
+    match options["channel"]:
+        case "discord":
+            discord_notification(job, options)
+        case "email":
+            send_job_complete_email(job, options)
+        case _:
+            raise ValueError(f"Invalid channel: {options['channel']}")
