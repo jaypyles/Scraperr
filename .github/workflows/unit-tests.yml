@@ -36,22 +36,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/run-cypress-tests
+
+      - name: Run Cypress Tests
+        id: run-tests
+        uses: ./.github/actions/run-cypress-tests
         with:
           openai_key: ${{ secrets.OPENAI_KEY }}
+        continue-on-error: true  # Let the job continue even if Cypress fails
 
-  failure:
-    needs: cypress-tests
-    if: ${{ failure() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Check container logs
+      - name: Check container logs on failure
+        if: steps.run-tests.outcome == 'failure'
         run: |
-          echo "Checking scraperr_api container logs..."
+          echo "Cypress tests failed. Dumping container logs..."
           docker logs scraperr_api || true
+
+      # Optional: re-raise the failure so the job still fails
+      - name: Fail job if Cypress failed
+        if: steps.run-tests.outcome == 'failure'
+        run: exit 1
+
 
   success-message:
     runs-on: ubuntu-latest
