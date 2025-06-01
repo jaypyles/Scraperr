@@ -103,8 +103,8 @@ export const openAdvancedJobOptions = () => {
 };
 
 export const selectJobFromSelector = () => {
-  cy.get("div[id='select-job']", { timeout: 10000 }).click().first();
-  cy.get("li[role='option']").click().first();
+  cy.get("div[id='select-job']", { timeout: 10000 }).first().click();
+  cy.get("li[role='option']", { timeout: 10000 }).first().click();
 };
 
 export const addMedia = () => {
