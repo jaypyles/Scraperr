@@ -27,6 +27,8 @@ export const signup = () => {
 
 export const login = () => {
   cy.intercept("POST", "/api/token").as("token");
+  cy.intercept("GET", "/api/me").as("me");
+  cy.intercept("GET", "/api/check").as("check");
 
   cy.visit("/").then(() => {
     cy.get("body").then(() => {
@@ -43,9 +45,23 @@ export const login = () => {
               cy.log("No response received!");
               throw new Error("token request did not return a response");
             }
-
-            cy.url().should("not.include", "/login");
           });
+
+          cy.wait("@me").then((interception) => {
+            if (!interception.response) {
+              cy.log("No response received!");
+              throw new Error("me request did not return a response");
+            }
+          });
+
+          cy.wait("@check").then((interception) => {
+            if (!interception.response) {
+              cy.log("No response received!");
+              throw new Error("check request did not return a response");
+            }
+          });
+
+          cy.url().should("not.include", "/login");
         });
     });
   });

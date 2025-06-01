@@ -18,20 +18,3 @@ import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
-
-before(() => {
-  cy.request({
-    method: "POST",
-    url: "/api/signup",
-    body: {
-      email: "test@test.com",
-      password: "password",
-      fullName: "John Doe",
-    },
-    failOnStatusCode: false,
-  }).then((response) => {
-    if (response.status !== 200 && response.status !== 201) {
-      console.warn("Signup failed:", response.status, response.body);
-    }
-  });
-});

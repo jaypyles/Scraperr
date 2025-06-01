@@ -1,5 +1,15 @@
 export const cleanUpJobs = () => {
+  cy.intercept("POST", "/api/retrieve").as("retrieve");
+
   cy.visit("/jobs");
+
+  cy.wait("@retrieve", { timeout: 10000 }).then((interception) => {
+    if (!interception.response) {
+      cy.log("No response received!");
+      throw new Error("retrieve request did not return a response");
+    }
+  });
+
   cy.get("tbody tr")
     .first()
     .within(() => {
