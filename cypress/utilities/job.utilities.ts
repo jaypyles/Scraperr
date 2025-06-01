@@ -103,7 +103,7 @@ export const openAdvancedJobOptions = () => {
 };
 
 export const selectJobFromSelector = () => {
-  cy.get("div[id='select-job']").click();
+  cy.get("div[id='select-job']", { timeout: 10000 }).click().first();
   cy.get("li[role='option']").click().first();
 };
 
