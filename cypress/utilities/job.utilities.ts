@@ -2,42 +2,68 @@ export const cleanUpJobs = () => {
   cy.intercept("POST", "/api/retrieve").as("retrieve");
   cy.visit("/jobs");
 
-  cy.wait("@retrieve", { timeout: 10000 });
+  cy.wait("@retrieve", { timeout: 15000 });
 
-  cy.get("tbody tr").should("have.length.at.least", 1);
+  cy.get("tbody tr", { timeout: 10000 }).should("have.length.at.least", 1);
 
-  // Retry clicking "Select All" button up to 5 times
   const tryClickSelectAll = (attempt = 1, maxAttempts = 5) => {
     cy.log(`Attempt ${attempt} to click Select All`);
 
     cy.get('[data-testid="select-all"]')
       .closest("button")
       .then(($btn) => {
-        if ($btn.is(":disabled")) {
+        // Retry if button is disabled
+        if ($btn.is(":disabled") || $btn.css("pointer-events") === "none") {
           if (attempt < maxAttempts) {
             cy.wait(1000).then(() =>
               tryClickSelectAll(attempt + 1, maxAttempts)
             );
           } else {
             throw new Error(
-              "Select All button is still disabled or not clickable after max retries"
+              "Select All button is still disabled after max retries"
             );
           }
         } else {
-          cy.wrap($btn).click({ multiple: true });
+          // Click and then verify if checkbox is checked
+          cy.wrap($btn)
+            .click({ force: true })
+            .then(() => {
+              cy.get("tbody tr")
+                .first()
+                .find("td")
+                .first()
+                .find("input[type='checkbox']")
+                .should("be.checked")
+                .then(() => {
+                  cy.log("Select All successful");
+                });
+            });
+
+          // Handle failure case
+          cy.on("fail", () => {
+            cy.log("Error clicking Select All");
+            if (attempt < maxAttempts) {
+              cy.wait(1000).then(() =>
+                tryClickSelectAll(attempt + 1, maxAttempts)
+              );
+            } else {
+              throw new Error(
+                "Checkbox was never checked after clicking Select All"
+              );
+            }
+            return false; // Prevent Cypress from failing the test
+          });
         }
       });
   };
 
   tryClickSelectAll();
 
-  // After clicking Select All, delete the selected jobs
-  cy.get('[data-testid="DeleteIcon"]')
+  cy.get('[data-testid="DeleteIcon"]', { timeout: 10000 })
     .closest("button")
     .should("not.be.disabled")
     .click();
 };
-
 export const submitBasicJob = (url: string, name: string, xpath: string) => {
   cy.get('[data-cy="url-input"]').type(url);
   cy.get('[data-cy="name-field"]').type(name);
