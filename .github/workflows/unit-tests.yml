@@ -39,7 +39,9 @@ jobs:
       - uses: ./.github/actions/run-cypress-tests
         with:
           openai_key: ${{ secrets.OPENAI_KEY }}
-  failure: 
+
+  failure:
+    needs: cypress-tests
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
@@ -50,12 +52,6 @@ jobs:
         run: |
           echo "Checking scraperr_api container logs..."
           docker logs scraperr_api || true
-
-      - name: Send Discord Message
-        uses: jaypyles/discord-webhook-action@v1.0.0
-        with:
-          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-
 
   success-message:
     runs-on: ubuntu-latest
