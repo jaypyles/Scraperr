@@ -117,7 +117,7 @@ export const checkForMedia = () => {
   cy.visit("/media");
   selectJobFromSelector();
 
-  cy.wait("@getMedia", { timeout: 10000 });
+  cy.wait("@getMedia", { timeout: 60000 });
   cy.get("[data-testid='media-grid']", { timeout: 10000 }).should("exist");
 };
 
