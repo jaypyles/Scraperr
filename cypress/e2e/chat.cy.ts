@@ -1,5 +1,6 @@
 import { login } from "../utilities/authentication.utils";
 import {
+  cleanUpJobs,
   selectJobFromSelector,
   submitBasicJob,
   waitForJobCompletion,
@@ -11,6 +12,10 @@ describe.only("Chat", () => {
     mockLogin();
     login();
     cy.visit("/");
+  });
+
+  afterEach(() => {
+    cleanUpJobs();
   });
 
   it.only("should be able to chat", () => {

@@ -1,22 +1,40 @@
 export const cleanUpJobs = () => {
-  cy.intercept("POST", "/api/retrieve").as("retrieve");
+  const maxRetries = 3;
+  let retryCount = 0;
 
-  cy.visit("/jobs");
+  const attemptCleanup = () => {
+    cy.intercept("POST", "/api/retrieve").as("retrieve");
 
-  cy.wait("@retrieve", { timeout: 10000 }).then((interception) => {
-    if (!interception.response) {
-      cy.log("No response received!");
-      throw new Error("retrieve request did not return a response");
-    }
-  });
+    cy.visit("/jobs");
 
-  cy.get("tbody tr")
-    .first()
-    .within(() => {
-      cy.get('input[type="checkbox"]').click();
+    cy.wait("@retrieve", { timeout: 10000 }).then((interception) => {
+      if (!interception.response) {
+        cy.log("No response received!");
+        throw new Error("retrieve request did not return a response");
+      }
     });
 
-  cy.get("[data-testid='DeleteIcon']").click();
+    cy.get("tbody tr").should("have.length", 1);
+
+    cy.get('[data-testid="select-all"]').click();
+    cy.get("[data-testid='DeleteIcon']", { timeout: 10000 }).click();
+  };
+
+  const retry = () => {
+    if (retryCount < maxRetries) {
+      retryCount++;
+      cy.log(`Retry attempt ${retryCount} of ${maxRetries}`);
+      attemptCleanup();
+    } else {
+      cy.log("Max retries reached. Cleanup failed.");
+    }
+  };
+
+  attemptCleanup();
+  cy.on("fail", () => {
+    retry();
+    return false;
+  });
 };
 
 export const submitBasicJob = (url: string, name: string, xpath: string) => {

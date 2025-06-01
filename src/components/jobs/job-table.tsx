@@ -150,7 +150,12 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
             </Typography>
             <Tooltip title="Select All">
               <span>
-                <IconButton color="primary" onClick={handleSelectAll}>
+                <IconButton
+                  color="primary"
+                  onClick={handleSelectAll}
+                  data-testid="select-all"
+                  aria-label="Select All"
+                >
                   <SelectAllIcon />
                 </IconButton>
               </span>
