@@ -104,7 +104,7 @@ export const openAdvancedJobOptions = () => {
 
 export const selectJobFromSelector = () => {
   cy.get("div[id='select-job']").click();
-  cy.get("li[role='option']").click();
+  cy.get("li[role='option']").click().first();
 };
 
 export const addMedia = () => {
