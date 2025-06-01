@@ -160,13 +160,32 @@ def convert_to_langchain_messages(messages: List[Dict[str, Any]]) -> List[BaseMe
 
 
 async def ask_llm(prompt: str) -> str:
+    """Simple non-streaming LLM query (similar to your old ask_open_ai/ask_ollama)."""
     if not llm_instance:
         raise ValueError("LLM client not initialized")
     
     try:
         messages = [HumanMessage(content=prompt)]
         response = await llm_instance.ainvoke(messages)
-        return response.content or ""
+        
+        content = response.content
+        if not content:
+            return ""
+        
+        if not isinstance(content, list):
+            return str(content)
+        
+        text_parts: List[str] = []
+        for item in content:
+            if not isinstance(item, dict):
+                text_parts.append(str(item))
+            else:
+                text_value = item.get("text")
+                if text_value is not None:
+                    text_parts.append(str(text_value))
+                    
+        return " ".join(text_parts) if text_parts else ""
+            
     except Exception as e:
         LOG.error(f"Error in LLM query: {e}")
         raise
