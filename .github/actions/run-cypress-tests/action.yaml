@@ -22,9 +22,9 @@ runs:
 
     - name: Setup Docker project
       shell: bash
-      env:
-        OPENAI_KEY: ${{ inputs.openai_key }}
-      run: make build-ci up-ci
+      run: |
+        export OPENAI_KEY="${{ inputs.openai_key }}"
+        make build-ci up-ci
 
     - name: Install dependencies
       shell: bash
