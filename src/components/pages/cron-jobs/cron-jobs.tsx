@@ -1,19 +1,18 @@
-import { Job, CronJob } from "@/types/job";
-import { useState, useEffect } from "react";
-import { CreateCronJobs } from "./create-cron-jobs";
+import { CronJob, Job } from "@/types/job";
 import {
+  Box,
+  Button,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
-  Button,
-  Box,
-  Typography,
   useTheme,
 } from "@mui/material";
-import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { CreateCronJobs } from "./create-cron-jobs";
 
+import { ApiService } from "@/services/api-service";
 export type CronJobsProps = {
   initialJobs: Job[];
   initialCronJobs: CronJob[];
@@ -37,14 +36,9 @@ export const CronJobs = ({
   }, [initialJobs, initialCronJobs, initialUser]);
 
   const handleDeleteCronJob = async (id: string) => {
-    const token = Cookies.get("token");
-    const response = await fetch("/api/delete-cron-job", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ data: { id, user_email: user.email } }),
+    const response = await ApiService.deleteCronJobs({
+      id,
+      user_email: user.email,
     });
 
     if (response.ok) {

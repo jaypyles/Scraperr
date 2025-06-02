@@ -1,28 +1,28 @@
-import { JobSelector } from "@/components/ai";
-import { fetchJobs } from "@/lib";
+import { JobSelector } from "@/components/common/job-selector";
+import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
 import { useUserSettings } from "@/store/hooks";
 import { Job } from "@/types";
 import {
-  Box,
-  useTheme,
-  Typography,
-  CircularProgress,
   Alert,
+  Box,
+  CircularProgress,
   Paper,
+  Typography,
+  useTheme,
 } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const RecordingId = () => {
   const searchParams = useSearchParams();
   const theme = useTheme();
   const { userSettings } = useUserSettings();
+  const { jobs, setJobs } = useGetCurrentJobs();
   const router = useRouter();
 
   const [error, setError] = useState<string | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const currentId = searchParams.get("id");
@@ -32,10 +32,6 @@ export const RecordingId = () => {
       router.push(`/recordings?id=${job.id}`);
     }
   };
-
-  useEffect(() => {
-    fetchJobs(setJobs);
-  }, []);
 
   useEffect(() => {
     if (!userSettings.recordingsEnabled) {
@@ -110,7 +106,6 @@ export const RecordingId = () => {
           <JobSelector
             setSelectedJob={handleSelectJob}
             selectedJob={selectedJob}
-            setJobs={setJobs}
             jobs={jobs}
             sxProps={{}}
           />

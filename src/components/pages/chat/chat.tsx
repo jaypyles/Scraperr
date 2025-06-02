@@ -1,30 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
+import { JobSelector } from "@/components/common/job-selector";
+import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
+import { checkAI, fetchJob, updateJob } from "@/lib";
+import { Job, Message } from "@/types";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import SendIcon from "@mui/icons-material/Send";
 import {
   Box,
-  TextField,
-  Typography,
-  Paper,
-  useTheme,
   IconButton,
+  Paper,
+  TextField,
   Tooltip,
+  Typography,
+  useTheme,
 } from "@mui/material";
-import { JobSelector } from "../../ai";
-import { Job, Message } from "../../../types";
 import { useSearchParams } from "next/navigation";
-import { fetchJob, fetchJobs, updateJob, checkAI } from "../../../lib";
-import SendIcon from "@mui/icons-material/Send";
-import EditNoteIcon from "@mui/icons-material/EditNote";
+import React, { useEffect, useState } from "react";
 
 export const AI: React.FC = () => {
   const theme = useTheme();
+  const searchParams = useSearchParams();
+  const { jobs, setJobs } = useGetCurrentJobs();
+
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [aiEnabled, setAiEnabled] = useState<boolean>(false);
-  const [jobs, setJobs] = useState<Job[]>([]);
   const [thinking, setThinking] = useState<boolean>(false);
-
-  const searchParams = useSearchParams();
 
   const getJobFromParam = async () => {
     const jobId = searchParams.get("job");
@@ -134,10 +135,6 @@ export const AI: React.FC = () => {
     setMessages([]);
   };
 
-  useEffect(() => {
-    fetchJobs(setJobs);
-  }, []);
-
   return (
     <Box
       sx={{
@@ -187,7 +184,6 @@ export const AI: React.FC = () => {
               <JobSelector
                 selectedJob={selectedJob}
                 setSelectedJob={setSelectedJob}
-                setJobs={setJobs}
                 jobs={jobs}
                 sxProps={{
                   position: "absolute",
@@ -242,6 +238,9 @@ export const AI: React.FC = () => {
                         marginLeft: message.role === "user" ? "auto" : "",
                         maxWidth: "40%",
                       }}
+                      data-cy={
+                        message.role === "user" ? "user-message" : "ai-message"
+                      }
                     >
                       <Typography variant="body1" sx={{ color: "white" }}>
                         {message.content}
@@ -309,6 +308,7 @@ export const AI: React.FC = () => {
                 }
               }}
               sx={{ borderRadius: "8px" }}
+              data-cy="message-input"
             />
 
             <Tooltip title="Send" placement="top">
@@ -319,6 +319,7 @@ export const AI: React.FC = () => {
                 onClick={() => {
                   handleMessageSend(currentMessage);
                 }}
+                data-cy="send-message"
               >
                 <SendIcon />
               </IconButton>

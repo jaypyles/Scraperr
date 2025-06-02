@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useAuth } from "../../../contexts/AuthContext";
 import { Box, Drawer } from "@mui/material";
 
 import { QuickSettings } from "../../nav/quick-settings";
@@ -21,8 +20,6 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
   toggleTheme,
   isDarkMode,
 }) => {
-  const { logout, user, isAuthenticated } = useAuth();
-
   return (
     <Drawer
       variant="permanent"
@@ -48,12 +45,7 @@ export const NavDrawer: React.FC<NavDrawerProps> = ({
           <NavItems />
         </div>
         <div>
-          <UserControl
-            isAuthenticated={isAuthenticated}
-            user={user}
-            logout={logout}
-            className={classes.userControl}
-          />
+          <UserControl className={classes.userControl} />
           <QuickSettings toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
         </div>
       </Box>

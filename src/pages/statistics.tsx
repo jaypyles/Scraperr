@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart, registerables } from "chart.js";
 import { Box, Typography, useTheme } from "@mui/material";
-import { useAuth } from "../contexts/AuthContext";
-import { Constants } from "../lib";
 import { parseCookies } from "nookies";
 import { GetServerSideProps } from "next/types";
 import Cookies from "js-cookie";
+import { useUser } from "@/store/hooks";
 
 Chart.register(...registerables);
 
@@ -70,7 +69,7 @@ const Statistics: React.FC<StatProps> = ({ averageElement, averageJob }) => {
   const [elementsData, setElementsData] =
     useState<averageElement[]>(averageElement);
   const [jobsData, setJobsData] = useState<averageJob[]>(averageJob);
-  const { user } = useAuth();
+  const { user } = useUser();
   const token = Cookies.get("token");
 
   const fetchElementsData = async () => {

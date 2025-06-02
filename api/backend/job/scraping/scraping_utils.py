@@ -1,10 +1,17 @@
+# STL
 import asyncio
+import logging
 from typing import Set, Tuple
+from urllib.parse import urlparse
+
+# PDM
+from lxml import etree
 from playwright.async_api import Page
 
-from api.backend.utils import LOG
-
+# LOCAL
 from api.backend.job.scraping.collect_media import collect_media as collect_media_utils
+
+LOG = logging.getLogger("Job")
 
 
 async def scrape_content(
@@ -32,14 +39,20 @@ async def scrape_content(
     return html
 
 
-def clean_format_characters(text: str) -> str:
-    text = text.strip()
-    text = text.replace("\n", " ")
-    text = text.replace("\t", " ")
-    text = text.replace("\r", " ")
-    text = text.replace("\f", " ")
-    text = text.replace("\v", " ")
-    text = text.replace("\b", " ")
-    text = text.replace("\a", " ")
+def is_same_domain(url: str, original_url: str) -> bool:
+    parsed_url = urlparse(url)
+    parsed_original_url = urlparse(original_url)
+    return parsed_url.netloc == parsed_original_url.netloc or parsed_url.netloc == ""
 
-    return text
+
+def clean_xpath(xpath: str) -> str:
+    parts = xpath.split("/")
+    clean_parts = ["/" if part == "" else part for part in parts]
+    clean_xpath = "//".join(clean_parts).replace("////", "//").replace("'", "\\'")
+    LOG.info(f"Cleaned xpath: {clean_xpath}")
+
+    return clean_xpath
+
+
+def sxpath(context: etree._Element, xpath: str):
+    return context.xpath(xpath)

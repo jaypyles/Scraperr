@@ -1,0 +1,1 @@
+TEST_DB_PATH = "tests/test_db.sqlite"

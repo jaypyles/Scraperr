@@ -1,14 +1,17 @@
-import logging
+# STL
 import asyncio
+import logging
 from copy import deepcopy
 from typing import Any
 
+# PDM
 from playwright.async_api import Page
 
+# LOCAL
 from api.backend.job.models.site_map import Action, SiteMap
 from api.backend.job.scraping.scraping_utils import scrape_content
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("Job")
 
 
 def clear_done_actions(site_map: dict[str, Any]) -> dict[str, Any]:

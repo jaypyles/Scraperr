@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:5f4c90b42c3b35194a7c2af8b46b7c28127e25e836a779e85aae0df2bd0e69eb"
+content_hash = "sha256:1a65c1e288d2c6827fc6866d3bfe6a9b8707b2ca895d488f4a9b11cd579c4359"
 
 [[metadata.targets]]
 requires_python = ">=3.10"
@@ -2509,6 +2509,17 @@ files = [
     {file = "propcache-0.3.1-cp313-cp313t-win_amd64.whl", hash = "sha256:e7fb9a84c9abbf2b2683fa3e7b0d7da4d8ecf139a1c635732a8bda29c5214b0e"},
     {file = "propcache-0.3.1-py3-none-any.whl", hash = "sha256:9a8ecf38de50a7f518c21568c80f985e776397b902f1ce0b01f799aba1608b40"},
     {file = "propcache-0.3.1.tar.gz", hash = "sha256:40d980c33765359098837527e18eddefc9a24cea5b45e078a7f3bb5b032c6ecf"},
+]
+
+[[package]]
+name = "proxy-py"
+version = "2.4.10"
+requires_python = ">=3.6"
+summary = "\\u26a1 Fast \\u2022 \\U0001fab6 Lightweight \\u2022 \\U0001f51f Dependency \\u2022 \\U0001f50c Pluggable \\u2022 \\U0001f608 TLS interception \\u2022 \\U0001f512 DNS-over-HTTPS \\u2022 \\U0001f525 Poor Mans VPN \\u2022 \\u23ea Reverse & \\u23e9 Forward \\u2022 \\U0001f46e\\U0001f3ff Proxy Server framework \\u2022 \\U0001f310 Web Server framework \\u2022 \\u27b5 \\u27b6 \\u27b7 \\u27a0 PubSub framework \\u2022 \\U0001f477 Work acceptor & executor framework."
+groups = ["default"]
+files = [
+    {file = "proxy.py-2.4.10-py3-none-any.whl", hash = "sha256:ef3a31f6ef3be6ff78559c0e68198523bfe2fb1e820bb16686750c1bb5baf9e8"},
+    {file = "proxy_py-2.4.10.tar.gz", hash = "sha256:41b9e9d3aae6f80e2304d3726e8e9c583a510d8de224eada53d115f48a63a9ce"},
 ]
 
 [[package]]

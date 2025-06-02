@@ -1,3 +1,4 @@
-from apscheduler.schedulers.background import BackgroundScheduler  # type: ignore
+# PDM
+from apscheduler.schedulers.background import BackgroundScheduler
 
 scheduler = BackgroundScheduler()

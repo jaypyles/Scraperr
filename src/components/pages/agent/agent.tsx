@@ -1,35 +1,41 @@
-import { validateURL } from "@/lib/helpers/validate-url";
-import { ApiService } from "@/services";
+import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
+import { Disabled } from "@/components/common/disabled/disabled";
+import {
+  ErrorSnackbar,
+  JobNotifySnackbar,
+} from "@/components/common/snackbars";
+import {
+  Provider as JobSubmitterProvider,
+  useJobSubmitterProvider,
+} from "@/components/submit/job-submitter/provider";
+import { useAdvancedJobOptions } from "@/hooks/use-advanced-job-options";
+import { useSubmitJob } from "@/hooks/use-submit-job";
+import { checkAI } from "@/lib";
+import { useUser } from "@/store/hooks";
 import {
   Box,
   Button,
   Divider,
-  Snackbar,
-  Alert,
   TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
-import { useAdvancedJobOptions } from "@/lib/hooks/use-advanced-job-options/use-advanced-job-options";
-import { checkAI } from "@/lib";
-import { Disabled } from "@/components/common/disabled/disabled";
+import { useEffect, useState } from "react";
 
 export const Agent = () => {
+  const router = useRouter();
+  const theme = useTheme();
+
+  const { user } = useUser();
+  const { jobOptions, setJobOptions } = useAdvancedJobOptions();
+  const { submitJob, error } = useSubmitJob();
+  const { snackbarOpen, snackbarMessage, snackbarSeverity, closeSnackbar } =
+    useJobSubmitterProvider();
+
   const [url, setUrl] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [urlError, setUrlError] = useState<string | null>(null);
   const [aiEnabled, setAiEnabled] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<
-    "success" | "error" | "info" | "warning"
-  >("info");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const router = useRouter();
-  const { jobOptions, setJobOptions } = useAdvancedJobOptions();
-  const theme = useTheme();
 
   useEffect(() => {
     if (router.query.url) {
@@ -45,91 +51,8 @@ export const Agent = () => {
     checkAI(setAiEnabled);
   }, []);
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
-
-  const ErrorSnackbar = () => {
-    return (
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="error">
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    );
-  };
-
-  const NotifySnackbar = () => {
-    const goTo = () => {
-      router.push("/jobs");
-    };
-
-    const action = (
-      <Button color="inherit" size="small" onClick={goTo}>
-        Go To Job
-      </Button>
-    );
-
-    return (
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="info" action={action}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    );
-  };
-
   const handleSubmit = async () => {
-    if (!validateURL(url)) {
-      setUrlError("Please enter a valid URL.");
-      return;
-    }
-
-    setUrlError(null);
-
-    await ApiService.submitJob(
-      url,
-      [],
-      "",
-      {
-        collect_media: jobOptions.collect_media,
-        multi_page_scrape: jobOptions.multi_page_scrape,
-      },
-      jobOptions.custom_headers,
-      jobOptions.custom_cookies,
-      null,
-      true,
-      prompt
-    )
-      .then(async (response) => {
-        if (!response.ok) {
-          return response.json().then((error) => {
-            throw new Error(error.error);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setSnackbarMessage(
-          `Agent job: ${data.id} submitted successfully.` ||
-            "Agent job submitted successfully."
-        );
-        setSnackbarSeverity("info");
-        setSnackbarOpen(true);
-      })
-      .catch((error) => {
-        setSnackbarMessage(error || "An error occurred.");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
-      });
+    await submitJob(url, [], user, jobOptions, null, true, prompt);
   };
 
   if (!aiEnabled) {
@@ -178,13 +101,14 @@ export const Agent = () => {
         <TextField
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          error={!!urlError}
-          helperText={urlError}
+          error={!!error}
+          helperText={error}
           autoComplete="agent-url"
           fullWidth
           placeholder="https://www.example.com"
           variant="outlined"
           size="small"
+          data-cy="url-input"
         />
         <Typography variant="body1" sx={{ fontWeight: 500, marginBottom: 0 }}>
           Prompt
@@ -197,6 +121,7 @@ export const Agent = () => {
           placeholder="Collect all the links on the page"
           variant="outlined"
           size="small"
+          data-cy="prompt-input"
         />
         <Box
           sx={{
@@ -221,8 +146,28 @@ export const Agent = () => {
             Submit
           </Button>
         </Box>
-        {snackbarSeverity === "info" ? <NotifySnackbar /> : <ErrorSnackbar />}
+        {snackbarSeverity === "info" ? (
+          <JobNotifySnackbar
+            open={snackbarOpen}
+            onClose={closeSnackbar}
+            message={snackbarMessage}
+          />
+        ) : (
+          <ErrorSnackbar
+            open={snackbarOpen}
+            onClose={closeSnackbar}
+            message={snackbarMessage}
+          />
+        )}
       </Box>
     </Box>
+  );
+};
+
+export const AgentPage = () => {
+  return (
+    <JobSubmitterProvider>
+      <Agent />
+    </JobSubmitterProvider>
   );
 };

@@ -1,6 +1,8 @@
+# STL
 from typing import Any
 
-from api.backend.utils import clean_text
+# LOCAL
+from api.backend.job.utils.text_utils import clean_text
 
 
 def stream_md_from_job_results(jobs: list[dict[str, Any]]):

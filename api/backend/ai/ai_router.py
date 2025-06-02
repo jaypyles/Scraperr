@@ -19,8 +19,10 @@ from api.backend.ai.clients import (
     AI_PROVIDER_BACKEND,
     convert_to_langchain_messages,
 )
+from api.backend.ai.schemas import AI
+from api.backend.routers.handle_exceptions import handle_exceptions
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger("AI")
 ai_router = APIRouter()
 
 async def langchain_chat(messages: List[BaseMessage]) -> AsyncGenerator[str, None]:
@@ -68,42 +70,15 @@ async def langchain_chat(messages: List[BaseMessage]) -> AsyncGenerator[str, Non
 chat_function = langchain_chat if llm_instance else None
 
 @ai_router.post("/ai")
-async def ai(request_data: AIRequestModel):
-    if not chat_function or not provider_info.get("configured", False):
-        error_detail = provider_info.get("error") or "AI provider not configured"
-        LOG.error(f"AI request failed: {error_detail}")
-        raise HTTPException(status_code=503, detail=error_detail)
-    
-    if not request_data.messages:
-        raise HTTPException(status_code=400, detail="No messages provided")
-    
-    if not all(isinstance(msg, dict) for msg in request_data.messages):
-        raise HTTPException(
-            status_code=400, 
-            detail="Invalid message format. Expected list of message dictionaries."
-        )
-    
-    try:
-        lc_messages = convert_to_langchain_messages(
-            cast(List[Dict[str, Any]], request_data.messages)
-        )
-        
-        LOG.info(
-            f"Processing AI request. Provider: {provider_info.get('name')}, "
-            f"Model: {provider_info.get('model')}, Messages: {len(lc_messages)}"
-        )
-        
-        return StreamingResponse(
-            chat_function(lc_messages),
-            media_type="text/plain"
-        )
-    
-    except Exception as e:
-        LOG.error(f"Error processing AI request: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
+@handle_exceptions(logger=LOG)
+async def ai(c: AI):
+    return StreamingResponse(
+        chat_function(chat_messages=c.messages), media_type="text/plain"
+    )
 
 
 @ai_router.get("/ai/check")
+@handle_exceptions(logger=LOG)
 async def check():
     return JSONResponse(content={
         "ai_system_enabled": bool(llm_instance and provider_info.get("configured", False)),

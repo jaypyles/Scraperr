@@ -61,3 +61,6 @@ up-ci:
 
 cypress-start:
 	DISPLAY=:0 npx cypress open
+
+cypress-run:
+	npx cypress run

@@ -1,20 +1,20 @@
-import { JobSelector } from "@/components/ai";
-import { fetchJobs } from "@/lib";
+import { JobSelector } from "@/components/common/job-selector";
+import { MediaViewer } from "@/components/common/media-viewer";
+import { TileGridView } from "@/components/common/media-viewer/tile-grid-view";
+import { useGetCurrentJobs } from "@/hooks/use-get-current-jobs";
 import { Job } from "@/types";
 import {
-  Box,
-  useTheme,
-  Typography,
-  CircularProgress,
   Alert,
+  Box,
+  CircularProgress,
   Paper,
-  Tabs,
   Tab,
+  Tabs,
+  Typography,
+  useTheme,
 } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { TileGridView } from "@/components/common/media-viewer/tile-grid-view";
-import { MediaViewer } from "@/components/common/media-viewer";
+import { useEffect, useState } from "react";
 
 export interface MediaFiles {
   audio: string[];
@@ -31,10 +31,10 @@ export const MediaId = () => {
   const searchParams = useSearchParams();
   const theme = useTheme();
   const router = useRouter();
+  const { jobs } = useGetCurrentJobs();
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [mediaFiles, setMediaFiles] = useState<MediaFiles | null>(null);
   const [activeTab, setActiveTab] = useState<string>("images");
@@ -59,11 +59,6 @@ export const MediaId = () => {
     setSelectedMedia(fileName);
     router.push(`/media?id=${currentId}&type=${activeTab}&file=${fileName}`);
   };
-
-  // Fetch jobs on mount
-  useEffect(() => {
-    fetchJobs(setJobs);
-  }, []);
 
   // Set selected job when currentId changes
   useEffect(() => {
@@ -201,7 +196,6 @@ export const MediaId = () => {
           <JobSelector
             setSelectedJob={handleSelectJob}
             selectedJob={selectedJob}
-            setJobs={setJobs}
             jobs={jobs}
           />
         </Box>
