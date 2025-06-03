@@ -78,7 +78,7 @@ jobs:
         uses: jaypyles/discord-webhook-action@v1.0.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          content: "Scraperr Successfully Built Docker Images"
+          content: "Scraperr Successfully Built Docker Images (v${{ inputs.version }})"
           username: "Scraperr CI"
           embed-title: "✅ Deployment Status"
           embed-description: "Scraperr successfully built docker images."
