@@ -10,6 +10,8 @@ on:
         required: true
       dockerhub_token:
         required: true
+      repo_token:
+        required: true
 
 jobs:
   build:
