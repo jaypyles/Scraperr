@@ -12,10 +12,11 @@ jobs:
             openai_key: ${{ secrets.OPENAI_KEY }}
 
     version:
+        needs: tests
         uses: ./.github/workflows/version.yml
 
     build-and-deploy:
-        needs: tests
+        needs: version
         uses: ./.github/workflows/docker-image.yml
         secrets:
             dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
