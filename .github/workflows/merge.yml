@@ -22,3 +22,5 @@ jobs:
         secrets:
             dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
             dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+        with:
+            version: ${{ needs.version.outputs.version }}
