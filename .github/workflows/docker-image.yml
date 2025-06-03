@@ -64,6 +64,7 @@ jobs:
         uses: ./.github/actions/push-to-helm
         with:
           app-repo-token: ${{ secrets.GPAT_TOKEN }}
+          version: ${{ inputs.version }}
 
   success-message:
     runs-on: ubuntu-latest
