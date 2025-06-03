@@ -10,6 +10,7 @@ jobs:
         uses: ./.github/workflows/tests.yml
         secrets:
             openai_key: ${{ secrets.OPENAI_KEY }}
+            discord_webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     version:
         needs: tests
