@@ -7,16 +7,16 @@ on:
 
 jobs:
     tests:
-        uses: ./.github/workflows/reusable/tests.yml
+        uses: ./.github/workflows/tests.yml
         secrets:
             openai_key: ${{ secrets.OPENAI_KEY }}
 
     version:
-        uses: ./.github/workflows/reusable/version.yml
+        uses: ./.github/workflows/version.yml
 
     build-and-deploy:
         needs: tests
-        uses: ./.github/workflows/reusable/docker-image.yml
+        uses: ./.github/workflows/docker-image.yml
         secrets:
             dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
             dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}

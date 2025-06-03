@@ -15,6 +15,6 @@ jobs:
 
   call-pr-tests:
     needs: checkout
-    uses: ./.github/workflows/reusable/tests.yml
+    uses: ./.github/workflows/tests.yml
     secrets:
       openai_key: ${{ secrets.OPENAI_KEY }}
