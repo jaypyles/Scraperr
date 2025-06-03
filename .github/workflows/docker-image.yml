@@ -63,7 +63,7 @@ jobs:
       - name: Push Helm Chart
         uses: ./.github/actions/push-to-helm
         with:
-          app-repo-token: ${{ secrets.GPAT_TOKEN }}
+          app-repo-token: ${{ secrets.repo_token }}
           version: ${{ inputs.version }}
 
   success-message:
