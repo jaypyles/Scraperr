@@ -23,5 +23,6 @@ jobs:
             dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
             dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
             repo_token: ${{ secrets.GPAT_TOKEN }}
+            discord_webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
         with:
             version: ${{ needs.version.outputs.version }}

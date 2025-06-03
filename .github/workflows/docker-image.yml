@@ -12,6 +12,8 @@ on:
         required: true
       repo_token:
         required: true
+      discord_webhook_url:
+        required: true
 
 jobs:
   build:
