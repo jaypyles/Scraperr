@@ -1,0 +1,22 @@
+name: Merge
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+    tests:
+        uses: ./.github/workflows/reusable/tests.yml
+        secrets:
+            openai_key: ${{ secrets.OPENAI_KEY }}
+
+    version:
+        uses: ./.github/workflows/reusable/version.yml
+
+    build-and-deploy:
+        needs: tests
+        uses: ./.github/workflows/reusable/docker-image.yml
+        secrets:
+            dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+            dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}

@@ -1,6 +1,11 @@
 name: Docker Image
 on:
-  workflow_dispatch:
+  workflow_call:
+    secrets:
+      dockerhub_username:
+        required: true
+      dockerhub_token:
+        required: true
 
 jobs:
   build:

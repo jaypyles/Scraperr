@@ -1,0 +1,52 @@
+name: Version
+
+on:
+  workflow_call:
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version bump
+        id: version
+        run: |
+          # Get the last commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          # Determine version type based on commit message
+          if [[ $COMMIT_MSG =~ ^feat\(breaking\) ]]; then
+            VERSION_TYPE="major"
+          elif [[ $COMMIT_MSG =~ ^feat! ]]; then
+            VERSION_TYPE="minor"
+          elif [[ $COMMIT_MSG =~ ^(feat|fix|chore): ]]; then
+            VERSION_TYPE="patch"
+          else
+            VERSION_TYPE="patch"  # Default to patch for other commit types
+          fi
+          
+          echo "version_type=$VERSION_TYPE" >> $GITHUB_ENV
+
+      - name: Set version
+        run: |
+          VERSION=$(./scripts/version.sh ${{ env.VERSION_TYPE }})
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Version is $VERSION"
+
+      - name: Update chart file
+        run: |
+          # Update version in Chart.yaml
+          sed -i "s/^version: .*/version: ${{ env.VERSION }}/" helm/Chart.yaml
+          
+          # Commit and push the changes
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add helm/Chart.yaml
+          git commit -m "chore: bump version to ${{ env.VERSION }}"
+          git push
+
+
