@@ -43,7 +43,7 @@ jobs:
           VERSION=$(./scripts/version.sh "$VERSION_TYPE")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Version is $VERSION"
-          echo "::set-output name=version::$VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
         env:
           VERSION_TYPE: ${{ env.VERSION_TYPE }}
 
