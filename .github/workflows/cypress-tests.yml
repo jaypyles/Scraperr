@@ -1,0 +1,32 @@
+name: Cypress Tests
+
+on:
+  workflow_call:
+    secrets:
+      openai_key:
+        required: true
+
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Cypress Tests
+        id: run-tests
+        uses: ./.github/actions/run-cypress-tests
+        with:
+          openai_key: ${{ secrets.openai_key }}
+        continue-on-error: true
+
+      - name: Check container logs on failure
+        if: steps.run-tests.outcome == 'failure'
+        run: |
+          echo "Cypress tests failed. Dumping container logs..."
+          docker logs scraperr_api || true
+
+      - name: Fail job if Cypress failed
+        if: steps.run-tests.outcome == 'failure'
+        run: exit 1
+      - uses: actions/checkout@v4

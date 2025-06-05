@@ -20,6 +20,16 @@ runs:
       with:
         node-version: 22
 
+    - name: Setup yarn
+      shell: bash
+      run: npm install -g yarn
+
+    - name: Install xvfb for headless testing
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 libpango-1.0-0 libcairo2 libgtk-3-0 libgdk-pixbuf2.0-0 libx11-6 libx11-xcb1 libxcb1 libxss1 libxtst6 libnspr4
+
     - name: Setup Docker project
       shell: bash
       run: |

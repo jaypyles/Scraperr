@@ -1,0 +1,27 @@
+name: Pytest
+
+on:
+  workflow_call:
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set env
+        run: echo "ENV=test" >> $GITHUB_ENV
+
+      - name: Install pdm
+        run: pip install pdm
+
+      - name: Install project dependencies
+        run: pdm install
+
+      - name: Install playwright
+        run: pdm run playwright install
+
+      - name: Run tests
+        run: PYTHONPATH=. pdm run pytest -v -ra api/backend/tests
+        

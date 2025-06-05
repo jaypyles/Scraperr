@@ -161,7 +161,20 @@ export const addElement = (name: string, xpath: string) => {
   cy.get('[data-cy="add-button"]').click();
 };
 
+export const checkAiDisabled = () => {
+  const disabledMessage = cy.contains(
+    /must set either OPENAI_KEY or OLLAMA_MODEL to use AI features/i
+  );
+
+  if (disabledMessage) {
+    throw new Error(
+      "Must set either OPENAI_KEY or OLLAMA_MODEL to use AI features."
+    );
+  }
+};
+
 export const buildAgentJob = (url: string, prompt: string) => {
+  checkAiDisabled();
   enterJobUrl(url);
   cy.get("[data-cy='prompt-input']").type(prompt);
 };
