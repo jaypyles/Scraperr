@@ -51,6 +51,7 @@ jobs:
         if: steps.check_version_bump.outputs.version_bump == 'false'
         run: |
           echo "Skipping version bump as requested"
+          gh run cancel ${{ github.run_id }}
           exit 0
 
       - name: Set version
