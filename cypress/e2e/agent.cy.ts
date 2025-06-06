@@ -7,11 +7,10 @@ import {
 } from "../utilities/job.utilities";
 import { mockSubmitJob } from "../utilities/mocks";
 
-describe.only("Agent", () => {
+describe("Agent", () => {
   beforeEach(() => {
     mockSubmitJob();
     login();
-    cy.visit("/agent");
   });
 
   afterEach(() => {
@@ -19,6 +18,9 @@ describe.only("Agent", () => {
   });
 
   it("should be able to scrape some data", () => {
+    cy.visit("/agent");
+    cy.wait(1000);
+
     const url = "https://books.toscrape.com";
     const prompt = "Collect all the links on the page";
     buildAgentJob(url, prompt);

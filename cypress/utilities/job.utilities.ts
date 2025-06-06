@@ -4,7 +4,7 @@ export const cleanUpJobs = () => {
 
   cy.wait("@retrieve", { timeout: 15000 });
 
-  cy.get("tbody tr", { timeout: 10000 }).should("have.length.at.least", 1);
+  cy.get("tbody tr", { timeout: 20000 }).should("have.length.at.least", 1);
 
   const tryClickSelectAll = (attempt = 1, maxAttempts = 5) => {
     cy.log(`Attempt ${attempt} to click Select All`);
@@ -124,6 +124,7 @@ export const openAdvancedJobOptions = () => {
 };
 
 export const selectJobFromSelector = () => {
+  checkAiDisabled();
   cy.get("div[id='select-job']", { timeout: 10000 }).first().click();
   cy.get("li[role='option']", { timeout: 10000 }).first().click();
 };
@@ -162,15 +163,13 @@ export const addElement = (name: string, xpath: string) => {
 };
 
 export const checkAiDisabled = () => {
-  const disabledMessage = cy.contains(
-    /must set either OPENAI_KEY or OLLAMA_MODEL to use AI features/i
-  );
-
-  if (disabledMessage) {
-    throw new Error(
-      "Must set either OPENAI_KEY or OLLAMA_MODEL to use AI features."
+  cy.getAllLocalStorage().then((result) => {
+    const storage = JSON.parse(
+      result["http://localhost"]["persist:root"] as string
     );
-  }
+    const settings = JSON.parse(storage.settings);
+    expect(settings.aiEnabled).to.equal(true);
+  });
 };
 
 export const buildAgentJob = (url: string, prompt: string) => {

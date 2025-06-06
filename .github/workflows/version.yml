@@ -37,6 +37,22 @@ jobs:
 
           echo "VERSION_TYPE=$VERSION_TYPE" >> $GITHUB_ENV
 
+      - name: Check for version bump
+        id: check_version_bump
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if [[ $COMMIT_MSG =~ ^feat\(breaking\) ]]; then
+            echo "version_bump=true" >> $GITHUB_OUTPUT
+          elif [[ $COMMIT_MSG =~ .*\[no\ bump\].* ]]; then
+            echo "version_bump=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip version bump
+        if: steps.check_version_bump.outputs.version_bump == 'false'
+        run: |
+          echo "Skipping version bump as requested"
+          exit 0
+
       - name: Set version
         id: set_version
         run: |

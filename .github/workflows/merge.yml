@@ -17,6 +17,7 @@ jobs:
         uses: ./.github/workflows/version.yml
 
     build-and-deploy:
+        if: needs.version.outputs.version_bump == 'true'
         needs: version
         uses: ./.github/workflows/docker-image.yml
         secrets:

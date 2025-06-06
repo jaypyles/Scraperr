@@ -12,6 +12,7 @@ export const Disabled = ({ message }: DisabledProps) => {
       display="flex"
       justifyContent="center"
       alignItems="center"
+      data-testid="disabled-message"
     >
       <h4
         style={{
