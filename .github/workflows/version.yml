@@ -2,10 +2,16 @@ name: Version
 
 on:
   workflow_call:
+    secrets:
+      git_token:
+        required: true
     outputs:
       version:
         description: "The new version number"
         value: ${{ jobs.version.outputs.version }}
+      version_bump:
+        description: "Whether the version was bumped"
+        value: ${{ jobs.version.outputs.version_bump }}
 
 jobs:
   version:
@@ -53,6 +59,8 @@ jobs:
           echo "Skipping version bump as requested"
           gh run cancel ${{ github.run_id }}
           exit 0
+        env:
+          GITHUB_TOKEN: ${{ secrets.git_token }}
 
       - name: Set version
         id: set_version
