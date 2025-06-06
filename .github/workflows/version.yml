@@ -63,6 +63,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.git_token }}
 
       - name: Set version
+        if: steps.check_version_bump.outputs.version_bump != 'false'
         id: set_version
         run: |
           VERSION=$(./scripts/version.sh "$VERSION_TYPE")
@@ -73,6 +74,7 @@ jobs:
           VERSION_TYPE: ${{ env.VERSION_TYPE }}
 
       - name: Update chart file
+        if: steps.check_version_bump.outputs.version_bump != 'false'
         run: |
           sed -i "s/^version: .*/version: $VERSION/" helm/Chart.yaml
 
