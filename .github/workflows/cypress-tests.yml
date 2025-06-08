@@ -18,7 +18,6 @@ jobs:
         uses: ./.github/actions/run-cypress-tests
         with:
           openai_key: ${{ secrets.openai_key }}
-        continue-on-error: false
 
       - name: Check container logs on failure
         if: steps.run-tests.conclusion == 'failure'

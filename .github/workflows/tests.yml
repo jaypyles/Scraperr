@@ -22,7 +22,6 @@ jobs:
         uses: ./.github/actions/run-cypress-tests
         with:
           openai_key: ${{ secrets.openai_key }}
-        continue-on-error: true
 
   success-message:
     runs-on: ubuntu-latest
