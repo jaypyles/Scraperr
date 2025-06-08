@@ -25,3 +25,4 @@ class JobOptions(BaseModel):
     site_map: Optional[SiteMap] = None
     collect_media: bool = False
     custom_cookies: list[dict[str, Any]] = []
+    return_html: bool = False

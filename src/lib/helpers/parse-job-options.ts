@@ -15,6 +15,7 @@ export const parseJobOptions = (
       proxies: null,
       collect_media: false,
       custom_cookies: null,
+      return_html: false,
     };
 
     if (jsonOptions.collect_media) {
@@ -40,6 +41,10 @@ export const parseJobOptions = (
 
     if (jsonOptions.site_map && setSiteMap) {
       setSiteMap(jsonOptions.site_map);
+    }
+
+    if (jsonOptions.return_html) {
+      newJobOptions.return_html = true;
     }
 
     setJobOptions(newJobOptions);

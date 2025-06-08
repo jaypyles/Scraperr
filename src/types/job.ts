@@ -27,6 +27,7 @@ export type RawJobOptions = {
   proxies: string | null;
   collect_media: boolean;
   custom_cookies: string | null;
+  return_html: boolean;
 };
 
 export type ActionOption = "click" | "input";
@@ -58,6 +59,7 @@ export const initialJobOptions: RawJobOptions = {
   proxies: null,
   collect_media: false,
   custom_cookies: null,
+  return_html: false,
 };
 
 export const COLOR_MAP: Record<string, string> = {

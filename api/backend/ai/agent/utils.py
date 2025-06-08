@@ -206,7 +206,7 @@ def parse_next_page(text: str) -> str | None:
 
 
 async def capture_elements(
-    page: Page, xpaths: list[dict[str, str]]
+    page: Page, xpaths: list[dict[str, str]], return_html: bool
 ) -> list[CapturedElement]:
     captured_elements = []
     seen_texts = set()
@@ -217,6 +217,23 @@ async def capture_elements(
             count = await locator.count()
 
             for i in range(count):
+                if return_html:
+                    element_text = (
+                        await page.locator(f"xpath={xpath['xpath']}")
+                        .nth(i)
+                        .inner_html()
+                    )
+
+                    seen_texts.add(element_text)
+                    captured_elements.append(
+                        CapturedElement(
+                            name=xpath["name"],
+                            text=element_text,
+                            xpath=xpath["xpath"],
+                        )
+                    )
+                    continue
+
                 element_text = ""
 
                 element_handle = await locator.nth(i).element_handle()

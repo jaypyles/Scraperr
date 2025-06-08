@@ -46,15 +46,14 @@ export const AdvancedJobOptionsDialog = ({
   const [localJobOptions, setLocalJobOptions] =
     useState<RawJobOptions>(jobOptions);
 
-  // Update local state when prop changes
   useEffect(() => {
     setLocalJobOptions(jobOptions);
   }, [jobOptions]);
 
-  const handleMultiPageScrapeChange = () => {
+  const handleCheckboxChange = (key: keyof RawJobOptions) => {
     setLocalJobOptions((prevJobOptions) => ({
       ...prevJobOptions,
-      multi_page_scrape: !prevJobOptions.multi_page_scrape,
+      [key]: !prevJobOptions[key],
     }));
   };
 
@@ -65,15 +64,7 @@ export const AdvancedJobOptionsDialog = ({
     }));
   };
 
-  const handleCollectMediaChange = () => {
-    setLocalJobOptions((prevJobOptions) => ({
-      ...prevJobOptions,
-      collect_media: !prevJobOptions.collect_media,
-    }));
-  };
-
   const handleClose = () => {
-    // Save the local state back to the parent before closing
     setJobOptions(localJobOptions);
     onClose();
   };
@@ -137,7 +128,7 @@ export const AdvancedJobOptionsDialog = ({
                 control={
                   <Checkbox
                     checked={localJobOptions.multi_page_scrape}
-                    onChange={handleMultiPageScrapeChange}
+                    onChange={() => handleCheckboxChange("multi_page_scrape")}
                     disabled={!multiPageScrapeEnabled}
                   />
                 }
@@ -158,11 +149,12 @@ export const AdvancedJobOptionsDialog = ({
                   </Box>
                 }
               />
+
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={localJobOptions.collect_media}
-                    onChange={handleCollectMediaChange}
+                    onChange={() => handleCheckboxChange("collect_media")}
                     data-cy="collect-media-checkbox"
                   />
                 }
@@ -170,6 +162,26 @@ export const AdvancedJobOptionsDialog = ({
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography>Collect Media</Typography>
                     <Tooltip title="Download images and other media">
+                      <IconButton size="small">
+                        <InfoOutlined fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                }
+              />
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={localJobOptions.return_html}
+                    onChange={() => handleCheckboxChange("return_html")}
+                    data-cy="return-html-checkbox"
+                  />
+                }
+                label={
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Typography>Return HTML</Typography>
+                    <Tooltip title="Return the HTML of the page">
                       <IconButton size="small">
                         <InfoOutlined fontSize="small" />
                       </IconButton>
