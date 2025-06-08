@@ -20,11 +20,12 @@ jobs:
           openai_key: ${{ secrets.openai_key }}
 
       - name: Check container logs on failure
-        if: steps.run-tests.outcome == 'failure'
+        if: steps.run-tests.conclusion == 'failure'
         run: |
           echo "Cypress tests failed. Dumping container logs..."
           docker logs scraperr_api || true
 
       - name: Fail job if Cypress failed
-        if: steps.run-tests.outcome == 'failure'
+        if: steps.run-tests.conclusion == 'failure'
         run: exit 1
+
