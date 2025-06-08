@@ -110,7 +110,9 @@ async def make_site_request(
             )
 
 
-async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element]):
+async def collect_scraped_elements(
+    page: tuple[str, str], xpaths: list[Element], return_html: bool
+):
     soup = BeautifulSoup(page[0], "lxml")
     root = etree.HTML(str(soup))
 
@@ -120,6 +122,16 @@ async def collect_scraped_elements(page: tuple[str, str], xpaths: list[Element])
         el = sxpath(root, elem.xpath)
 
         for e in el:  # type: ignore
+            if return_html:
+                elements[elem.name] = [
+                    CapturedElement(
+                        xpath=elem.xpath,
+                        text=page[0],
+                        name=elem.name,
+                    )
+                ]
+                continue
+
             text = (
                 " ".join(str(t) for t in e.itertext())
                 if isinstance(e, etree._Element)
@@ -161,6 +173,8 @@ async def scrape(
     elements: list[dict[str, dict[str, list[CapturedElement]]]] = []
 
     for page in pages:
-        elements.append(await collect_scraped_elements(page, xpaths))
+        elements.append(
+            await collect_scraped_elements(page, xpaths, job_options["return_html"])
+        )
 
     return elements

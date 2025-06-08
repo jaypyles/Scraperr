@@ -100,13 +100,13 @@ export const waitForJobCompletion = (url: string) => {
 };
 
 export const enableMultiPageScraping = () => {
-  cy.get("button").contains("Advanced Job Options").click();
+  cy.get("button").contains("Advanced Options").click();
   cy.get('[data-cy="multi-page-toggle"]').click();
   cy.get("body").type("{esc}");
 };
 
 export const addCustomHeaders = (headers: Record<string, string>) => {
-  cy.get("button").contains("Advanced Job Options").click();
+  cy.get("button").contains("Advanced Options").click();
   cy.get('[name="custom_headers"]').type(JSON.stringify(headers), {
     parseSpecialCharSequences: false,
   });
@@ -114,13 +114,13 @@ export const addCustomHeaders = (headers: Record<string, string>) => {
 };
 
 export const addCustomCookies = (cookies: Record<string, string>) => {
-  cy.get("button").contains("Advanced Job Options").click();
+  cy.get("button").contains("Advanced Options").click();
   cy.get('[name="custom_cookies"]').type(JSON.stringify(cookies));
   cy.get("body").type("{esc}");
 };
 
 export const openAdvancedJobOptions = () => {
-  cy.get("button").contains("Advanced Job Options").click();
+  cy.get("button").contains("Advanced Options").click();
 };
 
 export const selectJobFromSelector = () => {

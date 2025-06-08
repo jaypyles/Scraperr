@@ -213,6 +213,7 @@ export const JobQueue = ({
                           query: {
                             url: row.url,
                             prompt: row.prompt,
+                            job_options: JSON.stringify(row.job_options),
                           },
                         });
                       } else {

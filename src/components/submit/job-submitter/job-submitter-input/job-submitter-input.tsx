@@ -1,6 +1,6 @@
-import React from "react";
-import { TextField, Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useJobSubmitterProvider } from "../provider";
+import styles from "./job-submitter-input.module.css";
 
 export type JobSubmitterInputProps = {
   urlError: string | null;
@@ -17,7 +17,7 @@ export const JobSubmitterInput = ({
     useJobSubmitterProvider();
 
   return (
-    <div className="flex flex-row space-x-4 items-center mb-2">
+    <Box className={styles.container}>
       <TextField
         data-cy="url-input"
         label="URL"
@@ -27,19 +27,18 @@ export const JobSubmitterInput = ({
         onChange={(e) => setSubmittedURL(e.target.value)}
         error={!isValidURL}
         helperText={!isValidURL ? urlError : ""}
-        className="rounded-md"
+        className={styles.input}
       />
       <Button
         data-cy="submit-button"
         variant="contained"
-        size="small"
+        size="large"
         onClick={handleSubmit}
         disabled={!(rows.length > 0) || loading}
-        className={`bg-[#034efc] text-white font-semibold rounded-md 
-                    transition-transform transform hover:scale-105 disabled:opacity-50`}
+        className={styles.submitButton}
       >
         {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
       </Button>
-    </div>
+    </Box>
   );
 };

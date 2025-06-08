@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { Container, Box } from "@mui/material";
-import { useRouter } from "next/router";
-import { ElementTable, JobSubmitter } from "@/components/submit/job-submitter";
-import { useJobSubmitterProvider } from "@/components/submit/job-submitter/provider";
 import {
   ErrorSnackbar,
   JobNotifySnackbar,
 } from "@/components/common/snackbars";
+import { ElementTable, JobSubmitter } from "@/components/submit/job-submitter";
+import { useJobSubmitterProvider } from "@/components/submit/job-submitter/provider";
+import { Box, Container } from "@mui/material";
+import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 
 export const Home = () => {
   const {
@@ -50,19 +50,18 @@ export const Home = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      height="100%"
+      minHeight="100vh"
       py={4}
     >
-      <Container maxWidth="lg" className="overflow-y-auto max-h-full">
-        <JobSubmitter />
-
-        {submittedURL.length > 0 ? (
+      <Container maxWidth="lg" className="overflow-y-auto">
+        <Box className="flex flex-col gap-6">
+          <JobSubmitter />
           <ElementTable
             rows={rows}
             setRows={setRows}
             submittedURL={submittedURL}
           />
-        ) : null}
+        </Box>
       </Container>
 
       {snackbarSeverity === "info" ? (

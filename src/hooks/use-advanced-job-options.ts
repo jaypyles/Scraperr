@@ -11,6 +11,7 @@ export const useAdvancedJobOptions = () => {
     proxies: null,
     collect_media: false,
     custom_cookies: null,
+    return_html: false,
   };
 
   const router = useRouter();

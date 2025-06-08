@@ -73,5 +73,8 @@ runs:
 
     - name: Run Cypress tests
       shell: bash
-      run: npm run cy:run
+      run: |
+        set -e
+        npm run cy:run
+
 

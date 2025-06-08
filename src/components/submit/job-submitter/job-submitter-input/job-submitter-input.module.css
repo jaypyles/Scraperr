@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (min-width: 600px) {
+  .container {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.input {
+  width: 100%;
+}
+
+.input :global(.MuiOutlinedInput-root) {
+  border-radius: 16px;
+  transition: all 0.2s ease-in-out;
+}
+
+.input
+  :global(.MuiOutlinedInput-root:hover)
+  :global(.MuiOutlinedInput-notchedOutline) {
+  border-color: var(--mui-palette-primary-main);
+}
+
+.submitButton {
+  height: 48px !important;
+  border-radius: 16px;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.submitButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.submitButton:disabled {
+  transform: none;
+  box-shadow: none;
+}
+
+@media (min-width: 600px) {
+  .submitButton {
+    min-width: 120px;
+    height: 56px;
+  }
+}

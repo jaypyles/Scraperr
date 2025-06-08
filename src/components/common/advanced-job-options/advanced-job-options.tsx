@@ -1,7 +1,8 @@
-import { Box, Link, Typography } from "@mui/material";
-import { SetStateAction, Dispatch, useState } from "react";
-import { AdvancedJobOptionsDialog } from "./dialog/advanced-job-options-dialog";
 import { RawJobOptions } from "@/types";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Box, Button, Typography } from "@mui/material";
+import { Dispatch, SetStateAction, useState } from "react";
+import { AdvancedJobOptionsDialog } from "./dialog/advanced-job-options-dialog";
 
 export type AdvancedJobOptionsProps = {
   jobOptions: RawJobOptions;
@@ -17,26 +18,27 @@ export const AdvancedJobOptions = ({
   const [open, setOpen] = useState(false);
 
   return (
-    <Box sx={{ mb: 2 }}>
-      <Link
-        component="button"
-        variant="body2"
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Button
+        variant="outlined"
         onClick={() => setOpen(true)}
+        startIcon={<SettingsIcon />}
         sx={{
-          textDecoration: "none",
-          color: "primary.main",
+          textTransform: "none",
+          borderRadius: 2,
+          px: 2,
+          py: 1,
+          borderColor: "divider",
+          color: "text.secondary",
           "&:hover": {
-            color: "primary.dark",
-            textDecoration: "underline",
+            borderColor: "primary.main",
+            color: "primary.main",
+            bgcolor: "action.hover",
           },
-          paddingLeft: 1,
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 0.5,
         }}
       >
-        <Typography variant="body2">Advanced Job Options</Typography>
-      </Link>
+        <Typography variant="body2">Advanced Options</Typography>
+      </Button>
 
       <AdvancedJobOptionsDialog
         open={open}

@@ -2,3 +2,14 @@
   margin-bottom: 1rem;
   text-align: center;
 }
+
+.container {
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-weight: 600;
+  color: var(--mui-palette-text-primary);
+  margin-bottom: 8px;
+}

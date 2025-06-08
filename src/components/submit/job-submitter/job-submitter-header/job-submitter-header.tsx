@@ -1,6 +1,6 @@
+import { Box, Typography } from "@mui/material";
 import React, { ReactNode } from "react";
-import { Typography } from "@mui/material";
-import classes from "./job-submitter-header.module.css";
+import styles from "./job-submitter-header.module.css";
 
 interface JobSubmitterHeaderProps {
   title?: string;
@@ -8,13 +8,15 @@ interface JobSubmitterHeaderProps {
 }
 
 export const JobSubmitterHeader: React.FC<JobSubmitterHeaderProps> = ({
-  title = "Scraping Made Easy",
+  title = "Scrape Webpage",
   children,
 }) => {
   return (
-    <div className={classes.jobSubmitterHeader}>
-      <Typography variant="h3">{title}</Typography>
+    <Box className={styles.container}>
+      <Typography variant="h4" className={styles.title}>
+        {title}
+      </Typography>
       {children}
-    </div>
+    </Box>
   );
 };
