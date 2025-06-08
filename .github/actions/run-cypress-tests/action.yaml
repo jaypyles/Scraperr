@@ -73,5 +73,9 @@ runs:
 
     - name: Run Cypress tests
       shell: bash
-      run: npm run cy:run
+      run: |
+        npm run cy:run
+        status=$?
+        echo "Cypress exit code: $status"
+        exit $status
 
