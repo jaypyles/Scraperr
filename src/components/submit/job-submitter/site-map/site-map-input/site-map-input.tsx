@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { useJobSubmitterProvider } from "../../provider";
+import { ActionOption } from "@/types/job";
 import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
-  FormControl,
-  Button,
-  Checkbox,
-  FormControlLabel,
 } from "@mui/material";
-import { ActionOption } from "@/types/job";
-import classes from "./site-map-input.module.css";
-import { clsx } from "clsx";
+import { useState } from "react";
+import { useJobSubmitterProvider } from "../../provider";
 
 export type SiteMapInputProps = {
   disabled?: boolean;
@@ -28,7 +28,6 @@ export const SiteMapInput = ({
   clickOnce,
   input,
 }: SiteMapInputProps) => {
-  console.log(clickOnce);
   const [optionState, setOptionState] = useState<ActionOption>(
     option || "click"
   );
@@ -42,8 +41,6 @@ export const SiteMapInput = ({
 
   const handleAdd = () => {
     if (!siteMap) return;
-
-    console.log(optionState, xpathState, clickOnceState, inputState);
 
     setSiteMap((prevSiteMap) => ({
       ...prevSiteMap,
@@ -60,6 +57,7 @@ export const SiteMapInput = ({
     }));
 
     setXpathState("");
+    setInputState("");
   };
 
   const handleRemove = () => {
@@ -72,14 +70,22 @@ export const SiteMapInput = ({
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="flex gap-2 items-center">
-        <FormControl className="w-1/4">
+    <Box
+      sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}
+    >
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        <FormControl size="small" sx={{ minWidth: 120 }}>
+          <InputLabel>Action Type</InputLabel>
           <Select
             disabled={disabled}
-            displayEmpty
             value={optionState}
+            label="Action Type"
             onChange={(e) => setOptionState(e.target.value as ActionOption)}
+            sx={{
+              "& .MuiSelect-select": {
+                textTransform: "capitalize",
+              },
+            }}
           >
             <MenuItem value="click">Click</MenuItem>
             <MenuItem value="input">Input</MenuItem>
@@ -88,23 +94,49 @@ export const SiteMapInput = ({
         {optionState === "input" && (
           <TextField
             label="Input Text"
+            size="small"
             fullWidth
             value={inputState}
             onChange={(e) => setInputState(e.target.value)}
             disabled={disabled}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                bgcolor: "background.default",
+              },
+            }}
           />
         )}
-        <TextField
-          label="XPath Selector"
-          fullWidth
-          value={xpathState}
-          onChange={(e) => setXpathState(e.target.value)}
-          disabled={disabled}
-        />
+        {!disabled && (
+          <TextField
+            label="XPath Selector"
+            size="small"
+            fullWidth
+            value={xpathState}
+            onChange={(e) => setXpathState(e.target.value)}
+            disabled={disabled}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                bgcolor: "background.default",
+                fontFamily: "monospace",
+                fontSize: "1rem",
+              },
+            }}
+          />
+        )}
         {disabled ? (
           <Button
             onClick={handleRemove}
-            className={clsx(classes.button, classes.remove)}
+            size="small"
+            variant="outlined"
+            color="error"
+            sx={{
+              minWidth: "80px",
+              textTransform: "none",
+              "&:hover": {
+                bgcolor: "error.main",
+                color: "error.contrastText",
+              },
+            }}
           >
             Delete
           </Button>
@@ -112,24 +144,41 @@ export const SiteMapInput = ({
           <Button
             onClick={handleAdd}
             disabled={!xpathState}
-            className={clsx(classes.button, classes.add)}
+            size="small"
+            variant="contained"
+            color="primary"
+            sx={{
+              minWidth: "80px",
+              textTransform: "none",
+              "&.Mui-disabled": {
+                bgcolor: "action.disabledBackground",
+                color: "action.disabled",
+              },
+            }}
           >
             Add
           </Button>
         )}
-      </div>
+      </Box>
       {!disabled && (
         <FormControlLabel
           label="Do Once"
           control={
             <Checkbox
+              size="small"
               checked={clickOnceState}
               disabled={disabled}
               onChange={() => setClickOnceState(!clickOnceState)}
             />
           }
+          sx={{
+            "& .MuiFormControlLabel-label": {
+              fontSize: "0.875rem",
+              color: "text.secondary",
+            },
+          }}
         />
       )}
-    </div>
+    </Box>
   );
 };

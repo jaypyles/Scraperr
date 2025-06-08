@@ -1,5 +1,4 @@
-import React from "react";
-import { TextField, Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useJobSubmitterProvider } from "../provider";
 
 export type JobSubmitterInputProps = {
@@ -17,7 +16,14 @@ export const JobSubmitterInput = ({
     useJobSubmitterProvider();
 
   return (
-    <div className="flex flex-row space-x-4 items-center mb-2">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        gap: 2,
+        alignItems: { xs: "stretch", sm: "center" },
+      }}
+    >
       <TextField
         data-cy="url-input"
         label="URL"
@@ -27,19 +33,44 @@ export const JobSubmitterInput = ({
         onChange={(e) => setSubmittedURL(e.target.value)}
         error={!isValidURL}
         helperText={!isValidURL ? urlError : ""}
-        className="rounded-md"
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "primary.main",
+              },
+            },
+          },
+        }}
       />
       <Button
         data-cy="submit-button"
         variant="contained"
-        size="small"
+        size="large"
         onClick={handleSubmit}
         disabled={!(rows.length > 0) || loading}
-        className={`bg-[#034efc] text-white font-semibold rounded-md 
-                    transition-transform transform hover:scale-105 disabled:opacity-50`}
+        sx={{
+          minWidth: { xs: "100%", sm: 120 },
+          height: { xs: 48, sm: 56 },
+          borderRadius: 2,
+          textTransform: "none",
+          fontSize: "1rem",
+          fontWeight: 500,
+          transition: "all 0.2s ease-in-out",
+          "&:hover": {
+            transform: "translateY(-1px)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+          },
+          "&:disabled": {
+            transform: "none",
+            boxShadow: "none",
+          },
+        }}
       >
         {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
       </Button>
-    </div>
+    </Box>
   );
 };
