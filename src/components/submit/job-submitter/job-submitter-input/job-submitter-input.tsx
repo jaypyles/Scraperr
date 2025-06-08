@@ -1,5 +1,6 @@
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useJobSubmitterProvider } from "../provider";
+import styles from "./job-submitter-input.module.css";
 
 export type JobSubmitterInputProps = {
   urlError: string | null;
@@ -16,14 +17,7 @@ export const JobSubmitterInput = ({
     useJobSubmitterProvider();
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: { xs: "column", sm: "row" },
-        gap: 2,
-        alignItems: { xs: "stretch", sm: "center" },
-      }}
-    >
+    <Box className={styles.container}>
       <TextField
         data-cy="url-input"
         label="URL"
@@ -33,17 +27,7 @@ export const JobSubmitterInput = ({
         onChange={(e) => setSubmittedURL(e.target.value)}
         error={!isValidURL}
         helperText={!isValidURL ? urlError : ""}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: 2,
-            transition: "all 0.2s ease-in-out",
-            "&:hover": {
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "primary.main",
-              },
-            },
-          },
-        }}
+        className={styles.input}
       />
       <Button
         data-cy="submit-button"
@@ -51,23 +35,7 @@ export const JobSubmitterInput = ({
         size="large"
         onClick={handleSubmit}
         disabled={!(rows.length > 0) || loading}
-        sx={{
-          minWidth: { xs: "100%", sm: 120 },
-          height: { xs: 48, sm: 56 },
-          borderRadius: 2,
-          textTransform: "none",
-          fontSize: "1rem",
-          fontWeight: 500,
-          transition: "all 0.2s ease-in-out",
-          "&:hover": {
-            transform: "translateY(-1px)",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-          },
-          "&:disabled": {
-            transform: "none",
-            boxShadow: "none",
-          },
-        }}
+        className={styles.submitButton}
       >
         {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
       </Button>

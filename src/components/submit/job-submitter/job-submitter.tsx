@@ -4,7 +4,7 @@ import { AdvancedJobOptions } from "@/components/common/advanced-job-options";
 import { useSubmitJob } from "@/hooks/use-submit-job";
 import { parseJobOptions } from "@/lib";
 import { useUser } from "@/store/hooks";
-import { Box, Fade, Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { JobSubmitterHeader } from "./job-submitter-header";
@@ -30,42 +30,34 @@ export const JobSubmitter = () => {
     await submitJob(submittedURL, rows, user, jobOptions, siteMap, false, null);
   };
 
-  console.log(jobOptions);
-  useEffect(() => {
-    console.log(jobOptions);
-  }, [jobOptions]);
-
   return (
-    <Fade in timeout={500}>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 4,
-          borderRadius: 2,
-          bgcolor: "background.paper",
-          border: 1,
-          borderColor: "divider",
-          transition: "all 0.3s ease-in-out",
-          "&:hover": {
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
-          },
-        }}
-      >
-        <Box className="flex flex-col gap-6">
-          <JobSubmitterHeader />
-          <Box className="flex flex-col gap-4">
-            <JobSubmitterInput
-              urlError={error}
-              handleSubmit={handleSubmit}
-              loading={loading}
-            />
-            <AdvancedJobOptions
-              jobOptions={jobOptions}
-              setJobOptions={setJobOptions}
-            />
-          </Box>
+    <Paper
+      elevation={0}
+      sx={{
+        p: 4,
+        borderRadius: 2,
+        bgcolor: "background.paper",
+        border: 1,
+        borderColor: "divider",
+        "&:hover": {
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
+        },
+      }}
+    >
+      <Box className="flex flex-col gap-6">
+        <JobSubmitterHeader />
+        <Box className="flex flex-col gap-4">
+          <JobSubmitterInput
+            urlError={error}
+            handleSubmit={handleSubmit}
+            loading={loading}
+          />
+          <AdvancedJobOptions
+            jobOptions={jobOptions}
+            setJobOptions={setJobOptions}
+          />
         </Box>
-      </Paper>
-    </Fade>
+      </Box>
+    </Paper>
   );
 };

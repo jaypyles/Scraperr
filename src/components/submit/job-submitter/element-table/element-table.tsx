@@ -53,7 +53,6 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
         bgcolor: "background.paper",
         border: 1,
         borderColor: "divider",
-        transition: "all 0.3s ease-in-out",
         "&:hover": {
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
         },
@@ -132,7 +131,6 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: 2,
                         bgcolor: "background.default",
-                        transition: "all 0.2s ease-in-out",
                         "&:hover": {
                           "& .MuiOutlinedInput-notchedOutline": {
                             borderColor: "primary.main",
@@ -157,7 +155,6 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                       "& .MuiOutlinedInput-root": {
                         borderRadius: 2,
                         bgcolor: "background.default",
-                        transition: "all 0.2s ease-in-out",
                         "&:hover": {
                           "& .MuiOutlinedInput-notchedOutline": {
                             borderColor: "primary.main",
@@ -189,7 +186,6 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                           bgcolor: "primary.main",
                           color: "primary.contrastText",
                           borderRadius: 2,
-                          transition: "all 0.2s ease-in-out",
                           "&:hover": {
                             bgcolor: "primary.dark",
                             transform: "translateY(-1px)",
@@ -239,7 +235,6 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                       size="small"
                       color="error"
                       sx={{
-                        transition: "all 0.2s ease-in-out",
                         "&:hover": {
                           bgcolor: "error.main",
                           color: "error.contrastText",

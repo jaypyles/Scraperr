@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import React, { ReactNode } from "react";
+import styles from "./job-submitter-header.module.css";
 
 interface JobSubmitterHeaderProps {
   title?: string;
@@ -11,22 +12,11 @@ export const JobSubmitterHeader: React.FC<JobSubmitterHeaderProps> = ({
   children,
 }) => {
   return (
-    <Box
-      sx={{
-        textAlign: "left",
-        mb: 1,
-      }}
-    >
-      <Typography
-        variant="h4"
-        sx={{
-          fontWeight: 600,
-          color: "text.primary",
-          mb: 1,
-        }}
-      >
+    <Box className={styles.container}>
+      <Typography variant="h4" className={styles.title}>
         {title}
       </Typography>
+      {children}
     </Box>
   );
 };
