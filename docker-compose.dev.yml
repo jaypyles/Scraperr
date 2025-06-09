@@ -18,6 +18,13 @@ services:
       dockerfile: docker/api/Dockerfile
     environment:
       - LOG_LEVEL=INFO
+      - AI_PROVIDER_BACKEND=  # openai | ollama | openrouter | (leave empty to disable ai)
+      - OPENAI_API_KEY=''
+      - OPENAI_MODEL_NAME='gpt4o'
+      - OLLAMA_BASE_URL=http://localhost:11434
+      - OLLAMA_MODEL_NAME=llama2
+      - OPENROUTER_API_KEY=''
+      - OPENROUTER_MODEL_NAME='openai/gpt-4'
     volumes:
       - "$PWD/api:/project/app/api"
     ports:
