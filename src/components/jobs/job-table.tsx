@@ -47,10 +47,16 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, setJobs }) => {
     setJobDownloadDialogOpen(true);
   };
 
-  const handleNavigate = (elements: Object[], url: string, options: any) => {
+  const handleNavigate = (
+    id: string,
+    elements: Object[],
+    url: string,
+    options: any
+  ) => {
     router.push({
       pathname: "/",
       query: {
+        id,
         elements: JSON.stringify(elements),
         url: url,
         job_options: JSON.stringify(options),
