@@ -43,10 +43,8 @@ job_router = APIRouter()
 @job_router.post("/update")
 @handle_exceptions(logger=LOG)
 async def update(update_jobs: UpdateJobs, _: User = Depends(get_current_user)):
-    """Used to update jobs"""
     await update_job(update_jobs.ids, update_jobs.field, update_jobs.value)
-
-    return JSONResponse(content={"message": "Jobs updated successfully."})
+    return {"message": "Jobs updated successfully"}
 
 
 @job_router.post("/submit-scrape-job")
@@ -54,9 +52,11 @@ async def update(update_jobs: UpdateJobs, _: User = Depends(get_current_user)):
 async def submit_scrape_job(job: Job):
     LOG.info(f"Recieved job: {job}")
 
-    job.id = uuid.uuid4().hex
+    if not job.id:
+        job.id = uuid.uuid4().hex
+
     job_dict = job.model_dump()
-    insert(job_dict)
+    await insert(job_dict)
 
     return JSONResponse(
         content={"id": job.id, "message": "Job submitted successfully."}
@@ -70,7 +70,9 @@ async def retrieve_scrape_jobs(
 ):
     LOG.info(f"Retrieving jobs for account: {user.email}")
     ATTRIBUTES = "chat" if fetch_options.chat else "*"
-    job_query = f"SELECT {ATTRIBUTES} FROM jobs WHERE user = ?"
+    job_query = (
+        f"SELECT {ATTRIBUTES} FROM jobs WHERE user = ? ORDER BY time_created ASC"
+    )
     results = query(job_query, (user.email,))
     return JSONResponse(content=jsonable_encoder(results[::-1]))
 

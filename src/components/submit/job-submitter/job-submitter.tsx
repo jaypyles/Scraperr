@@ -13,21 +13,45 @@ import { useJobSubmitterProvider } from "./provider";
 
 export const JobSubmitter = () => {
   const router = useRouter();
-  const { job_options } = router.query;
+  const { job_options, id } = router.query;
+  console.log(id);
   const { user } = useUser();
 
   const { submitJob, loading, error } = useSubmitJob();
-  const { submittedURL, rows, siteMap, setSiteMap, jobOptions, setJobOptions } =
-    useJobSubmitterProvider();
+  const {
+    jobId,
+    setJobId,
+    submittedURL,
+    rows,
+    siteMap,
+    setSiteMap,
+    jobOptions,
+    setJobOptions,
+  } = useJobSubmitterProvider();
 
   useEffect(() => {
     if (job_options) {
-      parseJobOptions(job_options as string, setJobOptions, setSiteMap);
+      parseJobOptions(
+        id as string,
+        job_options as string,
+        setJobOptions,
+        setSiteMap,
+        setJobId
+      );
     }
   }, [job_options]);
 
   const handleSubmit = async () => {
-    await submitJob(submittedURL, rows, user, jobOptions, siteMap, false, null);
+    await submitJob(
+      submittedURL,
+      rows,
+      user,
+      jobOptions,
+      siteMap,
+      false,
+      null,
+      jobId
+    );
   };
 
   return (

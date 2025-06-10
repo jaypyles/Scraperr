@@ -3,9 +3,11 @@ import { Dispatch, SetStateAction } from "react";
 import { RawJobOptions, SiteMap } from "@/types";
 
 export const parseJobOptions = (
+  id: string,
   job_options: string,
   setJobOptions: Dispatch<SetStateAction<RawJobOptions>>,
-  setSiteMap?: Dispatch<SetStateAction<SiteMap | null>>
+  setSiteMap?: Dispatch<SetStateAction<SiteMap | null>>,
+  setJobId?: Dispatch<SetStateAction<string>>
 ) => {
   if (job_options) {
     const jsonOptions = JSON.parse(job_options as string);
@@ -45,6 +47,10 @@ export const parseJobOptions = (
 
     if (jsonOptions.return_html) {
       newJobOptions.return_html = true;
+    }
+
+    if (id && setJobId) {
+      setJobId(id);
     }
 
     setJobOptions(newJobOptions);

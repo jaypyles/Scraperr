@@ -64,7 +64,7 @@ async def scrape_with_agent(agent_job: dict[str, Any]):
             xpaths = parse_response(response)
 
             captured_elements = await capture_elements(
-                page, xpaths, agent_job["job_options"]["return_html"]
+                page, xpaths, agent_job["job_options"].get("return_html", False)
             )
 
             final_url = page.url

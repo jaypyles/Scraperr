@@ -23,10 +23,17 @@ export const useImportJobConfig = () => {
         });
       }
 
-      setJobOptions(jobConfig.job_options);
+      if (
+        jobConfig.job_options &&
+        Array.isArray(jobConfig.job_options.proxies)
+      ) {
+        jobConfig.job_options.proxies = "";
+      }
+
+      setJobOptions(jobConfig.job_options || {});
       setSiteMap(jobConfig.site_map);
-      setSubmittedURL(jobConfig.url);
-      setRows(jobConfig.elements);
+      setSubmittedURL(jobConfig.url || "");
+      setRows(jobConfig.elements || []);
     };
 
     reader.readAsText(file);

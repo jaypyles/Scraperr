@@ -29,6 +29,7 @@ def insert(query: str, values: tuple[Any, ...]):
 
     except sqlite3.Error as e:
         LOG.error(f"An error occurred: {e}")
+        raise e
 
     finally:
         cursor.close()

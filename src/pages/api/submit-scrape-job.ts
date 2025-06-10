@@ -21,15 +21,16 @@ export default async function handler(
         }
       );
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
+      const result = await response.json();
+
+      if (response.status === 500) {
+        res.status(500).json({ error: result.error });
       }
 
-      const result = await response.json();
       res.status(200).json(result);
     } catch (error) {
       console.error("Error submitting scrape job:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: error });
     }
   } else {
     res.setHeader("Allow", ["POST"]);
