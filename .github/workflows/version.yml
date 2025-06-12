@@ -47,10 +47,11 @@ jobs:
         id: check_version_bump
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B)
-          if [[ $COMMIT_MSG =~ ^feat\(breaking\) ]]; then
-            echo "version_bump=true" >> $GITHUB_OUTPUT
-          elif [[ $COMMIT_MSG =~ .*\[no\ bump\].* ]]; then
+
+          if [[ $COMMIT_MSG =~ .*\[no\ bump\].* ]]; then
             echo "version_bump=false" >> $GITHUB_OUTPUT
+          else
+            echo "version_bump=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Skip version bump
