@@ -19,6 +19,7 @@ jobs:
 
     outputs:
       version: ${{ steps.set_version.outputs.version }}
+      version_bump: ${{ steps.check_version_bump.outputs.version_bump }}
 
     steps:
       - name: Checkout
