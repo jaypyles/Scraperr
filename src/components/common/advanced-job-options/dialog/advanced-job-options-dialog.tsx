@@ -73,10 +73,16 @@ export const AdvancedJobOptionsDialog = ({
     onClose();
   };
 
-  const onUploadFile = (file: File) => {
-    handleUploadFile(file);
-    handleClose();
-    toast.success("Job config uploaded successfully");
+  const onUploadFile = async (file: File) => {
+    const errorOccured = await handleUploadFile(file);
+    if (errorOccured) {
+      handleClose();
+      toast.error("Failed to upload job config");
+      return;
+    } else {
+      handleClose();
+      toast.success("Job config uploaded successfully");
+    }
   };
 
   return (
@@ -110,7 +116,11 @@ export const AdvancedJobOptionsDialog = ({
           Advanced Job Options
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <UploadFile message="Upload Job Config" onUploadFile={onUploadFile} />
+          <UploadFile
+            message="Upload Job Config"
+            fileTypes={["application/json"]}
+            onUploadFile={onUploadFile}
+          />
           <Settings
             sx={{
               color: theme.palette.primary.contrastText,

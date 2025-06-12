@@ -18,6 +18,10 @@ async def insert(item: dict[str, Any]) -> None:
         await multi_field_update_job(
             item["id"],
             {
+                "agent_mode": item["agent_mode"],
+                "prompt": item["prompt"],
+                "job_options": item["job_options"],
+                "elements": item["elements"],
                 "status": "Queued",
                 "result": [],
                 "time_created": datetime.datetime.now().isoformat(),

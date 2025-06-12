@@ -7,6 +7,7 @@ from camoufox import AsyncCamoufox
 from playwright.async_api import Page
 
 # LOCAL
+from api.backend.constants import RECORDINGS_ENABLED
 from api.backend.ai.clients import ask_ollama, ask_open_ai, open_ai_key
 from api.backend.job.models import CapturedElement
 from api.backend.worker.logger import LOG
@@ -29,11 +30,13 @@ async def scrape_with_agent(agent_job: dict[str, Any]):
     LOG.info(f"Starting work for agent job: {agent_job}")
     pages = set()
 
+    proxy = None
+
     if agent_job["job_options"]["proxies"]:
         proxy = random.choice(agent_job["job_options"]["proxies"])
         LOG.info(f"Using proxy: {proxy}")
 
-    async with AsyncCamoufox(headless=True) as browser:
+    async with AsyncCamoufox(headless=not RECORDINGS_ENABLED, proxy=proxy) as browser:
         page: Page = await browser.new_page()
 
         await add_custom_items(

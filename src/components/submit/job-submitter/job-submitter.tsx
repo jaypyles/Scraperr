@@ -14,7 +14,6 @@ import { useJobSubmitterProvider } from "./provider";
 export const JobSubmitter = () => {
   const router = useRouter();
   const { job_options, id } = router.query;
-  console.log(id);
   const { user } = useUser();
 
   const { submitJob, loading, error } = useSubmitJob();
