@@ -15,14 +15,14 @@ export const useAdvancedJobOptions = () => {
   };
 
   const router = useRouter();
-  const { job_options } = router.query;
+  const { job_options, job_id } = router.query;
 
   const [jobOptions, setJobOptions] =
     useState<RawJobOptions>(initialJobOptions);
 
   useEffect(() => {
     if (job_options) {
-      parseJobOptions(job_options as string, setJobOptions);
+      parseJobOptions(job_id as string, job_options as string, setJobOptions);
     }
   }, [job_options]);
 

@@ -174,7 +174,9 @@ async def scrape(
 
     for page in pages:
         elements.append(
-            await collect_scraped_elements(page, xpaths, job_options["return_html"])
+            await collect_scraped_elements(
+                page, xpaths, job_options.get("return_html", False)
+            )
         )
 
     return elements

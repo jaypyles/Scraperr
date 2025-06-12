@@ -9,14 +9,15 @@ export const submitJob = async (
   customCookies: any,
   siteMap: SiteMap | null,
   agentMode: boolean = false,
-  prompt?: string
+  prompt?: string,
+  id?: string
 ) => {
-  console.log(user);
   return await fetch(`/api/submit-scrape-job`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       data: {
+        id,
         url: submittedURL,
         elements: rows,
         user: user?.email,

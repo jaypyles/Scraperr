@@ -1,4 +1,6 @@
 import { ExpandedTableInput } from "@/components/common/expanded-table-input";
+import { UploadFile } from "@/components/common/upload-file";
+import { useImportJobConfig } from "@/hooks/use-import-job-config";
 import { RawJobOptions } from "@/types";
 import {
   Code as CodeIcon,
@@ -26,6 +28,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export type AdvancedJobOptionsDialogProps = {
   open: boolean;
@@ -43,6 +46,7 @@ export const AdvancedJobOptionsDialog = ({
   multiPageScrapeEnabled = true,
 }: AdvancedJobOptionsDialogProps) => {
   const theme = useTheme();
+  const { handleUploadFile } = useImportJobConfig();
   const [localJobOptions, setLocalJobOptions] =
     useState<RawJobOptions>(jobOptions);
 
@@ -67,6 +71,18 @@ export const AdvancedJobOptionsDialog = ({
   const handleClose = () => {
     setJobOptions(localJobOptions);
     onClose();
+  };
+
+  const onUploadFile = async (file: File) => {
+    const errorOccured = await handleUploadFile(file);
+    if (errorOccured) {
+      handleClose();
+      toast.error("Failed to upload job config");
+      return;
+    } else {
+      handleClose();
+      toast.success("Job config uploaded successfully");
+    }
   };
 
   return (
@@ -99,11 +115,18 @@ export const AdvancedJobOptionsDialog = ({
         <Typography variant="h6" component="div">
           Advanced Job Options
         </Typography>
-        <Settings
-          sx={{
-            color: theme.palette.primary.contrastText,
-          }}
-        />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <UploadFile
+            message="Upload Job Config"
+            fileTypes={["application/json"]}
+            onUploadFile={onUploadFile}
+          />
+          <Settings
+            sx={{
+              color: theme.palette.primary.contrastText,
+            }}
+          />
+        </Box>
       </DialogTitle>
 
       <DialogContent

@@ -8,11 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
   tests:
       uses: ./.github/workflows/tests.yml
       secrets:

@@ -10,6 +10,8 @@ import React, {
 } from "react";
 
 type JobSubmitterProviderType = {
+  jobId: string;
+  setJobId: Dispatch<React.SetStateAction<string>>;
   submittedURL: string;
   setSubmittedURL: Dispatch<React.SetStateAction<string>>;
   rows: Element[];
@@ -36,6 +38,7 @@ const JobSubmitterProvider = createContext<JobSubmitterProviderType>(
 );
 
 export const Provider = ({ children }: PropsWithChildren) => {
+  const [jobId, setJobId] = useState<string>("");
   const [submittedURL, setSubmittedURL] = useState<string>("");
   const [rows, setRows] = useState<Element[]>([]);
   const [results, setResults] = useState<Result>({});
@@ -55,6 +58,8 @@ export const Provider = ({ children }: PropsWithChildren) => {
 
   const value: JobSubmitterProviderType = useMemo(
     () => ({
+      jobId,
+      setJobId,
       submittedURL,
       setSubmittedURL,
       rows,
@@ -76,6 +81,7 @@ export const Provider = ({ children }: PropsWithChildren) => {
       closeSnackbar,
     }),
     [
+      jobId,
       submittedURL,
       rows,
       results,

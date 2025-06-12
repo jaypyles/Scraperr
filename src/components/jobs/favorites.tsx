@@ -1,18 +1,18 @@
-import React from "react";
+import StarIcon from "@mui/icons-material/Star";
 import {
-  Tooltip,
+  Box,
+  Button,
+  Checkbox,
   IconButton,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Box,
-  Checkbox,
-  Button,
+  Tooltip,
 } from "@mui/material";
+import router from "next/router";
 import { Job } from "../../types";
-import StarIcon from "@mui/icons-material/Star";
 
 interface stateProps {
   selectedJobs: Set<string>;
@@ -21,7 +21,12 @@ interface stateProps {
 
 interface Props {
   onSelectJob: (job: string) => void;
-  onNavigate: (elements: Object[], url: string, options: any) => void;
+  onNavigate: (
+    id: string,
+    elements: Object[],
+    url: string,
+    options: any
+  ) => void;
   onFavorite: (ids: string[], field: string, value: any) => void;
   stateProps: stateProps;
 }
@@ -87,11 +92,29 @@ export const Favorites = ({
             </TableCell>
             <TableCell sx={{ maxWidth: 100, overflow: "auto" }}>
               <Button
-                onClick={() =>
-                  onNavigate(row.elements, row.url, row.job_options)
-                }
+                onClick={() => {
+                  if (row.agent_mode) {
+                    router.push({
+                      pathname: "/agent",
+                      query: {
+                        url: row.url,
+                        prompt: row.prompt,
+                        job_options: JSON.stringify(row.job_options),
+                        id: row.id,
+                      },
+                    });
+                  } else {
+                    onNavigate(row.id, row.elements, row.url, row.job_options);
+                  }
+                }}
+                size="small"
+                sx={{
+                  minWidth: 0,
+                  padding: "4px 8px",
+                  fontSize: "0.625rem",
+                }}
               >
-                Run
+                Rerun
               </Button>
             </TableCell>
           </TableRow>

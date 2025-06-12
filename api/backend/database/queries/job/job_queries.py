@@ -49,10 +49,15 @@ async def get_queued_job():
     return res[0] if res else None
 
 
-async def update_job(ids: list[str], field: str, value: Any):
-    query = f"UPDATE jobs SET {field} = ? WHERE id IN {format_list_for_query(ids)}"
-    res = update(query, tuple([value] + ids))
-    LOG.info(f"Updated job: {res}")
+async def update_job(ids: list[str], updates: dict[str, Any]):
+    if not updates:
+        return
+
+    set_clause = ", ".join(f"{field} = ?" for field in updates.keys())
+    query = f"UPDATE jobs SET {set_clause} WHERE id IN {format_list_for_query(ids)}"
+    values = list(updates.values()) + ids
+    res = update(query, tuple(values))
+    LOG.debug(f"Updated job: {res}")
 
 
 async def delete_jobs(jobs: list[str]):

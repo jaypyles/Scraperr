@@ -1,5 +1,11 @@
 "use client";
-import { AutoAwesome, Image, VideoCameraBack } from "@mui/icons-material";
+import { useExportJobConfig } from "@/hooks/use-export-job-config";
+import {
+  AutoAwesome,
+  Image,
+  Settings,
+  VideoCameraBack,
+} from "@mui/icons-material";
 import StarIcon from "@mui/icons-material/Star";
 import {
   Box,
@@ -30,7 +36,12 @@ interface Props {
   colors: stringMap;
   onSelectJob: (job: string) => void;
   onDownload: (job: string[]) => void;
-  onNavigate: (elements: Object[], url: string, options: any) => void;
+  onNavigate: (
+    id: string,
+    elements: Object[],
+    url: string,
+    options: any
+  ) => void;
   onFavorite: (ids: string[], field: string, value: any) => void;
   onJobClick: (job: Job) => void;
   stateProps: stateProps;
@@ -46,6 +57,7 @@ export const JobQueue = ({
   onJobClick,
 }: Props) => {
   const { selectedJobs, filteredJobs } = stateProps;
+  const { exportJobConfig } = useExportJobConfig();
   const router = useRouter();
 
   return (
@@ -113,6 +125,17 @@ export const JobQueue = ({
                       }}
                     >
                       <VideoCameraBack />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title="Export Job Configuration">
+                  <span>
+                    <IconButton
+                      onClick={() => {
+                        exportJobConfig(row);
+                      }}
+                    >
+                      <Settings />
                     </IconButton>
                   </span>
                 </Tooltip>
@@ -214,10 +237,16 @@ export const JobQueue = ({
                             url: row.url,
                             prompt: row.prompt,
                             job_options: JSON.stringify(row.job_options),
+                            id: row.id,
                           },
                         });
                       } else {
-                        onNavigate(row.elements, row.url, row.job_options);
+                        onNavigate(
+                          row.id,
+                          row.elements,
+                          row.url,
+                          row.job_options
+                        );
                       }
                     }}
                     size="small"

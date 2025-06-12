@@ -1,5 +1,6 @@
 # STL
 import logging
+import datetime
 from typing import Any
 
 # LOCAL
@@ -12,7 +13,23 @@ from api.backend.database.queries.job.job_queries import JOB_INSERT_QUERY
 LOG = logging.getLogger("Job")
 
 
-def insert(item: dict[str, Any]) -> None:
+async def insert(item: dict[str, Any]) -> None:
+    if check_for_job_completion(item["id"]):
+        await multi_field_update_job(
+            item["id"],
+            {
+                "agent_mode": item["agent_mode"],
+                "prompt": item["prompt"],
+                "job_options": item["job_options"],
+                "elements": item["elements"],
+                "status": "Queued",
+                "result": [],
+                "time_created": datetime.datetime.now().isoformat(),
+                "chat": None,
+            },
+        )
+        return
+
     common_insert(
         JOB_INSERT_QUERY,
         (
@@ -33,6 +50,12 @@ def insert(item: dict[str, Any]) -> None:
     LOG.debug(f"Inserted item: {item}")
 
 
+def check_for_job_completion(id: str) -> dict[str, Any]:
+    query = f"SELECT * FROM jobs WHERE id = ?"
+    res = common_query(query, (id,))
+    return res[0] if res else {}
+
+
 async def get_queued_job():
     query = (
         "SELECT * FROM jobs WHERE status = 'Queued' ORDER BY time_created DESC LIMIT 1"
@@ -45,6 +68,12 @@ async def get_queued_job():
 async def update_job(ids: list[str], field: str, value: Any):
     query = f"UPDATE jobs SET {field} = ? WHERE id IN {format_list_for_query(ids)}"
     res = common_update(query, tuple([value] + ids))
+    LOG.debug(f"Updated job: {res}")
+
+
+async def multi_field_update_job(id: str, fields: dict[str, Any]):
+    query = f"UPDATE jobs SET {', '.join(f'{field} = ?' for field in fields.keys())} WHERE id = ?"
+    res = common_update(query, tuple(list(fields.values()) + [id]))
     LOG.debug(f"Updated job: {res}")
 
 

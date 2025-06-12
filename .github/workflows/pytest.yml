@@ -10,6 +10,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v3
+
       - name: Set env
         run: echo "ENV=test" >> $GITHUB_ENV
 
@@ -20,7 +22,7 @@ jobs:
         run: pdm install
 
       - name: Install playwright
-        run: pdm run playwright install
+        run: pdm run playwright install --with-deps
 
       - name: Run tests
         run: PYTHONPATH=. pdm run pytest -v -ra api/backend/tests

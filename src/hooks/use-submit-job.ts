@@ -25,7 +25,8 @@ export const useSubmitJob = () => {
     jobOptions: RawJobOptions,
     siteMap: SiteMap | null,
     agentMode: boolean,
-    prompt: string | null
+    prompt: string | null,
+    id?: string
   ) => {
     if (!validateURL(submittedURL)) {
       setIsValidUrl(false);
@@ -61,7 +62,8 @@ export const useSubmitJob = () => {
       customCookies,
       siteMap,
       agentMode,
-      prompt || undefined
+      prompt || undefined,
+      id
     )
       .then(async (response) => {
         if (!response.ok) {
@@ -80,7 +82,10 @@ export const useSubmitJob = () => {
         setSnackbarOpen(true);
       })
       .catch((error) => {
-        setSnackbarMessage(error || "An error occurred.");
+        const errorMessage =
+          error instanceof Error ? error.message : "An error occurred.";
+        console.log(errorMessage);
+        setSnackbarMessage(errorMessage);
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       })
