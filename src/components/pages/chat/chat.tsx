@@ -343,7 +343,7 @@ export const AI: React.FC = () => {
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             }}
           >
-            Must set either OPENAI_KEY or OLLAMA_MODEL to use AI features.
+            Must set either OPENAI_API_KEY or OLLAMA_MODEL to use AI features.
           </h4>
         </Box>
       )}
