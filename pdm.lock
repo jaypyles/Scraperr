@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:1a65c1e288d2c6827fc6866d3bfe6a9b8707b2ca895d488f4a9b11cd579c4359"
+content_hash = "sha256:222416fbd48d349e2ae777bf1d167b68e4342f38d5e20d04095cbbb594afb8f3"
 
 [[metadata.targets]]
 requires_python = ">=3.10"
@@ -459,7 +459,7 @@ files = [
 
 [[package]]
 name = "browserforge"
-version = "1.2.3"
+version = "1.2.1"
 requires_python = "<4.0,>=3.8"
 summary = "Intelligent browser header & fingerprint generator"
 groups = ["default"]
@@ -468,8 +468,8 @@ dependencies = [
     "typing-extensions; python_version < \"3.10\"",
 ]
 files = [
-    {file = "browserforge-1.2.3-py3-none-any.whl", hash = "sha256:a6c71ed4688b2f1b0bee757ca82ddad0007cbba68a71eca66ca607dde382f132"},
-    {file = "browserforge-1.2.3.tar.gz", hash = "sha256:d5bec6dffd4748b30fbac9f9c1ef33b26c01a23185240bf90011843e174b7ecc"},
+    {file = "browserforge-1.2.1-py3-none-any.whl", hash = "sha256:b2813b4de80b9c48c88700c93e3dfa6a64694d04f3263545e28bb03dd95df27e"},
+    {file = "browserforge-1.2.1.tar.gz", hash = "sha256:7036d73fb066a4361a015b619079474c42d8b0ff415e1d874b62366de48d0b61"},
 ]
 
 [[package]]
