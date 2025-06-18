@@ -43,6 +43,7 @@ dependencies = [
     "camoufox>=0.4.11",
     "html2text>=2025.4.15",
     "proxy-py>=2.4.10",
+    "browserforge==1.2.1",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
