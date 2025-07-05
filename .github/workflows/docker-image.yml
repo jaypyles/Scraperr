@@ -26,31 +26,36 @@ jobs:
         run: |
           echo "Version is ${{ inputs.version }}"
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push frontend
+      - name: Build and push frontend (multi-arch)
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/frontend/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/scraperr:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/scraperr:${{ inputs.version }}
 
-      - name: Build and push api
+      - name: Build and push api (multi-arch)
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/api/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/scraperr_api:${{ inputs.version }}
