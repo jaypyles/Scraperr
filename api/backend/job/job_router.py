@@ -18,10 +18,12 @@ from api.backend.constants import MEDIA_DIR, MEDIA_TYPES, RECORDINGS_DIR
 from api.backend.scheduler import scheduler
 from api.backend.schemas.job import Job, UpdateJobs, DownloadJob, DeleteScrapeJobs
 from api.backend.auth.schemas import User
-from api.backend.schemas.cron import CronJob, DeleteCronJob
+from api.backend.schemas.cron import CronJob as PydanticCronJob
+from api.backend.schemas.cron import DeleteCronJob
 from api.backend.database.utils import format_list_for_query
 from api.backend.auth.auth_utils import get_current_user
 from api.backend.database.common import query
+from api.backend.database.models import CronJob
 from api.backend.job.utils.text_utils import clean_text
 from api.backend.job.models.job_options import FetchOptions
 from api.backend.routers.handle_exceptions import handle_exceptions
@@ -170,7 +172,7 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
 
 @job_router.post("/schedule-cron-job")
 @handle_exceptions(logger=LOG)
-async def schedule_cron_job(cron_job: CronJob):
+async def schedule_cron_job(cron_job: PydanticCronJob):
     if not cron_job.id:
         cron_job.id = uuid.uuid4().hex
 
@@ -180,7 +182,7 @@ async def schedule_cron_job(cron_job: CronJob):
     if not cron_job.time_updated:
         cron_job.time_updated = datetime.datetime.now()
 
-    insert_cron_job(cron_job)
+    insert_cron_job(CronJob(**cron_job.model_dump()))
 
     queried_job = query("SELECT * FROM jobs WHERE id = ?", (cron_job.job_id,))
 

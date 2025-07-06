@@ -1,6 +1,8 @@
 # STL
 import logging
-import sqlite3
+
+# PDM
+from sqlalchemy.exc import IntegrityError
 
 # LOCAL
 from api.backend.constants import (
@@ -9,61 +11,48 @@ from api.backend.constants import (
     DEFAULT_USER_PASSWORD,
     DEFAULT_USER_FULL_NAME,
 )
+from api.backend.database.base import Base, SessionLocal, engine
 from api.backend.auth.auth_utils import get_password_hash
-from api.backend.database.common import insert, connect
-from api.backend.database.schema import INIT_QUERY
+from api.backend.database.models import User
 
 LOG = logging.getLogger("Database")
 
 
-def execute_startup_query():
-    cursor = connect()
-
-    for query in INIT_QUERY.strip().split(";"):
-        query = query.strip()
-
-        if not query:
-            continue
-
-        try:
-            LOG.info(f"Executing query: {query}")
-            _ = cursor.execute(query)
-
-        except sqlite3.OperationalError as e:
-            if "duplicate column name" in str(e).lower():
-                LOG.warning(f"Skipping duplicate column error: {e}")
-                continue
-            else:
-                LOG.error(f"Error executing query: {query}")
-                raise
-
-    cursor.close()
-
-
 def init_database():
-    execute_startup_query()
+    LOG.info("Creating database schema...")
+    Base.metadata.create_all(bind=engine)
 
     if not REGISTRATION_ENABLED:
         default_user_email = DEFAULT_USER_EMAIL
         default_user_password = DEFAULT_USER_PASSWORD
         default_user_full_name = DEFAULT_USER_FULL_NAME
 
-        if (
-            not default_user_email
-            or not default_user_password
-            or not default_user_full_name
+        if not (
+            default_user_email and default_user_password and default_user_full_name
         ):
             LOG.error(
                 "DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD, or DEFAULT_USER_FULL_NAME is not set!"
             )
             exit(1)
 
-        query = "INSERT INTO users (email, hashed_password, full_name) VALUES (?, ?, ?)"
-        _ = insert(
-            query,
-            (
-                default_user_email,
-                get_password_hash(default_user_password),
-                default_user_full_name,
-            ),
-        )
+        with SessionLocal() as session:
+            user = session.get(User, default_user_email)
+            if user:
+                LOG.info("Default user already exists. Skipping creation.")
+                return
+
+            LOG.info("Creating default user...")
+            new_user = User(
+                email=default_user_email,
+                hashed_password=get_password_hash(default_user_password),
+                full_name=default_user_full_name,
+                disabled=False,
+            )
+
+            try:
+                session.add(new_user)
+                session.commit()
+                LOG.info(f"Created default user: {default_user_email}")
+            except IntegrityError as e:
+                session.rollback()
+                LOG.warning(f"Could not create default user (already exists?): {e}")

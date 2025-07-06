@@ -12,7 +12,7 @@ dependencies = [
     "asyncio>=3.4.3",
     "aiohttp>=3.9.5",
     "bs4>=0.0.2",
-    "lxml[html_clean]>=5.2.2",
+    "lxml>=5.2.2",
     "lxml-stubs>=0.5.1",
     "fake-useragent>=1.5.1",
     "requests-html>=0.10.0",
@@ -24,7 +24,6 @@ dependencies = [
     "python-keycloak>=4.2.0",
     "fastapi-keycloak>=1.0.11",
     "pymongo>=4.8.0",
-    "motor[asyncio]>=3.5.0",
     "python-jose[cryptography]>=3.3.0",
     "passlib[bcrypt]>=1.7.4",
     "selenium-wire>=5.1.0",
@@ -44,6 +43,7 @@ dependencies = [
     "html2text>=2025.4.15",
     "proxy-py>=2.4.10",
     "browserforge==1.2.1",
+    "sqlalchemy>=2.0.41",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
