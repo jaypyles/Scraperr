@@ -5,57 +5,64 @@ import datetime
 from typing import Any, List
 
 # PDM
+from sqlalchemy import select
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # LOCAL
 from api.backend.job import insert as insert_job
-from api.backend.database.base import SessionLocal
+from api.backend.database.base import AsyncSessionLocal
 from api.backend.database.models import Job, CronJob
 
 LOG = logging.getLogger("Cron")
 
 
-def insert_cron_job(cron_job: CronJob) -> bool:
-    with SessionLocal() as session:
+async def insert_cron_job(cron_job: CronJob) -> bool:
+    async with AsyncSessionLocal() as session:
         session.add(cron_job)
-        session.commit()
+        await session.commit()
     return True
 
 
-def delete_cron_job(id: str, user_email: str) -> bool:
-    with SessionLocal() as session:
-        cron_job = (
-            session.query(CronJob).filter_by(id=id, user_email=user_email).first()
-        )
+async def delete_cron_job(id: str, user_email: str) -> bool:
+    async with AsyncSessionLocal() as session:
+        stmt = select(CronJob).where(CronJob.id == id, CronJob.user_email == user_email)
+        result = await session.execute(stmt)
+        cron_job = result.scalars().first()
         if cron_job:
-            session.delete(cron_job)
-            session.commit()
+            await session.delete(cron_job)
+            await session.commit()
     return True
 
 
-def get_cron_jobs(user_email: str) -> List[CronJob]:
-    with SessionLocal() as session:
-        return session.query(CronJob).filter_by(user_email=user_email).all()
+async def get_cron_jobs(user_email: str) -> List[CronJob]:
+    async with AsyncSessionLocal() as session:
+        stmt = select(CronJob).where(CronJob.user_email == user_email)
+        result = await session.execute(stmt)
+        return list(result.scalars().all())
 
 
-def get_all_cron_jobs() -> List[CronJob]:
-    with SessionLocal() as session:
-        return session.query(CronJob).all()
+async def get_all_cron_jobs() -> List[CronJob]:
+    async with AsyncSessionLocal() as session:
+        stmt = select(CronJob)
+        result = await session.execute(stmt)
+        return list(result.scalars().all())
 
 
 async def insert_job_from_cron_job(job: dict[str, Any]):
-    await insert_job(
-        {
-            **job,
-            "id": uuid.uuid4().hex,
-            "status": "Queued",
-            "result": "",
-            "chat": None,
-            "time_created": datetime.datetime.now(datetime.timezone.utc),
-            "time_updated": datetime.datetime.now(datetime.timezone.utc),
-        }
-    )
+    async with AsyncSessionLocal() as session:
+        await insert_job(
+            {
+                **job,
+                "id": uuid.uuid4().hex,
+                "status": "Queued",
+                "result": "",
+                "chat": None,
+                "time_created": datetime.datetime.now(datetime.timezone.utc),
+                "time_updated": datetime.datetime.now(datetime.timezone.utc),
+            },
+            session,
+        )
 
 
 def get_cron_job_trigger(cron_expression: str):
@@ -72,14 +79,18 @@ def get_cron_job_trigger(cron_expression: str):
     )
 
 
-def start_cron_scheduler(scheduler: AsyncIOScheduler):
-    with SessionLocal() as session:
-        cron_jobs = session.query(CronJob).all()
+async def start_cron_scheduler(scheduler: AsyncIOScheduler):
+    async with AsyncSessionLocal() as session:
+        stmt = select(CronJob)
+        result = await session.execute(stmt)
+        cron_jobs = result.scalars().all()
 
         LOG.info(f"Cron jobs: {cron_jobs}")
 
         for cron_job in cron_jobs:
-            queried_job = session.query(Job).filter_by(id=cron_job.job_id).first()
+            stmt = select(Job).where(Job.id == cron_job.job_id)
+            result = await session.execute(stmt)
+            queried_job = result.scalars().first()
 
             LOG.info(f"Adding job: {queried_job}")
 

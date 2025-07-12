@@ -44,6 +44,8 @@ dependencies = [
     "proxy-py>=2.4.10",
     "browserforge==1.2.1",
     "sqlalchemy>=2.0.41",
+    "aiosqlite>=0.21.0",
+    "alembic>=1.16.4",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

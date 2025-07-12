@@ -8,14 +8,14 @@ from sqlalchemy import select
 from sqlalchemy import update as sql_update
 
 # LOCAL
-from api.backend.database.base import SessionLocal
+from api.backend.database.base import AsyncSessionLocal
 from api.backend.database.models import Job
 
 LOG = logging.getLogger("Database")
 
 
-def insert_job(item: dict[str, Any]) -> None:
-    with SessionLocal() as session:
+async def insert_job(item: dict[str, Any]) -> None:
+    async with AsyncSessionLocal() as session:
         job = Job(
             id=item["id"],
             url=item["url"],
@@ -30,31 +30,32 @@ def insert_job(item: dict[str, Any]) -> None:
             prompt=item["prompt"],
         )
         session.add(job)
-        session.commit()
+        await session.commit()
         LOG.info(f"Inserted item: {item}")
 
 
 async def get_queued_job():
-    with SessionLocal() as session:
+    async with AsyncSessionLocal() as session:
         stmt = (
             select(Job)
             .where(Job.status == "Queued")
             .order_by(Job.time_created.desc())
             .limit(1)
         )
-        result = session.execute(stmt).scalars().first()
-        LOG.info(f"Got queued job: {result}")
-        return result
+        result = await session.execute(stmt)
+        job = result.scalars().first()
+        LOG.info(f"Got queued job: {job}")
+        return job
 
 
 async def update_job(ids: list[str], updates: dict[str, Any]):
     if not updates:
         return
 
-    with SessionLocal() as session:
+    async with AsyncSessionLocal() as session:
         stmt = sql_update(Job).where(Job.id.in_(ids)).values(**updates)
-        result = session.execute(stmt)
-        session.commit()
+        result = await session.execute(stmt)
+        await session.commit()
         LOG.debug(f"Updated job count: {result.rowcount}")
 
 
@@ -63,9 +64,9 @@ async def delete_jobs(jobs: list[str]):
         LOG.info("No jobs to delete.")
         return False
 
-    with SessionLocal() as session:
+    async with AsyncSessionLocal() as session:
         stmt = sql_delete(Job).where(Job.id.in_(jobs))
-        result = session.execute(stmt)
-        session.commit()
+        result = await session.execute(stmt)
+        await session.commit()
         LOG.info(f"Deleted jobs count: {result.rowcount}")
         return result.rowcount

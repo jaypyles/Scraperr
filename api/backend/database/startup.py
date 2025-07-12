@@ -11,32 +11,29 @@ from api.backend.constants import (
     DEFAULT_USER_PASSWORD,
     DEFAULT_USER_FULL_NAME,
 )
-from api.backend.database.base import Base, SessionLocal, engine
+from api.backend.database.base import Base, AsyncSessionLocal, engine
 from api.backend.auth.auth_utils import get_password_hash
 from api.backend.database.models import User
 
 LOG = logging.getLogger("Database")
 
-
-def init_database():
+async def init_database():
     LOG.info("Creating database schema...")
-    Base.metadata.create_all(bind=engine)
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
     if not REGISTRATION_ENABLED:
         default_user_email = DEFAULT_USER_EMAIL
         default_user_password = DEFAULT_USER_PASSWORD
         default_user_full_name = DEFAULT_USER_FULL_NAME
 
-        if not (
-            default_user_email and default_user_password and default_user_full_name
-        ):
-            LOG.error(
-                "DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD, or DEFAULT_USER_FULL_NAME is not set!"
-            )
+        if not (default_user_email and default_user_password and default_user_full_name):
+            LOG.error("DEFAULT_USER_* env vars are not set!")
             exit(1)
 
-        with SessionLocal() as session:
-            user = session.get(User, default_user_email)
+        async with AsyncSessionLocal() as session:
+            user = await session.get(User, default_user_email)
             if user:
                 LOG.info("Default user already exists. Skipping creation.")
                 return
@@ -51,8 +48,9 @@ def init_database():
 
             try:
                 session.add(new_user)
-                session.commit()
+                await session.commit()
                 LOG.info(f"Created default user: {default_user_email}")
             except IntegrityError as e:
-                session.rollback()
+                await session.rollback()
                 LOG.warning(f"Could not create default user (already exists?): {e}")
+

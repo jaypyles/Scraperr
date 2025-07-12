@@ -37,6 +37,9 @@ RUN touch /project/app/data/database.db
 
 EXPOSE 5900
 
+COPY alembic /project/app/alembic
+COPY alembic.ini /project/app/alembic.ini
+
 COPY start.sh /project/app/start.sh
 
 CMD [ "supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf" ]

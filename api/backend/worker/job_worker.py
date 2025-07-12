@@ -12,7 +12,6 @@ from api.backend.job import update_job, get_queued_job
 from api.backend.job.models import Element
 from api.backend.worker.logger import LOG
 from api.backend.ai.agent.agent import scrape_with_agent
-from api.backend.database.startup import init_database
 from api.backend.worker.constants import (
     TO,
     EMAIL,
@@ -123,8 +122,6 @@ async def process_job():
 
 async def main():
     LOG.info("Starting job worker...")
-
-    init_database()
 
     RECORDINGS_DIR.mkdir(parents=True, exist_ok=True)
 
