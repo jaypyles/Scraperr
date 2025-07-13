@@ -100,6 +100,7 @@ async def test_proxies(client: AsyncClient, db_session: AsyncSession):
     job_dict.pop("_sa_instance_state", None)
 
     assert job_dict is not None
+    print(job_dict)
     assert job_dict["job_options"]["proxies"] == [
         {
             "server": "127.0.0.1:8080",

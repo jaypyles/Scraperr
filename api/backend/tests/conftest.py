@@ -2,19 +2,19 @@
 import os
 import asyncio
 from typing import Any, Generator, AsyncGenerator
-from unittest.mock import patch
 
 # PDM
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from proxy import Proxy
+from sqlalchemy import text
 from sqlalchemy.pool import NullPool
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 # LOCAL
 from api.backend.app import app
-from api.backend.database.base import get_db  # your original get_db
+from api.backend.database.base import get_db
 from api.backend.database.models import Base
 from api.backend.tests.constants import TEST_DB_PATH
 
@@ -25,24 +25,6 @@ def running_proxy():
     proxy.setup()
     yield proxy
     proxy.shutdown()
-
-
-@pytest.fixture(scope="session", autouse=True)
-def patch_database_path():
-    with patch("api.backend.database.common.DATABASE_PATH", TEST_DB_PATH):
-        yield
-
-
-@pytest.fixture(scope="session", autouse=True)
-def patch_db_path():
-    with patch("api.backend.database.base.DATABASE_PATH", TEST_DB_PATH):
-        yield
-
-
-@pytest.fixture(scope="session", autouse=True)
-def patch_recordings_enabled():
-    with patch("api.backend.job.scraping.scraping.RECORDINGS_ENABLED", False):
-        yield
 
 
 @pytest.fixture(scope="session")
@@ -96,8 +78,15 @@ async def db_session(test_engine: Any) -> AsyncGenerator[AsyncSession, None]:
         class_=AsyncSession,
         expire_on_commit=False,
     )
+
     async with async_session() as session:
-        yield session
+        try:
+            yield session
+        finally:
+            # Truncate all tables after each test
+            for table in reversed(Base.metadata.sorted_tables):
+                await session.execute(text(f"DELETE FROM {table.name}"))
+            await session.commit()
 
 
 @pytest.fixture()
