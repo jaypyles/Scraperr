@@ -28,7 +28,9 @@ def clean_job_format(jobs: list[dict[str, Any]]) -> dict[str, Any]:
                                     "xpath": value.get("xpath", ""),
                                     "text": text,
                                     "user": job.get("user", ""),
-                                    "time_created": job.get("time_created", ""),
+                                    "time_created": job.get(
+                                        "time_created", ""
+                                    ).isoformat(),
                                 }
                             )
 

@@ -2,6 +2,8 @@
 
 RECORDINGS_ENABLED=${RECORDINGS_ENABLED:-true}
 
+pdm run alembic upgrade head 
+
 if [ "$RECORDINGS_ENABLED" == "false" ]; then
   pdm run python -m api.backend.worker.job_worker
 else

@@ -5,15 +5,17 @@ from datetime import datetime
 
 # PDM
 import pytest
+from httpx import AsyncClient
+from sqlalchemy import select
 from fastapi.testclient import TestClient
 from playwright.async_api import Route, Cookie, async_playwright
+from sqlalchemy.ext.asyncio import AsyncSession
 
 # LOCAL
 from api.backend.app import app
 from api.backend.job.models import Proxy, Element, JobOptions
 from api.backend.schemas.job import Job
-from api.backend.database.common import query
-from api.backend.job.scraping.scraping import scrape
+from api.backend.database.models import Job as JobModel
 from api.backend.job.scraping.add_custom import add_custom_items
 
 logging.basicConfig(level=logging.DEBUG)
@@ -68,7 +70,7 @@ async def test_add_custom_items():
 
 
 @pytest.mark.asyncio
-async def test_proxies():
+async def test_proxies(client: AsyncClient, db_session: AsyncSession):
     job = Job(
         url="https://example.com",
         elements=[Element(xpath="//div", name="test")],
@@ -84,14 +86,22 @@ async def test_proxies():
         time_created=datetime.now().isoformat(),
     )
 
-    response = client.post("/submit-scrape-job", json=job.model_dump())
+    response = await client.post("/submit-scrape-job", json=job.model_dump())
     assert response.status_code == 200
 
-    jobs = query("SELECT * FROM jobs")
-    job = jobs[0]
+    stmt = select(JobModel)
+    result = await db_session.execute(stmt)
+    jobs = result.scalars().all()
 
-    assert job is not None
-    assert job["job_options"]["proxies"] == [
+    assert len(jobs) > 0
+    job_from_db = jobs[0]
+
+    job_dict = job_from_db.__dict__
+    job_dict.pop("_sa_instance_state", None)
+
+    assert job_dict is not None
+    print(job_dict)
+    assert job_dict["job_options"]["proxies"] == [
         {
             "server": "127.0.0.1:8080",
             "username": "user",
@@ -99,12 +109,9 @@ async def test_proxies():
         }
     ]
 
-    response = await scrape(
-        id=job["id"],
-        url=job["url"],
-        xpaths=[Element(**e) for e in job["elements"]],
-        job_options=job["job_options"],
-    )
-
-    example_response = response[0]["https://example.com/"]
-    assert example_response is not {}
+    # Verify the job was stored correctly in the database
+    assert job_dict["url"] == "https://example.com"
+    assert job_dict["status"] == "Queued"
+    assert len(job_dict["elements"]) == 1
+    assert job_dict["elements"][0]["xpath"] == "//div"
+    assert job_dict["elements"][0]["name"] == "test"

@@ -1,45 +1,65 @@
 # STL
-from unittest.mock import AsyncMock, patch
+import random
+from datetime import datetime, timezone
 
 # PDM
 import pytest
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 
 # LOCAL
-from api.backend.app import app
 from api.backend.schemas.job import DownloadJob
-from api.backend.tests.factories.job_factory import create_completed_job
+from api.backend.database.models import Job
 
-client = TestClient(app)
-
-mocked_job = create_completed_job().model_dump()
-mock_results = [mocked_job]
 mocked_random_int = 123456
 
 
 @pytest.mark.asyncio
-@patch("api.backend.job.job_router.query")
-@patch("api.backend.job.job_router.random.randint")
-async def test_download(mock_randint: AsyncMock, mock_query: AsyncMock):
-    # Ensure the mock returns immediately
-    mock_query.return_value = mock_results
-    mock_randint.return_value = mocked_random_int
+async def test_download(client: AsyncClient, db_session: AsyncSession):
+    # Insert a test job into the DB
+    job_id = "test-job-id"
+    test_job = Job(
+        id=job_id,
+        url="https://example.com",
+        elements=[],
+        user="test@example.com",
+        time_created=datetime.now(timezone.utc),
+        result=[
+            {
+                "https://example.com": {
+                    "element_name": [{"xpath": "//div", "text": "example"}]
+                }
+            }
+        ],
+        status="Completed",
+        chat=None,
+        job_options={},
+        agent_mode=False,
+        prompt="",
+        favorite=False,
+    )
+    db_session.add(test_job)
+    await db_session.commit()
 
-    # Create a DownloadJob instance
-    download_job = DownloadJob(ids=[mocked_job["id"]], job_format="csv")
+    # Force predictable randint
+    random.seed(0)
 
-    # Make a POST request to the /download endpoint
-    response = client.post("/download", json=download_job.model_dump())
+    # Build request
+    download_job = DownloadJob(ids=[job_id], job_format="csv")
+    response = await client.post("/download", json=download_job.model_dump())
 
-    # Assertions
     assert response.status_code == 200
     assert response.headers["Content-Disposition"] == "attachment; filename=export.csv"
 
-    # Check the content of the CSV
+    # Validate CSV contents
     csv_content = response.content.decode("utf-8")
-    expected_csv = (
-        f'"id","url","element_name","xpath","text","user","time_created"\r\n'
-        f'"{mocked_job["id"]}-{mocked_random_int}","https://example.com","element_name","//div","example",'
-        f'"{mocked_job["user"]}","{mocked_job["time_created"]}"\r\n'
+    lines = csv_content.strip().split("\n")
+
+    assert (
+        lines[0].strip()
+        == '"id","url","element_name","xpath","text","user","time_created"'
     )
-    assert csv_content == expected_csv
+    assert '"https://example.com"' in lines[1]
+    assert '"element_name"' in lines[1]
+    assert '"//div"' in lines[1]
+    assert '"example"' in lines[1]

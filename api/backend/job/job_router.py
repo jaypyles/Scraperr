@@ -8,8 +8,10 @@ from io import StringIO
 
 # PDM
 from fastapi import Depends, APIRouter
+from sqlalchemy import select
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 from apscheduler.triggers.cron import CronTrigger  # type: ignore
 
 # LOCAL
@@ -18,10 +20,12 @@ from api.backend.constants import MEDIA_DIR, MEDIA_TYPES, RECORDINGS_DIR
 from api.backend.scheduler import scheduler
 from api.backend.schemas.job import Job, UpdateJobs, DownloadJob, DeleteScrapeJobs
 from api.backend.auth.schemas import User
-from api.backend.schemas.cron import CronJob, DeleteCronJob
-from api.backend.database.utils import format_list_for_query
+from api.backend.schemas.cron import CronJob as PydanticCronJob
+from api.backend.schemas.cron import DeleteCronJob
+from api.backend.database.base import get_db
 from api.backend.auth.auth_utils import get_current_user
-from api.backend.database.common import query
+from api.backend.database.models import Job as DatabaseJob
+from api.backend.database.models import CronJob
 from api.backend.job.utils.text_utils import clean_text
 from api.backend.job.models.job_options import FetchOptions
 from api.backend.routers.handle_exceptions import handle_exceptions
@@ -49,14 +53,14 @@ async def update(update_jobs: UpdateJobs, _: User = Depends(get_current_user)):
 
 @job_router.post("/submit-scrape-job")
 @handle_exceptions(logger=LOG)
-async def submit_scrape_job(job: Job):
+async def submit_scrape_job(job: Job, db: AsyncSession = Depends(get_db)):
     LOG.info(f"Recieved job: {job}")
 
     if not job.id:
         job.id = uuid.uuid4().hex
 
     job_dict = job.model_dump()
-    await insert(job_dict)
+    await insert(job_dict, db)
 
     return JSONResponse(
         content={"id": job.id, "message": "Job submitted successfully."}
@@ -66,34 +70,49 @@ async def submit_scrape_job(job: Job):
 @job_router.post("/retrieve-scrape-jobs")
 @handle_exceptions(logger=LOG)
 async def retrieve_scrape_jobs(
-    fetch_options: FetchOptions, user: User = Depends(get_current_user)
+    fetch_options: FetchOptions,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ):
-    LOG.info(f"Retrieving jobs for account: {user.email}")
-    ATTRIBUTES = "chat" if fetch_options.chat else "*"
-    job_query = (
-        f"SELECT {ATTRIBUTES} FROM jobs WHERE user = ? ORDER BY time_created ASC"
+    LOG.info(
+        f"Retrieving jobs for account: {user.email if user.email else 'Guest User'}"
     )
-    results = query(job_query, (user.email,))
-    return JSONResponse(content=jsonable_encoder(results[::-1]))
+    if fetch_options.chat:
+        stmt = select(DatabaseJob.chat).filter(DatabaseJob.user == user.email)
+    else:
+        stmt = select(DatabaseJob).filter(DatabaseJob.user == user.email)
+
+    results = await db.execute(stmt)
+    rows = results.all() if fetch_options.chat else results.scalars().all()
+
+    return JSONResponse(content=jsonable_encoder(rows[::-1]))
 
 
 @job_router.get("/job/{id}")
 @handle_exceptions(logger=LOG)
-async def job(id: str, user: User = Depends(get_current_user)):
+async def job(
+    id: str, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
+):
     LOG.info(f"Retrieving jobs for account: {user.email}")
-    job_query = "SELECT * FROM jobs WHERE user = ? AND id = ?"
-    results = query(job_query, (user.email, id))
-    return JSONResponse(content=jsonable_encoder(results))
+
+    stmt = select(DatabaseJob).filter(
+        DatabaseJob.user == user.email, DatabaseJob.id == id
+    )
+
+    results = await db.execute(stmt)
+
+    return JSONResponse(
+        content=jsonable_encoder([job.__dict__ for job in results.scalars().all()])
+    )
 
 
 @job_router.post("/download")
 @handle_exceptions(logger=LOG)
-async def download(download_job: DownloadJob):
+async def download(download_job: DownloadJob, db: AsyncSession = Depends(get_db)):
     LOG.info(f"Downloading job with ids: {download_job.ids}")
-    job_query = (
-        f"SELECT * FROM jobs WHERE id IN {format_list_for_query(download_job.ids)}"
-    )
-    results = query(job_query, tuple(download_job.ids))
+    stmt = select(DatabaseJob).where(DatabaseJob.id.in_(download_job.ids))
+    result = await db.execute(stmt)
+    results = [job.__dict__ for job in result.scalars().all()]
 
     if download_job.job_format == "csv":
         csv_buffer = StringIO()
@@ -151,10 +170,12 @@ async def download(download_job: DownloadJob):
 
 @job_router.get("/job/{id}/convert-to-csv")
 @handle_exceptions(logger=LOG)
-async def convert_to_csv(id: str):
-    job_query = f"SELECT * FROM jobs WHERE id = ?"
-    results = query(job_query, (id,))
-    return JSONResponse(content=clean_job_format(results))
+async def convert_to_csv(id: str, db: AsyncSession = Depends(get_db)):
+    stmt = select(DatabaseJob).filter(DatabaseJob.id == id)
+    results = await db.execute(stmt)
+    jobs = results.scalars().all()
+
+    return JSONResponse(content=clean_job_format([job.__dict__ for job in jobs]))
 
 
 @job_router.post("/delete-scrape-jobs")
@@ -170,25 +191,34 @@ async def delete(delete_scrape_jobs: DeleteScrapeJobs):
 
 @job_router.post("/schedule-cron-job")
 @handle_exceptions(logger=LOG)
-async def schedule_cron_job(cron_job: CronJob):
+async def schedule_cron_job(
+    cron_job: PydanticCronJob,
+    db: AsyncSession = Depends(get_db),
+):
     if not cron_job.id:
         cron_job.id = uuid.uuid4().hex
 
+    now = datetime.datetime.now()
     if not cron_job.time_created:
-        cron_job.time_created = datetime.datetime.now()
+        cron_job.time_created = now
 
     if not cron_job.time_updated:
-        cron_job.time_updated = datetime.datetime.now()
+        cron_job.time_updated = now
 
-    insert_cron_job(cron_job)
+    await insert_cron_job(CronJob(**cron_job.model_dump()))
 
-    queried_job = query("SELECT * FROM jobs WHERE id = ?", (cron_job.job_id,))
+    stmt = select(DatabaseJob).where(DatabaseJob.id == cron_job.job_id)
+    result = await db.execute(stmt)
+    queried_job = result.scalars().first()
+
+    if not queried_job:
+        return JSONResponse(status_code=404, content={"error": "Related job not found"})
 
     scheduler.add_job(
         insert_job_from_cron_job,
         get_cron_job_trigger(cron_job.cron_expression),
         id=cron_job.id,
-        args=[queried_job[0]],
+        args=[queried_job],
     )
 
     return JSONResponse(content={"message": "Cron job scheduled successfully."})
@@ -202,7 +232,7 @@ async def delete_cron_job_request(request: DeleteCronJob):
             content={"error": "Cron job id is required."}, status_code=400
         )
 
-    delete_cron_job(request.id, request.user_email)
+    await delete_cron_job(request.id, request.user_email)
     scheduler.remove_job(request.id)
 
     return JSONResponse(content={"message": "Cron job deleted successfully."})
@@ -211,7 +241,7 @@ async def delete_cron_job_request(request: DeleteCronJob):
 @job_router.get("/cron-jobs")
 @handle_exceptions(logger=LOG)
 async def get_cron_jobs_request(user: User = Depends(get_current_user)):
-    cron_jobs = get_cron_jobs(user.email)
+    cron_jobs = await get_cron_jobs(user.email)
     return JSONResponse(content=jsonable_encoder(cron_jobs))
 
 

@@ -1,6 +1,7 @@
 # STL
 import json
 from typing import Any
+from datetime import datetime
 
 
 def format_list_for_query(ids: list[str]):
@@ -28,3 +29,9 @@ def format_json(items: list[Any]):
         if isinstance(item, (dict, list)):
             formatted_item = json.dumps(item)
             items[idx] = formatted_item
+
+
+def parse_datetime(dt_str: str) -> datetime:
+    if dt_str.endswith("Z"):
+        dt_str = dt_str.replace("Z", "+00:00")  # valid ISO format for UTC
+    return datetime.fromisoformat(dt_str)

@@ -15,7 +15,6 @@ from api.backend.scheduler import scheduler
 from api.backend.ai.ai_router import ai_router
 from api.backend.job.job_router import job_router
 from api.backend.auth.auth_router import auth_router
-from api.backend.database.startup import init_database
 from api.backend.stats.stats_router import stats_router
 from api.backend.job.cron_scheduling.cron_scheduling import start_cron_scheduler
 
@@ -36,10 +35,8 @@ async def lifespan(_: FastAPI):
     # Startup
     LOG.info("Starting application...")
 
-    init_database()
-
     LOG.info("Starting cron scheduler...")
-    start_cron_scheduler(scheduler)
+    await start_cron_scheduler(scheduler)
     scheduler.start()
 
     LOG.info("Cron scheduler started successfully")

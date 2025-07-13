@@ -3,18 +3,22 @@ import logging
 import datetime
 from typing import Any
 
+# PDM
+from sqlalchemy import delete as sql_delete
+from sqlalchemy import select
+from sqlalchemy import update as sql_update
+from sqlalchemy.ext.asyncio import AsyncSession
+
 # LOCAL
-from api.backend.database.utils import format_list_for_query
-from api.backend.database.common import query as common_query
-from api.backend.database.common import insert as common_insert
-from api.backend.database.common import update as common_update
-from api.backend.database.queries.job.job_queries import JOB_INSERT_QUERY
+from api.backend.database.base import AsyncSessionLocal
+from api.backend.database.models import Job
 
 LOG = logging.getLogger("Job")
 
 
-async def insert(item: dict[str, Any]) -> None:
-    if check_for_job_completion(item["id"]):
+async def insert(item: dict[str, Any], db: AsyncSession) -> None:
+    existing = await db.get(Job, item["id"])
+    if existing:
         await multi_field_update_job(
             item["id"],
             {
@@ -24,57 +28,76 @@ async def insert(item: dict[str, Any]) -> None:
                 "elements": item["elements"],
                 "status": "Queued",
                 "result": [],
-                "time_created": datetime.datetime.now().isoformat(),
+                "time_created": datetime.datetime.now(datetime.timezone.utc),
                 "chat": None,
             },
+            db,
         )
         return
 
-    common_insert(
-        JOB_INSERT_QUERY,
-        (
-            item["id"],
-            item["url"],
-            item["elements"],
-            item["user"],
-            item["time_created"],
-            item["result"],
-            item["status"],
-            item["chat"],
-            item["job_options"],
-            item["agent_mode"],
-            item["prompt"],
-        ),
+    job = Job(
+        id=item["id"],
+        url=item["url"],
+        elements=item["elements"],
+        user=item["user"],
+        time_created=datetime.datetime.now(datetime.timezone.utc),
+        result=item["result"],
+        status=item["status"],
+        chat=item["chat"],
+        job_options=item["job_options"],
+        agent_mode=item["agent_mode"],
+        prompt=item["prompt"],
     )
 
+    db.add(job)
+    await db.commit()
     LOG.debug(f"Inserted item: {item}")
 
 
-def check_for_job_completion(id: str) -> dict[str, Any]:
-    query = f"SELECT * FROM jobs WHERE id = ?"
-    res = common_query(query, (id,))
-    return res[0] if res else {}
+async def check_for_job_completion(id: str) -> dict[str, Any]:
+    async with AsyncSessionLocal() as session:
+        job = await session.get(Job, id)
+        return job.__dict__ if job else {}
 
 
 async def get_queued_job():
-    query = (
-        "SELECT * FROM jobs WHERE status = 'Queued' ORDER BY time_created DESC LIMIT 1"
-    )
-    res = common_query(query)
-    LOG.debug(f"Got queued job: {res}")
-    return res[0] if res else None
+    async with AsyncSessionLocal() as session:
+        stmt = (
+            select(Job)
+            .where(Job.status == "Queued")
+            .order_by(Job.time_created.desc())
+            .limit(1)
+        )
+        result = await session.execute(stmt)
+        job = result.scalars().first()
+        LOG.debug(f"Got queued job: {job}")
+        return job.__dict__ if job else None
 
 
 async def update_job(ids: list[str], field: str, value: Any):
-    query = f"UPDATE jobs SET {field} = ? WHERE id IN {format_list_for_query(ids)}"
-    res = common_update(query, tuple([value] + ids))
-    LOG.debug(f"Updated job: {res}")
+    async with AsyncSessionLocal() as session:
+        stmt = sql_update(Job).where(Job.id.in_(ids)).values({field: value})
+        res = await session.execute(stmt)
+        await session.commit()
+        LOG.debug(f"Updated job count: {res.rowcount}")
 
 
-async def multi_field_update_job(id: str, fields: dict[str, Any]):
-    query = f"UPDATE jobs SET {', '.join(f'{field} = ?' for field in fields.keys())} WHERE id = ?"
-    res = common_update(query, tuple(list(fields.values()) + [id]))
-    LOG.debug(f"Updated job: {res}")
+async def multi_field_update_job(
+    id: str, fields: dict[str, Any], session: AsyncSession | None = None
+):
+    close_session = False
+    if not session:
+        session = AsyncSessionLocal()
+        close_session = True
+
+    try:
+        stmt = sql_update(Job).where(Job.id == id).values(**fields)
+        await session.execute(stmt)
+        await session.commit()
+        LOG.debug(f"Updated job {id} fields: {fields}")
+    finally:
+        if close_session:
+            await session.close()
 
 
 async def delete_jobs(jobs: list[str]):
@@ -82,7 +105,9 @@ async def delete_jobs(jobs: list[str]):
         LOG.debug("No jobs to delete.")
         return False
 
-    query = f"DELETE FROM jobs WHERE id IN {format_list_for_query(jobs)}"
-    res = common_update(query, tuple(jobs))
-
-    return res > 0
+    async with AsyncSessionLocal() as session:
+        stmt = sql_delete(Job).where(Job.id.in_(jobs))
+        res = await session.execute(stmt)
+        await session.commit()
+        LOG.debug(f"Deleted jobs: {res.rowcount}")
+        return res.rowcount > 0

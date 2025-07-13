@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 
-DATABASE_PATH = "data/database.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///data/database.db")
 RECORDINGS_DIR = Path("media/recordings")
 RECORDINGS_ENABLED = os.getenv("RECORDINGS_ENABLED", "true").lower() == "true"
 MEDIA_DIR = Path("media")
