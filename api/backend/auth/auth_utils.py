@@ -93,7 +93,7 @@ async def get_current_user(
         return EMPTY_USER
 
     if len(token.split(".")) != 3:
-        LOG.error(f"Malformed token: {token}")
+        LOG.debug(f"Malformed token: {token}")
         return EMPTY_USER
 
     try:

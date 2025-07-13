@@ -74,7 +74,9 @@ async def retrieve_scrape_jobs(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    LOG.info(f"Retrieving jobs for account: {user.email}")
+    LOG.info(
+        f"Retrieving jobs for account: {user.email if user.email else 'Guest User'}"
+    )
     if fetch_options.chat:
         stmt = select(DatabaseJob.chat).filter(DatabaseJob.user == user.email)
     else:
