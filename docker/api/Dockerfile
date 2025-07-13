@@ -3,7 +3,7 @@ FROM python:3.10.12-slim as pybuilder
 
 RUN apt-get update && \
     apt-get install -y curl && \
-    apt-get install -y x11vnc xvfb uvicorn wget gnupg supervisor libgl1 libglx-mesa0 libglx0 vainfo libva-dev libva-glx2 libva-drm2 ffmpeg && \
+    apt-get install -y x11vnc xvfb uvicorn wget gnupg supervisor libgl1 libglx-mesa0 libglx0 vainfo libva-dev libva-glx2 libva-drm2 ffmpeg pkg-config default-libmysqlclient-dev gcc && \
     curl -LsSf https://astral.sh/uv/install.sh | sh && \
     apt-get remove -y curl && \
     apt-get autoremove -y && \

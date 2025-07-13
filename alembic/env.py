@@ -31,6 +31,7 @@ for async_driver, sync_driver in driver_downgrade_map.items():
     if raw_database_url.startswith(async_driver + "://"):
         sync_database_url = raw_database_url.replace(async_driver, sync_driver, 1)
         break
+
 else:
     # No async driver detected — assume it's already sync
     sync_database_url = raw_database_url
